@@ -17,7 +17,7 @@ public class ProductOperation extends BDD<Product> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getReference());
-            preparedStmt.setInt(3,o.getLimiteQte());
+            preparedStmt.setInt(3,o.getLimitQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -35,7 +35,7 @@ public class ProductOperation extends BDD<Product> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
             preparedStmt.setString(2,o1.getReference());
-            preparedStmt.setInt(3,o1.getLimiteQte());
+            preparedStmt.setInt(3,o1.getLimitQte());
             preparedStmt.setInt(4,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
@@ -56,7 +56,7 @@ public class ProductOperation extends BDD<Product> {
     }
 
     @Override
-    public ArrayList<Product> getAll() {
+    public ArrayList<Product> getAll() {     
         ArrayList<Product> list = new ArrayList<>();
         String query = "SELECT * FROM `المنتجات` WHERE `ارشيف` = 0";
         try {
@@ -69,7 +69,7 @@ public class ProductOperation extends BDD<Product> {
                 product.setId(resultSet.getInt("المعرف"));
                 product.setName(resultSet.getString("الاسم"));
                 product.setReference(resultSet.getString("المرجع"));
-                product.setLimiteQte(resultSet.getInt("اقل_كمية"));
+                product.setLimitQte(resultSet.getInt("اقل_كمية"));
 
                 list.add(product);
             }

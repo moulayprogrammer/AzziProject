@@ -1,9 +1,7 @@
 package Controllers.MedicationControllers;
 
 import BddPackage.MedicationOperation;
-import BddPackage.RawMaterialOperation;
 import Models.Medication;
-import Models.RawMaterial;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -180,7 +178,7 @@ public class MainController implements Initializable {
                 return true;
             } else if (medication.getReference().contains(txtRecherche)) {
                 return true;
-            } else return String.valueOf(medication.getLimiteQte()).contains(txtRecherche);
+            } else return String.valueOf(medication.getLimitQte()).contains(txtRecherche);
         });
 
         SortedList<Medication> sortedList = new SortedList<>(filteredData);

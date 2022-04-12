@@ -1,0 +1,53 @@
+package Models;
+
+import java.time.LocalDate;
+
+public class Invoice {
+
+    private int id;
+    private int idClient;
+    private LocalDate date;
+    private double paying;
+
+    public Invoice() {
+    }
+
+    public Invoice(int id, int idClient, LocalDate date, double paying) {
+        this.id = id;
+        this.idClient = idClient;
+        this.date = date;
+        this.paying = paying;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getIdClient() {
+        return idClient;
+    }
+
+    public void setIdClient(int idClient) {
+        this.idClient = idClient;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public double getPaying() {
+        return paying;
+    }
+
+    public void setPaying(double paying) {
+        this.paying = paying;
+    }
+}

@@ -1,15 +1,15 @@
 package BddPackage;
 
-import Models.Component;
+import Models.ComponentProduction;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ComponentRawMaterialOperation extends BDD<Component> {
+public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
 
     @Override
-    public boolean insert(Component o) {
+    public boolean insert(ComponentProduction o) {
         boolean ins = false;
         String query = "INSERT INTO `مركب_المواد_الخام`(`معرف_المنتج`, `مركب_المواد_الخام`, `الكمية`) VALUES  (?,?,?)";
         try {
@@ -26,7 +26,7 @@ public class ComponentRawMaterialOperation extends BDD<Component> {
     }
 
     @Override
-    public boolean update(Component o1, Component o2) {
+    public boolean update(ComponentProduction o1, ComponentProduction o2) {
         boolean upd = false;
         String query = "UPDATE `مركب_المواد_الخام` SET `الكمية`= ? WHERE `معرف_المنتج` = ? AND `مركب_المواد_الخام` = ?";
         try {
@@ -44,17 +44,17 @@ public class ComponentRawMaterialOperation extends BDD<Component> {
     }
 
     @Override
-    public boolean delete(Component o) {
+    public boolean delete(ComponentProduction o) {
         return false;
     }
 
     @Override
-    public boolean isExist(Component o) {
+    public boolean isExist(ComponentProduction o) {
         return false;
     }
 
     @Override
-    public ArrayList<Component> getAll() {
+    public ArrayList<ComponentProduction> getAll() {
         return null;
     }
 }

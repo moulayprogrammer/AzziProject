@@ -2,7 +2,6 @@ package Controllers.ProductControllers;
 
 import BddPackage.*;
 import Models.Medication;
-import Models.Product;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -13,7 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.Stage;
-import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.List;
@@ -76,7 +74,7 @@ public class AddController implements Initializable {
             Medication medication = new Medication();
             medication.setName(name);
             medication.setReference(reference);
-            medication.setLimiteQte(Integer.parseInt(limiteQte));
+            medication.setLimitQte(Integer.parseInt(limiteQte));
 
             boolean ins = insert(medication);
             if (ins) closeDialog(btnInsert);

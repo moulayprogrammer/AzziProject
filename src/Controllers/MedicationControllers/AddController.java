@@ -1,9 +1,7 @@
 package Controllers.MedicationControllers;
 
 import BddPackage.MedicationOperation;
-import BddPackage.RawMaterialOperation;
 import Models.Medication;
-import Models.RawMaterial;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,7 +47,7 @@ public class AddController implements Initializable {
             Medication medication = new Medication();
             medication.setName(name);
             medication.setReference(reference);
-            medication.setLimiteQte(Integer.parseInt(limiteQte));
+            medication.setLimitQte(Integer.parseInt(limiteQte));
 
             boolean ins = insert(medication);
             if (ins) closeDialog(btnInsert);

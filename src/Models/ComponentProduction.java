@@ -1,15 +1,15 @@
 package Models;
 
-public class Component {
+public class ComponentProduction {
 
     private int idProduct;
     private int idComponent;
     private int qte;
 
-    public Component() {
+    public ComponentProduction() {
     }
 
-    public Component(int idProduct, int idComponent, int qte) {
+    public ComponentProduction(int idProduct, int idComponent, int qte) {
         this.idProduct = idProduct;
         this.idComponent = idComponent;
         this.qte = qte;

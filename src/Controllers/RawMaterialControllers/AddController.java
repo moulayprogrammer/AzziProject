@@ -47,7 +47,7 @@ public class AddController implements Initializable {
             RawMaterial rawMaterial = new RawMaterial();
             rawMaterial.setName(name);
             rawMaterial.setReference(reference);
-            rawMaterial.setLimiteQte(Integer.parseInt(limiteQte));
+            rawMaterial.setLimitQte(Integer.parseInt(limiteQte));
 
             boolean ins = insert(rawMaterial);
             if (ins) closeDialog(btnInsert);

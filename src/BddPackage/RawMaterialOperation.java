@@ -17,7 +17,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getReference());
-            preparedStmt.setInt(3,o.getLimiteQte());
+            preparedStmt.setInt(3,o.getLimitQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -35,7 +35,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
             preparedStmt.setString(2,o1.getReference());
-            preparedStmt.setInt(3,o1.getLimiteQte());
+            preparedStmt.setInt(3,o1.getLimitQte());
             preparedStmt.setInt(4,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
@@ -68,7 +68,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
                 rawMaterial.setId(resultSet.getInt("المعرف"));
                 rawMaterial.setName(resultSet.getString("الاسم"));
                 rawMaterial.setReference(resultSet.getString("المرجع"));
-                rawMaterial.setLimiteQte(resultSet.getInt("اقل_كمية"));
+                rawMaterial.setLimitQte(resultSet.getInt("اقل_كمية"));
 
                 list.add(rawMaterial);
             }
@@ -118,7 +118,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
                 rawMaterial.setId(resultSet.getInt("المعرف"));
                 rawMaterial.setName(resultSet.getString("الاسم"));
                 rawMaterial.setReference(resultSet.getString("المرجع"));
-                rawMaterial.setLimiteQte(resultSet.getInt("اقل_كمية"));
+                rawMaterial.setLimitQte(resultSet.getInt("اقل_كمية"));
 
                 list.add(rawMaterial);
             }

@@ -116,7 +116,7 @@ public class ArchiveController implements Initializable {
                 return true;
             } else if (medication.getReference().contains(txtRecherche)) {
                 return true;
-            } else return String.valueOf(medication.getLimiteQte()).contains(txtRecherche);
+            } else return String.valueOf(medication.getLimitQte()).contains(txtRecherche);
         });
 
         SortedList<Medication> sortedList = new SortedList<>(filteredData);

@@ -1,9 +1,7 @@
 package Controllers.MedicationControllers;
 
 import BddPackage.MedicationOperation;
-import BddPackage.RawMaterialOperation;
 import Models.Medication;
-import Models.RawMaterial;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -34,7 +32,7 @@ public class UpdateController implements Initializable {
 
         tfName.setText(upd.getName());
         tfReference.setText(upd.getReference());
-        tfLimiteQte.setText(upd.getLimiteQte() + "");
+        tfLimiteQte.setText(upd.getLimitQte() + "");
 
         this.medicationUpdate = upd;
     }
@@ -51,7 +49,7 @@ public class UpdateController implements Initializable {
             Medication medication = new Medication();
             medication.setName(name);
             medication.setReference(reference);
-            medication.setLimiteQte(Integer.parseInt(limiteQte));
+            medication.setLimitQte(Integer.parseInt(limiteQte));
 
             boolean upd = update(medication);
             if (upd) closeDialog(btnUpdate);

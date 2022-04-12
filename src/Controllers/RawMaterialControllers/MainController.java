@@ -178,7 +178,7 @@ public class MainController implements Initializable {
                 return true;
             } else if (rawMaterial.getReference().contains(txtRecherche)) {
                 return true;
-            } else return String.valueOf(rawMaterial.getLimiteQte()).contains(txtRecherche);
+            } else return String.valueOf(rawMaterial.getLimitQte()).contains(txtRecherche);
         });
 
         SortedList<RawMaterial> sortedList = new SortedList<>(filteredData);

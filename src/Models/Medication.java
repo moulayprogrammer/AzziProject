@@ -5,16 +5,16 @@ public class Medication {
     private int id;
     private String name;
     private String reference;
-    private int limiteQte;
+    private int limitQte;
 
     public Medication() {
     }
 
-    public Medication(int id, String name, String reference, int limiteQte) {
+    public Medication(int id, String name, String reference, int limitQte) {
         this.id = id;
         this.name = name;
         this.reference = reference;
-        this.limiteQte = limiteQte;
+        this.limitQte = limitQte;
     }
 
     public int getId() {
@@ -41,11 +41,11 @@ public class Medication {
         this.reference = reference;
     }
 
-    public int getLimiteQte() {
-        return limiteQte;
+    public int getLimitQte() {
+        return limitQte;
     }
 
-    public void setLimiteQte(int limiteQte) {
-        this.limiteQte = limiteQte;
+    public void setLimitQte(int limitQte) {
+        this.limitQte = limitQte;
     }
 }

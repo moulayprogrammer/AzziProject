@@ -32,7 +32,7 @@ public class UpdateController implements Initializable {
 
         tfName.setText(upd.getName());
         tfReference.setText(upd.getReference());
-        tfLimiteQte.setText(upd.getLimiteQte() + "");
+        tfLimiteQte.setText(upd.getLimitQte() + "");
 
         this.rawMaterialUpdated = upd;
     }
@@ -49,7 +49,7 @@ public class UpdateController implements Initializable {
             RawMaterial rawMaterial = new RawMaterial();
             rawMaterial.setName(name);
             rawMaterial.setReference(reference);
-            rawMaterial.setLimiteQte(Integer.parseInt(limiteQte));
+            rawMaterial.setLimitQte(Integer.parseInt(limiteQte));
 
             boolean upd = update(rawMaterial);
             if (upd) closeDialog(btnUpdate);

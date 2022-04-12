@@ -1,6 +1,5 @@
 package Controllers;
 
-import Models.Medication;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;

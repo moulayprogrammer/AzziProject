@@ -15,7 +15,7 @@ abstract class BDD<Object> {
 
     public Connection connect(){
         // db parameters
-        String url = "jdbc:mysql://localhost:3306/مزرعة_الجنوب?useSSL=false";
+        String url = "jdbc:sqlite:C:\\Users\\moula\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
         String user = "root";
         String password = "";
         String unicode= "?useUnicode=yes&characterEncoding=UTF-8";
