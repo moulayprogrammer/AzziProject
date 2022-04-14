@@ -1,4 +1,4 @@
-package Controllers.RawMaterialControllers;
+package Controllers.ProductControllers;
 
 import BddPackage.RawMaterialOperation;
 import Models.RawMaterial;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-public class ArchiveController implements Initializable {
+public class SelectRawMaterialController implements Initializable {
 
     @FXML
     TextField tfRecherche;
@@ -30,6 +30,7 @@ public class ArchiveController implements Initializable {
 
     private final ObservableList<RawMaterial> dataTable = FXCollections.observableArrayList();
     private final RawMaterialOperation operation = new RawMaterialOperation();
+    private RawMaterial rawMaterial;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -41,31 +42,21 @@ public class ArchiveController implements Initializable {
 
         refresh();
     }
-
+    public void Init(RawMaterial rawMaterial) {
+        this.rawMaterial = rawMaterial;
+    }
     @FXML
-    private void ActionDeleteFromArchive(){
+    private void selectRawMaterial(){
         RawMaterial rawMaterial = table.getSelectionModel().getSelectedItem();
 
         if (rawMaterial != null){
             try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة المادة" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(rawMaterial);
-                        ActionAnnuler();
-                    }
-                });
+                this.rawMaterial.setId(rawMaterial.getId());
+                this.rawMaterial.setName(rawMaterial.getName());
+                this.rawMaterial.setReference(rawMaterial.getReference());
+                this.rawMaterial.setLimitQte(rawMaterial.getLimitQte());
+                ActionAnnuler();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -73,7 +64,7 @@ public class ArchiveController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار مادة خام لالغاء أرشفتها");
+            alertWarning.setContentText("الرجاء اختيار مادة خام ");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -96,7 +87,7 @@ public class ArchiveController implements Initializable {
     }
 
     private void refresh(){
-        ArrayList<RawMaterial> rawMaterials = operation.getAllArchive();
+        ArrayList<RawMaterial> rawMaterials = operation.getAll();
         dataTable.setAll(rawMaterials);
         table.setItems(dataTable);
     }
@@ -124,4 +115,6 @@ public class ArchiveController implements Initializable {
         table.setItems(sortedList);
 
     }
+
+
 }

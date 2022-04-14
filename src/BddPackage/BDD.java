@@ -15,13 +15,13 @@ abstract class BDD<Object> {
 
     public Connection connect(){
         // db parameters
-        String url = "jdbc:sqlite:C:\\Users\\moula\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
+        String url = "jdbc:sqlite:/home/moulay/IdeaProjects/AzziProject/src/Database/db.db";
         String user = "root";
         String password = "";
         String unicode= "?useUnicode=yes&characterEncoding=UTF-8";
 
         try {
-            conn = DriverManager.getConnection(url, user, password);
+            conn = DriverManager.getConnection(url);
             if (conn != null) {
                 System.out.println("Connected to the database");
             }

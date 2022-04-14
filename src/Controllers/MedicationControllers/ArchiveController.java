@@ -37,7 +37,7 @@ public class ArchiveController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limiteQte"));
+        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
 
         refresh();
     }

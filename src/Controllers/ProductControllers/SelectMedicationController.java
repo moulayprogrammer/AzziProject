@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
 
-public class ArchiveController implements Initializable {
+public class SelectMedicationController implements Initializable {
 
     @FXML
     TextField tfRecherche;
@@ -28,6 +28,7 @@ public class ArchiveController implements Initializable {
     @FXML
     TableColumn<Medication,Integer> clId,clLimiteQte;
 
+    private Medication medication;
     private final ObservableList<Medication> dataTable = FXCollections.observableArrayList();
     private final MedicationOperation operation = new MedicationOperation();
 
@@ -42,38 +43,26 @@ public class ArchiveController implements Initializable {
         refresh();
     }
 
+    public void Init(Medication medication){
+        this.medication = medication;
+    }
+
     @FXML
-    private void ActionDeleteFromArchive(){
+    private void selectMedication(){
         Medication medication = table.getSelectionModel().getSelectedItem();
 
         if (medication != null){
-            try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الدواء" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
+            this.medication.setId(medication.getId());
+            this.medication.setName(medication.getName());
+            this.medication.setReference(medication.getReference());
+            this.medication.setLimitQte(medication.getLimitQte());
+            ActionAnnuler();
 
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(medication);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار دواء لالغاء أرشفته");
+            alertWarning.setContentText("الرجاء اختيار دواء لتحديده");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -96,7 +85,7 @@ public class ArchiveController implements Initializable {
     }
 
     private void refresh(){
-        ArrayList<Medication> medications = operation.getAllArchive();
+        ArrayList<Medication> medications = operation.getAll();
         dataTable.setAll(medications);
         table.setItems(dataTable);
     }

@@ -13,7 +13,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Views/MainView.fxml")));
         primaryStage.setTitle("مزرعة الجنوب");
         primaryStage.setScene(new Scene(root));
-        primaryStage.setMaximized(true);
+//        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 

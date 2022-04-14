@@ -12,7 +12,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
     @Override
     public boolean insert(RawMaterial o) {
         boolean ins = false;
-        String query = "INSERT INTO `المواد_الخام`( `الاسم`, `المرجع`, `اقل_كمية`) VALUES  (?,?,?)";
+        String query = "INSERT INTO المواد_الخام (الاسم, المرجع, \"اقل كمية\") VALUES (?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
@@ -29,8 +29,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
     @Override
     public boolean update(RawMaterial o1, RawMaterial o2) {
         boolean upd = false;
-        String query = "UPDATE `المواد_الخام` SET `الاسم`= ?,`المرجع`= ?,`اقل_كمية`= ? " +
-                "WHERE `المعرف` = ? ";
+        String query = "UPDATE المواد_الخام SET الاسم = ?, المرجع = ?, \"اقل كمية\" = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
@@ -68,7 +67,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
                 rawMaterial.setId(resultSet.getInt("المعرف"));
                 rawMaterial.setName(resultSet.getString("الاسم"));
                 rawMaterial.setReference(resultSet.getString("المرجع"));
-                rawMaterial.setLimitQte(resultSet.getInt("اقل_كمية"));
+                rawMaterial.setLimitQte(resultSet.getInt("اقل كمية"));
 
                 list.add(rawMaterial);
             }
@@ -80,7 +79,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
 
     public boolean AddToArchive(RawMaterial rawMaterial){
         boolean upd = false;
-        String query = "UPDATE `المواد_الخام` SET `ارشيف`= 1 WHERE `المعرف` = ? ";
+        String query = "UPDATE المواد_الخام SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,rawMaterial.getId());
@@ -94,7 +93,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
 
     public boolean DeleteFromArchive(RawMaterial rawMaterial){
         boolean upd = false;
-        String query = "UPDATE `المواد_الخام` SET `ارشيف`= 0 WHERE `المعرف` = ? ";
+        String query = "UPDATE المواد_الخام SET ارشيف = 0 WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,rawMaterial.getId());
@@ -118,7 +117,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
                 rawMaterial.setId(resultSet.getInt("المعرف"));
                 rawMaterial.setName(resultSet.getString("الاسم"));
                 rawMaterial.setReference(resultSet.getString("المرجع"));
-                rawMaterial.setLimitQte(resultSet.getInt("اقل_كمية"));
+                rawMaterial.setLimitQte(resultSet.getInt("اقل كمية"));
 
                 list.add(rawMaterial);
             }

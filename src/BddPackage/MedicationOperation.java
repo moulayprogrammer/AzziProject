@@ -12,7 +12,7 @@ public class MedicationOperation extends BDD<Medication> {
     @Override
     public boolean insert(Medication o) {
         boolean ins = false;
-        String query = "INSERT INTO `الادوية`( `الاسم`, `المرجع`, `اقل_كمية`) VALUES  (?,?,?)";
+        String query = "INSERT INTO الادوية (الاسم, المرجع, اقل_كمية) VALUES (?,?,?) ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
@@ -29,8 +29,7 @@ public class MedicationOperation extends BDD<Medication> {
     @Override
     public boolean update(Medication o1, Medication o2) {
         boolean upd = false;
-        String query = "UPDATE `الادوية` SET `الاسم`= ?,`المرجع`= ?,`اقل_كمية`= ? " +
-                "WHERE `المعرف` = ? ";
+        String query = "UPDATE الادوية SET الاسم = ?, المرجع = ?, اقل_كمية = ? WHERE المعرف = ?; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
@@ -58,7 +57,7 @@ public class MedicationOperation extends BDD<Medication> {
     @Override
     public ArrayList<Medication> getAll() {
         ArrayList<Medication> list = new ArrayList<>();
-        String query = "SELECT * FROM `الادوية` WHERE `ارشيف` = 0";
+        String query = "SELECT * FROM الادوية WHERE ارشيف = 0;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -80,7 +79,7 @@ public class MedicationOperation extends BDD<Medication> {
 
     public boolean AddToArchive(Medication rawMaterial){
         boolean upd = false;
-        String query = "UPDATE `الادوية` SET `ارشيف`= 1 WHERE `المعرف` = ? ";
+        String query = "UPDATE الادوية SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,rawMaterial.getId());
@@ -94,7 +93,7 @@ public class MedicationOperation extends BDD<Medication> {
 
     public boolean DeleteFromArchive(Medication rawMaterial){
         boolean upd = false;
-        String query = "UPDATE `الادوية` SET `ارشيف`= 0 WHERE `المعرف` = ? ";
+        String query = "UPDATE الادوية SET ارشيف = 0 WHERE المعرف = ?; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,rawMaterial.getId());
@@ -108,7 +107,7 @@ public class MedicationOperation extends BDD<Medication> {
 
     public ArrayList<Medication> getAllArchive() {
         ArrayList<Medication> list = new ArrayList<>();
-        String query = "SELECT * FROM `الادوية` WHERE `ارشيف` = 1";
+        String query = "SELECT * FROM الادوية WHERE ارشيف = 1;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();

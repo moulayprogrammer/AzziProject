@@ -49,7 +49,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/MedicationViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
