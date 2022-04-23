@@ -1,19 +1,47 @@
 package BddPackage;
 
 import Models.Client;
+import Models.Medication;
+import Models.RawMaterial;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ClientOperation extends BDD<Client> {
 
     @Override
     public boolean insert(Client o) {
-        return false;
+        boolean ins = false;
+        String query = "INSERT INTO زبون (الاسم, العنوان) VALUES (?,?)";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString(1,o.getName());
+            preparedStmt.setString(2,o.getAddress());
+            int insert = preparedStmt.executeUpdate();
+            if(insert != -1) ins = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ins;
     }
 
-    @Override
+    @Override //
     public boolean update(Client o1, Client o2) {
-        return false;
+        boolean upd = false;
+        String query = "UPDATE زبون SET الاسم = ?, العنوان = ? WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setString(1,o1.getName());
+            preparedStmt.setString(2,o1.getAddress());
+            preparedStmt.setInt(3,o2.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
     }
 
     @Override
@@ -28,6 +56,72 @@ public class ClientOperation extends BDD<Client> {
 
     @Override
     public ArrayList<Client> getAll() {
-        return null;
+        ArrayList<Client> list = new ArrayList<>();
+        String query = "SELECT * FROM  زبون WHERE ارشيف = 0;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Client client = new Client();
+                client.setId(resultSet.getInt("المعرف"));
+                client.setName(resultSet.getString("الاسم"));
+                client.setAddress(resultSet.getString("العنوان"));
+
+                list.add(client);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean AddToArchive(Client client){
+        boolean upd = false;
+        String query = "UPDATE زبون SET ارشيف = 1 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,client.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public boolean DeleteFromArchive(Client client){
+        boolean upd = false;
+        String query = "UPDATE زبون SET ارشيف = 0 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,client.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public ArrayList<Client> getAllArchive() {
+        ArrayList<Client> list = new ArrayList<>();
+        String query = "SELECT * FROM  زبون WHERE ارشيف = 1;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Client client = new Client();
+                client.setId(resultSet.getInt("المعرف"));
+                client.setName(resultSet.getString("الاسم"));
+                client.setAddress(resultSet.getString("العنوان"));
+
+                list.add(client);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

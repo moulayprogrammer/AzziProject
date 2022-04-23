@@ -11,16 +11,30 @@
         <menus>
           <Menu mnemonicParsing="false" text="الملف">
             <items>
-              <MenuItem onAction="#close" mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="قوائم">
             <items>
-                <MenuItem onAction="#ShowRawMaterialScreen" mnemonicParsing="false" text="قائمة المواد الخام" />
-                <MenuItem onAction="#ShowMedicationScreen" mnemonicParsing="false" text="قائمة الأدوية" />
-                <MenuItem onAction="#ShowProductScreen" mnemonicParsing="false" text="قائمة المنتجات" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="قائمة المواد الخام" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="قائمة الأدوية" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="قائمة المنتجات" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="المبيعات">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="بيع جديد" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="تاريخ البيع" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="المشتريات">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="الموردين" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="شراء جديد" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="تاريخ الشراء" />
+               </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="متابعة">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
