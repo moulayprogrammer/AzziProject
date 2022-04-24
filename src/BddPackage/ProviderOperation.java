@@ -80,4 +80,55 @@ public class ProviderOperation extends BDD<Provider> {
         }
         return list;
     }
+
+    public boolean AddToArchive(Provider provider){
+        boolean upd = false;
+        String query = "UPDATE المورد SET ارشيف = 1 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,provider.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public boolean DeleteFromArchive(Provider provider){
+        boolean upd = false;
+        String query = "UPDATE المورد SET ارشيف = 0 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,provider.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public ArrayList<Provider> getAllArchive() {
+        ArrayList<Provider> list = new ArrayList<>();
+        String query = "SELECT * FROM المورد  WHERE ارشيف = 1;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Provider provider = new Provider();
+                provider.setId(resultSet.getInt("المعرف"));
+                provider.setName(resultSet.getString("الاسم"));
+                provider.setAddress(resultSet.getString("العنوان"));
+                provider.setActivity(resultSet.getString("النشاط"));
+                provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
+
+                list.add(provider);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

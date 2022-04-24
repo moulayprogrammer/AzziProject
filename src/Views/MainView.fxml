@@ -30,7 +30,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="المشتريات">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="الموردين" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
                   <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="شراء جديد" />
                   <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="تاريخ الشراء" />
                </items>
