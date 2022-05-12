@@ -12,7 +12,7 @@ public class ProductOperation extends BDD<Product> {
     @Override
     public boolean insert(Product o) {
         boolean ins = false;
-        String query = "INSERT INTO المنتجات (الاسم, المرحع, \"اقل كمية\") VALUES (?,?,?)";
+        String query = "INSERT INTO المنتجات (الاسم,المرحع,اقل_كمية) VALUES (?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
