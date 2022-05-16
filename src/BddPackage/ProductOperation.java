@@ -13,7 +13,7 @@ public class ProductOperation extends BDD<Product> {
     @Override
     public boolean insert(Product o) {
         boolean ins = false;
-        String query = "INSERT INTO المنتجات (الاسم,المرحع,اقل_كمية) VALUES (?,?,?)";
+        String query = "INSERT INTO المنتجات (الاسم,المرجع,اقل_كمية) VALUES (?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setString(1,o.getName());
@@ -29,14 +29,15 @@ public class ProductOperation extends BDD<Product> {
 
     public int insertId(Product o) {
         int ins = 0;
-        String query = "INSERT INTO المنتجات (الاسم,المرحع,اقل_كمية) VALUES (?,?,?)";
+        String query = "INSERT INTO المنتجات (الاسم,المرجع,اقل_كمية) VALUES (?,?,?)";
         try {
-            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getReference());
             preparedStmt.setInt(3,o.getLimitQte());
+            preparedStmt.getGeneratedKeys().getInt(1);
             int insert = preparedStmt.executeUpdate();
-            if(insert != -1) ins = insert;
+            if(insert != -1) ins = preparedStmt.getGeneratedKeys().getInt(1);;
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,7 +47,7 @@ public class ProductOperation extends BDD<Product> {
     @Override
     public boolean update(Product o1, Product o2) {
         boolean upd = false;
-        String query = "UPDATE `المنتجات` SET `الاسم`= ?,`المرجع`= ?,`اقل_كمية`= ? " +
+        String query = "UPDATE المنتجات SET الاسم = ?, المرجع = ?, اقل_كمية = ? " +
                 "WHERE `المعرف` = ? ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -75,7 +76,7 @@ public class ProductOperation extends BDD<Product> {
     @Override
     public ArrayList<Product> getAll() {     
         ArrayList<Product> list = new ArrayList<>();
-        String query = "SELECT * FROM `المنتجات` WHERE `ارشيف` = 0";
+        String query = "SELECT * FROM المنتجات WHERE ارشيف = 0";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();

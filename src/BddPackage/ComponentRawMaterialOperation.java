@@ -28,7 +28,7 @@ public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
     @Override
     public boolean update(ComponentProduction o1, ComponentProduction o2) {
         boolean upd = false;
-        String query = "UPDATE مركب_المواد_الخام SET الكمية= ? WHERE معرف_المنتج = ? AND مركب_المواد_الخام = ?";
+        String query = "UPDATE خلطة_المواد_الخام SET الكمية= ? WHERE معرف_المنتج = ? AND معرف_المادة_الخام = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o1.getQte());

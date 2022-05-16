@@ -9,6 +9,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,12 +25,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 public class AddController implements Initializable {
 
 
     @FXML
-    TextField tfName,tfReference,tfLimiteQte;
+    TextField tfName,tfReference,tfLimiteQte,tfRechercheRawMad;
     @FXML
     TableView<List<StringProperty>> rawMedTable,tableComposition;
     @FXML
@@ -66,6 +69,27 @@ public class AddController implements Initializable {
         tcQte.setCellValueFactory(data -> data.getValue().get(4));
 
         refreshComponent();
+
+        tfRechercheRawMad.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+            FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+
+            filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
+                if (newValue.isEmpty()) {
+                    refreshComponent();
+                    return true;
+                } else if (stringProperties.get(1).toString().contains(newValue)) {
+                    return true;
+                } else if (stringProperties.get(2).toString().contains(newValue)) {
+                    return true;
+                }  else return stringProperties.get(3).toString().contains(newValue);
+            });
+
+            SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+            sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
+            rawMedTable.setItems(sortedList);
+        });
     }
     private void refreshComponent(){
         try {
@@ -312,5 +336,28 @@ public class AddController implements Initializable {
 
     private void closeDialog(Button btn) {
         ((Stage)btn.getScene().getWindow()).close();
+    }
+
+    @FXML
+    void ActionSearchRawMadTable() {
+        // filtrer les données
+        ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+        FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+        String txtRecherche = tfRechercheRawMad.getText().trim();
+
+        filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
+            if (txtRecherche.isEmpty()) {
+                //loadDataInTable();
+                return true;
+            } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
+                return true;
+            } else if (stringProperties.get(2).toString().contains(txtRecherche)) {
+                return true;
+            }  else return stringProperties.get(3).toString().contains(txtRecherche);
+        });
+
+        SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+        sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
+        rawMedTable.setItems(sortedList);
     }
 }

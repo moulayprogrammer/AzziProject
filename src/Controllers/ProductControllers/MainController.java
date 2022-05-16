@@ -38,12 +38,13 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        /*clId.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limiteQte"));
+        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
 
-        refresh();*/
+        refresh();
     }
 
     @FXML
@@ -66,13 +67,13 @@ public class MainController implements Initializable {
     @FXML
     private void ActionUpdate(){
 
-       /* Medication medication = table.getSelectionModel().getSelectedItem();
-        if (medication != null){
+        Product product = table.getSelectionModel().getSelectedItem();
+        if (product != null){
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/MedicationViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
-                controller.InitUpdate(medication);
+                controller.Init(product);
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
@@ -85,11 +86,11 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
-            alertWarning.setContentText("الرجاء اختيار مادة من اجل التعديل");
+            alertWarning.setContentText("الرجاء اختيار منتج من اجل التعديل");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
@@ -148,9 +149,9 @@ public class MainController implements Initializable {
     }
 
     private void refresh(){
-        /*ArrayList<Medication> medication = operation.getAll();
-        dataTable.setAll(medication);
-        table.setItems(dataTable);*/
+        ArrayList<Product> products = operation.getAll();
+        dataTable.setAll(products);
+        table.setItems(dataTable);
     }
 
     @FXML

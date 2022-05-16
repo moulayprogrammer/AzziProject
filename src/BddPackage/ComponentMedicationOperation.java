@@ -1,8 +1,10 @@
 package BddPackage;
 
 import Models.ComponentProduction;
+import Models.Product;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -28,7 +30,7 @@ public class ComponentMedicationOperation extends BDD<ComponentProduction> {
     @Override
     public boolean update(ComponentProduction o1, ComponentProduction o2) {
         boolean upd = false;
-        String query = "UPDATE `مركب_الادوية` SET `الكمية`= ? WHERE `معرف_المنتج` = ? AND `معرف_الدواء` = ?";
+        String query = "UPDATE خلطة_الادوية SET  الكمية = ? WHERE معرف_المنتج = ? AND معرف_الدواء = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o1.getQte());
@@ -55,6 +57,23 @@ public class ComponentMedicationOperation extends BDD<ComponentProduction> {
 
     @Override
     public ArrayList<ComponentProduction> getAll() {
-        return null;
+        ArrayList<ComponentProduction> list = new ArrayList<>();
+        String query = "SELECT * FROM خلطة_الادوية WHERE ارشيف = 0";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentProduction component = new ComponentProduction();
+                component.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                component.setIdProduct(resultSet.getInt("معرف_الدواء"));
+                component.setQte(resultSet.getInt("الكمية"));
+
+                list.add(component);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

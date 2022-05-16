@@ -59,7 +59,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfName1" prefHeight="26.0" prefWidth="141.0" promptText="بحث" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                        <TextField fx:id="tfRechercheRawMad" prefHeight="26.0" prefWidth="141.0" promptText="بحث" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
                         <TableView fx:id="rawMedTable" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                           <columns>
                               <TableColumn fx:id="tcTypeComponent" prefWidth="54.0" text="النوع" visible="false" />
