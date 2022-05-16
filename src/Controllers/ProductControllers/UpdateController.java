@@ -50,6 +50,12 @@ public class UpdateController implements Initializable {
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
     private final ComponentMedicationOperation componentMedicationOperation = new ComponentMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
+    private final List<List<StringProperty>> componentMedicationUpdate = new ArrayList<>();
+    private final List<List<StringProperty>> componentMedicationInsert = new ArrayList<>();
+    private final List<List<StringProperty>> componentMedicationDelete = new ArrayList<>();
+    private final List<List<StringProperty>> componentMaterialUpdate = new ArrayList<>();
+    private final List<List<StringProperty>> componentMaterialInsert = new ArrayList<>();
+    private final List<List<StringProperty>> componentMaterialDelete = new ArrayList<>();
     private Product productUpdated;
 
     @Override
@@ -188,6 +194,14 @@ public class UpdateController implements Initializable {
                     data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
                     data.add(4, new SimpleStringProperty(String.valueOf(1)));
 
+                    switch (dataSelected.get(0).getValue()){
+                        case "med":
+                            componentMedicationInsert.add(data);
+                            break;
+                        case "raw":
+                            componentMaterialInsert.add(data);
+                    }
+
                     dataTable.add(data);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -239,6 +253,14 @@ public class UpdateController implements Initializable {
                         data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
                         data.add(4, new SimpleStringProperty(qte));
 
+                        switch (dataSelected.get(0).getValue()){
+                            case "med":
+                                componentMedicationInsert.add(data);
+                                break;
+                            case "raw":
+                                componentMaterialInsert.add(data);
+                        }
+
                         dataTable.add(data);
                     });
                 } catch (Exception e) {
@@ -263,6 +285,16 @@ public class UpdateController implements Initializable {
 
             result.ifPresent(qte -> {
                 dataTable.get(compoSelectedIndex).get(4).setValue(qte);
+                List<StringProperty> data = dataTable.get(compoSelectedIndex);
+
+                switch (data.get(0).getValue()){
+                    case "med":
+                        componentMedicationUpdate.add(data);
+                        break;
+                    case "raw":
+                        componentMaterialUpdate.add(data);
+                }
+
                 tableComposition.setItems(dataTable);
             });
         }
@@ -271,6 +303,15 @@ public class UpdateController implements Initializable {
     private void ActionDeleteFromComposition(){
         int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
+            List<StringProperty> data = dataTable.get(compoSelectedIndex);
+
+            switch (data.get(0).getValue()){
+                case "med":
+                    componentMedicationDelete.add(data);
+                    break;
+                case "raw":
+                    componentMaterialDelete.add(data);
+            }
             dataTable.remove(compoSelectedIndex);
             tableComposition.setItems(dataTable);
         }
@@ -293,9 +334,9 @@ public class UpdateController implements Initializable {
             product.setReference(reference);
             product.setLimitQte(Integer.parseInt(limitQte));
 
-            int upd = update(product);
-            if (upd != -1 ) {
-                updateComponent(dataTable, upd);
+            boolean upd = update(product,productUpdated);
+            if (upd ) {
+                updateComponent(dataTable, productUpdated.getId());
                 ActionAnnulledUpdate();
             }
             else {
@@ -330,42 +371,42 @@ public class UpdateController implements Initializable {
 
             switch (type){
                 case "med":
-                    insertComponentMedication(componentProduction);
+                    updateComponentMedication(componentProduction);
                     break;
                 case "raw":
-                    insertComponentRawMaterial(componentProduction);
+                    updateComponentRawMaterial(componentProduction);
                     break;
             }
         });
     }
 
-    private int update(Product product) {
-        int insert = 0;
+    private boolean update(Product product,Product productUpdated) {
+        boolean update = false;
         try {
-            insert = operation.insertId(product);
-            return insert;
+            update = operation.update(product,productUpdated);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
-            return insert;
+            return update;
         }
     }
 
-    private boolean insertComponentMedication(ComponentProduction componentProduction){
-        boolean insert = false;
+    private boolean updateComponentMedication(ComponentProduction componentProduction){
+        boolean update = false;
         try {
-            insert = componentMedicationOperation.insert(componentProduction);
-            return insert;
+            update = componentMedicationOperation.update(componentProduction, componentProduction);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
             return false;
         }
     }
 
-    private boolean insertComponentRawMaterial(ComponentProduction componentProduction){
-        boolean insert = false;
+    private boolean updateComponentRawMaterial(ComponentProduction componentProduction){
+        boolean update = false;
         try {
-            insert = componentMaterialOperation.insert(componentProduction);
-            return insert;
+            update = componentMaterialOperation.update(componentProduction, componentProduction);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
             return false;

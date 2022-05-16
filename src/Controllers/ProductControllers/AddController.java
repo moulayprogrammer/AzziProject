@@ -148,6 +148,7 @@ public class AddController implements Initializable {
                     data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
                     data.add(4, new SimpleStringProperty(String.valueOf(1)));
 
+
                     dataTable.add(data);
                 } catch (Exception e) {
                     e.printStackTrace();

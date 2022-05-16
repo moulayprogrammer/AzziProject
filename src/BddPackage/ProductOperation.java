@@ -35,7 +35,6 @@ public class ProductOperation extends BDD<Product> {
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getReference());
             preparedStmt.setInt(3,o.getLimitQte());
-            preparedStmt.getGeneratedKeys().getInt(1);
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = preparedStmt.getGeneratedKeys().getInt(1);;
         } catch (SQLException e) {
@@ -47,8 +46,7 @@ public class ProductOperation extends BDD<Product> {
     @Override
     public boolean update(Product o1, Product o2) {
         boolean upd = false;
-        String query = "UPDATE المنتجات SET الاسم = ?, المرجع = ?, اقل_كمية = ? " +
-                "WHERE `المعرف` = ? ";
+        String query = " UPDATE المنتجات SET الاسم = ? , المرجع = ? , اقل_كمية = ? WHERE المعرف = ? ; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
