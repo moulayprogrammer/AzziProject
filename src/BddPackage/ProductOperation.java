@@ -5,6 +5,7 @@ import Models.Product;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class ProductOperation extends BDD<Product> {
@@ -14,12 +15,28 @@ public class ProductOperation extends BDD<Product> {
         boolean ins = false;
         String query = "INSERT INTO المنتجات (الاسم,المرحع,اقل_كمية) VALUES (?,?,?)";
         try {
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getReference());
             preparedStmt.setInt(3,o.getLimitQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ins;
+    }
+
+    public int insertId(Product o) {
+        int ins = 0;
+        String query = "INSERT INTO المنتجات (الاسم,المرحع,اقل_كمية) VALUES (?,?,?)";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStmt.setString(1,o.getName());
+            preparedStmt.setString(2,o.getReference());
+            preparedStmt.setInt(3,o.getLimitQte());
+            int insert = preparedStmt.executeUpdate();
+            if(insert != -1) ins = insert;
         } catch (SQLException e) {
             e.printStackTrace();
         }

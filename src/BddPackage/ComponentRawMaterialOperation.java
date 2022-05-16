@@ -11,7 +11,7 @@ public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
     @Override
     public boolean insert(ComponentProduction o) {
         boolean ins = false;
-        String query = "INSERT INTO `مركب_المواد_الخام`(`معرف_المنتج`, `مركب_المواد_الخام`, `الكمية`) VALUES  (?,?,?)";
+        String query = "INSERT INTO خلطة_المواد_الخام (معرف_المنتج , معرف_المادة_الخام, الكمية) VALUES  (?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdProduct());
@@ -28,7 +28,7 @@ public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
     @Override
     public boolean update(ComponentProduction o1, ComponentProduction o2) {
         boolean upd = false;
-        String query = "UPDATE `مركب_المواد_الخام` SET `الكمية`= ? WHERE `معرف_المنتج` = ? AND `مركب_المواد_الخام` = ?";
+        String query = "UPDATE مركب_المواد_الخام SET الكمية= ? WHERE معرف_المنتج = ? AND مركب_المواد_الخام = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o1.getQte());

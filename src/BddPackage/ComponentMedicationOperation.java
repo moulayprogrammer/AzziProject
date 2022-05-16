@@ -11,7 +11,7 @@ public class ComponentMedicationOperation extends BDD<ComponentProduction> {
     @Override
     public boolean insert(ComponentProduction o) {
         boolean ins = false;
-        String query = "INSERT INTO `مركب_الادوية`(`معرف_المنتج`, `معرف_الدواء`, `الكمية`) VALUES  (?,?,?)";
+        String query = "INSERT INTO خلطة_الادوية (معرف_المنتج, معرف_الدواء, الكمية) VALUES  (?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdProduct());
