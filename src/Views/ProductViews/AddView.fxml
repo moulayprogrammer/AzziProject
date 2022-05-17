@@ -77,9 +77,10 @@
                         <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="355.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <Button layoutX="4.0" layoutY="9.0" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="93.0" text="تعديل الكمية" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="630.0" AnchorPane.topAnchor="30.0" />
-                              <Button layoutX="107.0" layoutY="9.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="93.0" text="حذف سطر" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="125.0" AnchorPane.rightAnchor="529.0" AnchorPane.topAnchor="30.0" />
-                              <TextField fx:id="tfName11" layoutX="511.0" layoutY="9.0" prefHeight="26.0" prefWidth="182.0" promptText="بحث" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="511.0" AnchorPane.rightAnchor="55.0" AnchorPane.topAnchor="30.0" />
-                              <Button layoutX="708.0" layoutY="9.0" mnemonicParsing="false" text="بحث" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="709.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0" />
+                              <Button layoutX="132.0" layoutY="30.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="93.0" text="حذف سطر" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="132.0" AnchorPane.rightAnchor="522.0" AnchorPane.topAnchor="30.0" />
+                              <TextField fx:id="tfRecherche" layoutX="454.0" layoutY="30.0" prefHeight="26.0" prefWidth="182.0" promptText="بحث" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="454.0" AnchorPane.rightAnchor="112.0" AnchorPane.topAnchor="30.0" />
+                              <Button layoutX="653.0" layoutY="30.0" mnemonicParsing="false" onAction="#ActionSearch" text="بحث" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="653.0" AnchorPane.rightAnchor="56.0" AnchorPane.topAnchor="30.0" />
+                              <Button layoutX="706.0" layoutY="30.0" mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children></AnchorPane>
                         <TableView fx:id="tableComposition" layoutX="7.0" layoutY="5.0" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
                            <columns>

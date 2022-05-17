@@ -95,14 +95,14 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionAddToArchive(){
-       /* Medication medication = table.getSelectionModel().getSelectedItem();
+        Product product = table.getSelectionModel().getSelectedItem();
 
-        if (medication != null){
+        if (product != null){
             try {
 
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الدواء" );
+                alertConfirmation.setContentText("هل انت متاكد من ارشفة المنتج" );
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -113,7 +113,7 @@ public class MainController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(medication);
+                        operation.AddToArchive(product);
                         refresh();
                     }
                 });
@@ -124,18 +124,18 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار دواء لارشفته");
+            alertWarning.setContentText("الرجاء اختيار منتج لارشفته");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
 
     @FXML
     private void ActionDeleteFromArchive(){
-       /* try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/MedicationViews/ArchiveView.fxml"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -145,7 +145,7 @@ public class MainController implements Initializable {
             refresh();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void refresh(){

@@ -9,6 +9,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -25,12 +27,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 
 public class UpdateController implements Initializable {
 
 
     @FXML
-    TextField tfName,tfReference, tfLimitQte;
+    TextField tfName,tfReference, tfLimitQte,tfRechercheRawMad,tfRecherche;
     @FXML
     TableView<List<StringProperty>> rawMedTable,tableComposition;
     @FXML
@@ -40,7 +43,6 @@ public class UpdateController implements Initializable {
     @FXML
     Button btnUpdate;
 
-    private final ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
@@ -50,12 +52,6 @@ public class UpdateController implements Initializable {
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
     private final ComponentMedicationOperation componentMedicationOperation = new ComponentMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
-    private final List<List<StringProperty>> componentMedicationUpdate = new ArrayList<>();
-    private final List<List<StringProperty>> componentMedicationInsert = new ArrayList<>();
-    private final List<List<StringProperty>> componentMedicationDelete = new ArrayList<>();
-    private final List<List<StringProperty>> componentMaterialUpdate = new ArrayList<>();
-    private final List<List<StringProperty>> componentMaterialInsert = new ArrayList<>();
-    private final List<List<StringProperty>> componentMaterialDelete = new ArrayList<>();
     private Product productUpdated;
 
     @Override
@@ -74,6 +70,29 @@ public class UpdateController implements Initializable {
         tcQte.setCellValueFactory(data -> data.getValue().get(4));
 
         refreshComponent();
+
+        tfRechercheRawMad.textProperty().addListener((observable, oldValue, newValue) -> {
+
+            if (!newValue.isEmpty()) {
+                ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+                FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+
+                filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
+
+                    if (stringProperties.get(1).toString().contains(newValue)) {
+                        return true;
+                    } else if (stringProperties.get(2).toString().contains(newValue)) {
+                        return true;
+                    } else return stringProperties.get(3).toString().contains(newValue);
+                });
+
+                SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+                sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
+                rawMedTable.setItems(sortedList);
+            }else {
+                refreshComponent();
+            }
+        });
     }
 
     public void Init(Product product){
@@ -87,6 +106,8 @@ public class UpdateController implements Initializable {
     }
 
     private void refreshComponent(){
+        ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
+
         try {
             ArrayList<Medication> medications = medicationOperation.getAll();
 
@@ -123,6 +144,7 @@ public class UpdateController implements Initializable {
     }
 
     private void refreshComposition(){
+        dataTable.clear();
 
         try {
             String query = "SELECT خلطة_الادوية.معرف_الدواء , خلطة_الادوية.معرف_المنتج , خلطة_الادوية.الكمية , الادوية.المعرف , الادوية.الاسم , الادوية.المرجع , الادوية.ارشيف " +
@@ -181,7 +203,21 @@ public class UpdateController implements Initializable {
             if ( ex != -1 ){
                 try {
                     int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
+//                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
+
+                    ComponentProduction componentProduction = new ComponentProduction();
+                    componentProduction.setIdComponent(Integer.parseInt(dataTable.get(ex).get(1).getValue()));
+                    componentProduction.setIdProduct(productUpdated.getId());
+                    componentProduction.setQte(val+1);
+                    switch (dataTable.get(ex).get(0).getValue()){
+                        case "med":
+                            updateComponentMedication(componentProduction);
+                            break;
+                        case "raw":
+                            updateComponentRawMaterial(componentProduction);
+                    }
+                    refreshComposition();
+
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -194,20 +230,25 @@ public class UpdateController implements Initializable {
                     data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
                     data.add(4, new SimpleStringProperty(String.valueOf(1)));
 
+                    ComponentProduction componentProduction = new ComponentProduction();
+                    componentProduction.setIdComponent(Integer.parseInt(dataSelected.get(1).getValue()));
+                    componentProduction.setIdProduct(productUpdated.getId());
+                    componentProduction.setQte(1);
                     switch (dataSelected.get(0).getValue()){
                         case "med":
-                            componentMedicationInsert.add(data);
+                            insertComponentMedication(componentProduction);
                             break;
                         case "raw":
-                            componentMaterialInsert.add(data);
+                            insertComponentRawMaterial(componentProduction);
                     }
+                    refreshComposition();
 
-                    dataTable.add(data);
+//                    dataTable.add(data);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            tableComposition.setItems(dataTable);
+//            tableComposition.setItems(dataTable);
         }
     }
 
@@ -229,8 +270,31 @@ public class UpdateController implements Initializable {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
                 try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
+                    TextInputDialog dialog = new TextInputDialog();
+
+                    dialog.setTitle("الكمية");
+                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.setHeaderText("ادخل الكمية ");
+                    dialog.setContentText("الكمية :");
+
+                    Optional<String> result = dialog.showAndWait();
+
+                    result.ifPresent(qte -> {
+//                        dataTable.get(ex).get(4).setValue(qte);
+
+                        ComponentProduction componentProduction = new ComponentProduction();
+                        componentProduction.setIdComponent(Integer.parseInt(dataTable.get(ex).get(1).getValue()));
+                        componentProduction.setIdProduct(productUpdated.getId());
+                        componentProduction.setQte(Integer.parseInt(qte));
+                        switch (dataTable.get(ex).get(0).getValue()) {
+                            case "med":
+                                updateComponentMedication(componentProduction);
+                                break;
+                            case "raw":
+                                updateComponentRawMaterial(componentProduction);
+                        }
+                        refreshComposition();
+                    });
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -253,21 +317,26 @@ public class UpdateController implements Initializable {
                         data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
                         data.add(4, new SimpleStringProperty(qte));
 
+                        ComponentProduction componentProduction = new ComponentProduction();
+                        componentProduction.setIdComponent(Integer.parseInt(dataSelected.get(1).getValue()));
+                        componentProduction.setIdProduct(productUpdated.getId());
+                        componentProduction.setQte(Integer.parseInt(qte));
                         switch (dataSelected.get(0).getValue()){
                             case "med":
-                                componentMedicationInsert.add(data);
+                                insertComponentMedication(componentProduction);
                                 break;
                             case "raw":
-                                componentMaterialInsert.add(data);
+                                insertComponentRawMaterial(componentProduction);
                         }
+                        refreshComposition();
 
-                        dataTable.add(data);
+//                        dataTable.add(data);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            tableComposition.setItems(dataTable);
+//            tableComposition.setItems(dataTable);
         }
     }
     @FXML
@@ -284,18 +353,22 @@ public class UpdateController implements Initializable {
             Optional<String> result = dialog.showAndWait();
 
             result.ifPresent(qte -> {
-                dataTable.get(compoSelectedIndex).get(4).setValue(qte);
-                List<StringProperty> data = dataTable.get(compoSelectedIndex);
+//                dataTable.get(compoSelectedIndex).get(4).setValue(qte);
 
-                switch (data.get(0).getValue()){
+                ComponentProduction componentProduction = new ComponentProduction();
+                componentProduction.setIdComponent(Integer.parseInt(dataTable.get(compoSelectedIndex).get(1).getValue()));
+                componentProduction.setIdProduct(productUpdated.getId());
+                componentProduction.setQte(Integer.parseInt(qte));
+                switch (dataTable.get(compoSelectedIndex).get(0).getValue()) {
                     case "med":
-                        componentMedicationUpdate.add(data);
+                        updateComponentMedication(componentProduction);
                         break;
                     case "raw":
-                        componentMaterialUpdate.add(data);
+                        updateComponentRawMaterial(componentProduction);
                 }
+                refreshComposition();
 
-                tableComposition.setItems(dataTable);
+//                tableComposition.setItems(dataTable);
             });
         }
     }
@@ -303,17 +376,22 @@ public class UpdateController implements Initializable {
     private void ActionDeleteFromComposition(){
         int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
-            List<StringProperty> data = dataTable.get(compoSelectedIndex);
 
-            switch (data.get(0).getValue()){
+            ComponentProduction componentProduction = new ComponentProduction();
+            componentProduction.setIdComponent(Integer.parseInt(dataTable.get(compoSelectedIndex).get(1).getValue()));
+            componentProduction.setIdProduct(productUpdated.getId());
+
+            switch (dataTable.get(compoSelectedIndex).get(0).getValue()) {
                 case "med":
-                    componentMedicationDelete.add(data);
+                    deleteComponentMedication(componentProduction);
                     break;
                 case "raw":
-                    componentMaterialDelete.add(data);
+                    deleteComponentRawMaterial(componentProduction);
             }
-            dataTable.remove(compoSelectedIndex);
-            tableComposition.setItems(dataTable);
+            refreshComposition();
+
+//            dataTable.remove(compoSelectedIndex);
+//            tableComposition.setItems(dataTable);
         }
     }
     @FXML
@@ -336,7 +414,6 @@ public class UpdateController implements Initializable {
 
             boolean upd = update(product,productUpdated);
             if (upd ) {
-                updateComponent(dataTable, productUpdated.getId());
                 ActionAnnulledUpdate();
             }
             else {
@@ -357,29 +434,6 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void updateComponent(ObservableList<List<StringProperty>> dataTable , int idProduct) {
-
-        dataTable.forEach(stringProperties -> {
-            String type =  stringProperties.get(0).getValue();
-            int id = Integer.parseInt(stringProperties.get(1).getValue());
-            int qte = Integer.parseInt(stringProperties.get(4).getValue());
-
-            ComponentProduction componentProduction = new ComponentProduction();
-            componentProduction.setIdComponent(id);
-            componentProduction.setIdProduct(idProduct);
-            componentProduction.setQte(qte);
-
-            switch (type){
-                case "med":
-                    updateComponentMedication(componentProduction);
-                    break;
-                case "raw":
-                    updateComponentRawMaterial(componentProduction);
-                    break;
-            }
-        });
-    }
-
     private boolean update(Product product,Product productUpdated) {
         boolean update = false;
         try {
@@ -391,10 +445,43 @@ public class UpdateController implements Initializable {
         }
     }
 
+    private boolean insertComponentMedication(ComponentProduction componentProduction){
+        boolean insert = false;
+        try {
+            insert = componentMedicationOperation.insert(componentProduction);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     private boolean updateComponentMedication(ComponentProduction componentProduction){
         boolean update = false;
         try {
             update = componentMedicationOperation.update(componentProduction, componentProduction);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean deleteComponentMedication(ComponentProduction componentProduction){
+        boolean delete = false;
+        try {
+            delete = componentMedicationOperation.delete(componentProduction);
+            return delete;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean insertComponentRawMaterial(ComponentProduction componentProduction){
+        boolean update = false;
+        try {
+            update = componentMaterialOperation.insert(componentProduction);
             return update;
         }catch (Exception e){
             e.printStackTrace();
@@ -413,8 +500,54 @@ public class UpdateController implements Initializable {
         }
     }
 
+    private boolean deleteComponentRawMaterial(ComponentProduction componentProduction){
+        boolean del = false;
+        try {
+            del = componentMaterialOperation.delete(componentProduction);
+            return del;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 
     private void closeDialog(Button btn) {
         ((Stage)btn.getScene().getWindow()).close();
+    }
+
+    @FXML
+    private void ActionRefresh(){
+        clearRecherche();
+        refreshComposition();
+    }
+
+    private void clearRecherche(){
+        tfRecherche.clear();
+    }
+
+    @FXML
+    void ActionSearch() {
+        // filtrer les données
+        ObservableList<List<StringProperty>> items = tableComposition.getItems();
+        FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+        String txtRecherche = tfRecherche.getText().trim();
+
+        filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
+            if (txtRecherche.isEmpty()) {
+                //loadDataInTable();
+                return true;
+            } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
+                return true;
+            } else if (stringProperties.get(2).toString().contains(txtRecherche)) {
+                return true;
+            }else if (stringProperties.get(3).toString().contains(txtRecherche)) {
+                return true;
+            }  else return stringProperties.get(4).toString().contains(txtRecherche);
+        });
+
+        SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+        sortedList.comparatorProperty().bind(tableComposition.comparatorProperty());
+        tableComposition.setItems(sortedList);
     }
 }

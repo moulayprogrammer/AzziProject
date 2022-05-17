@@ -31,7 +31,7 @@ public class AddController implements Initializable {
 
 
     @FXML
-    TextField tfName,tfReference,tfLimiteQte,tfRechercheRawMad;
+    TextField tfName,tfReference,tfLimiteQte,tfRechercheRawMad,tfRecherche;
     @FXML
     TableView<List<StringProperty>> rawMedTable,tableComposition;
     @FXML
@@ -41,7 +41,7 @@ public class AddController implements Initializable {
     @FXML
     Button btnInsert;
 
-    private final ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
+
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
@@ -72,26 +72,30 @@ public class AddController implements Initializable {
 
         tfRechercheRawMad.textProperty().addListener((observable, oldValue, newValue) -> {
 
-            ObservableList<List<StringProperty>> items = rawMedTable.getItems();
-            FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+            if (!newValue.isEmpty()) {
+                ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+                FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
-            filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
-                if (newValue.isEmpty()) {
-                    refreshComponent();
-                    return true;
-                } else if (stringProperties.get(1).toString().contains(newValue)) {
-                    return true;
-                } else if (stringProperties.get(2).toString().contains(newValue)) {
-                    return true;
-                }  else return stringProperties.get(3).toString().contains(newValue);
-            });
+                filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
 
-            SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-            sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
-            rawMedTable.setItems(sortedList);
+                    if (stringProperties.get(1).toString().contains(newValue)) {
+                        return true;
+                    } else if (stringProperties.get(2).toString().contains(newValue)) {
+                        return true;
+                    } else return stringProperties.get(3).toString().contains(newValue);
+                });
+
+                SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+                sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
+                rawMedTable.setItems(sortedList);
+            }else {
+                refreshComponent();
+            }
         });
     }
     private void refreshComponent(){
+        ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
+
         try {
             ArrayList<Medication> medications = medicationOperation.getAll();
 
@@ -360,5 +364,40 @@ public class AddController implements Initializable {
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
         rawMedTable.setItems(sortedList);
+    }
+
+    @FXML
+    private void ActionRefresh(){
+        clearRecherche();
+        tableComposition.setItems(dataTable);
+    }
+
+    private void clearRecherche(){
+        tfRecherche.clear();
+    }
+
+    @FXML
+    void ActionSearch() {
+        // filtrer les données
+        ObservableList<List<StringProperty>> items = tableComposition.getItems();
+        FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
+        String txtRecherche = tfRecherche.getText().trim();
+
+        filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
+            if (txtRecherche.isEmpty()) {
+                //loadDataInTable();
+                return true;
+            } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
+                return true;
+            } else if (stringProperties.get(2).toString().contains(txtRecherche)) {
+                return true;
+            }else if (stringProperties.get(3).toString().contains(txtRecherche)) {
+                return true;
+            }  else return stringProperties.get(4).toString().contains(txtRecherche);
+        });
+
+        SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
+        sortedList.comparatorProperty().bind(tableComposition.comparatorProperty());
+        tableComposition.setItems(sortedList);
     }
 }

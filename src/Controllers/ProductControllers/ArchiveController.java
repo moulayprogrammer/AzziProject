@@ -1,7 +1,7 @@
 package Controllers.ProductControllers;
 
-import BddPackage.MedicationOperation;
-import Models.Medication;
+import BddPackage.ProductOperation;
+import Models.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -22,14 +22,14 @@ public class ArchiveController implements Initializable {
     @FXML
     TextField tfRecherche;
     @FXML
-    TableView<Medication> table;
+    TableView<Product> table;
     @FXML
-    TableColumn<Medication,String> clName,clReference;
+    TableColumn<Product,String> clName,clReference;
     @FXML
-    TableColumn<Medication,Integer> clId,clLimiteQte;
+    TableColumn<Product,Integer> clId,clLimitQte;
 
-    private final ObservableList<Medication> dataTable = FXCollections.observableArrayList();
-    private final MedicationOperation operation = new MedicationOperation();
+    private final ObservableList<Product> dataTable = FXCollections.observableArrayList();
+    private final ProductOperation operation = new ProductOperation();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -37,21 +37,21 @@ public class ArchiveController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clLimitQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
 
         refresh();
     }
 
     @FXML
     private void ActionDeleteFromArchive(){
-        Medication medication = table.getSelectionModel().getSelectedItem();
+        Product Product = table.getSelectionModel().getSelectedItem();
 
-        if (medication != null){
+        if (Product != null){
             try {
 
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الدواء" );
+                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة المنتج" );
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -62,8 +62,8 @@ public class ArchiveController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(medication);
-                        refresh();
+                        operation.DeleteFromArchive(Product);
+                        ActionAnnuler();
                     }
                 });
 
@@ -73,7 +73,7 @@ public class ArchiveController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار دواء لالغاء أرشفته");
+            alertWarning.setContentText("الرجاء اختيار المنتج لالغاء أرشفته");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -82,7 +82,7 @@ public class ArchiveController implements Initializable {
 
     @FXML
     private void ActionAnnuler(){
-        ((Stage)tfRecherche.getScene().getWindow()).close();
+        ((Stage) tfRecherche.getScene().getWindow()).close();
     }
 
     @FXML
@@ -96,30 +96,30 @@ public class ArchiveController implements Initializable {
     }
 
     private void refresh(){
-        ArrayList<Medication> medications = operation.getAllArchive();
-        dataTable.setAll(medications);
+        ArrayList<Product> Products = operation.getAllArchive();
+        dataTable.setAll(Products);
         table.setItems(dataTable);
     }
 
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<Medication> dataMedication = table.getItems();
-        FilteredList<Medication> filteredData = new FilteredList<>(dataMedication, e -> true);
+        ObservableList<Product> dataProduct = table.getItems();
+        FilteredList<Product> filteredData = new FilteredList<>(dataProduct, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
-        filteredData.setPredicate((Predicate<? super Medication>) medication -> {
+        filteredData.setPredicate((Predicate<? super Product>) Product -> {
             if (txtRecherche.isEmpty()) {
                 //loadDataInTable();
                 return true;
-            } else if (medication.getName().contains(txtRecherche)) {
+            } else if (Product.getName().contains(txtRecherche)) {
                 return true;
-            } else if (medication.getReference().contains(txtRecherche)) {
+            } else if (Product.getReference().contains(txtRecherche)) {
                 return true;
-            } else return String.valueOf(medication.getLimitQte()).contains(txtRecherche);
+            } else return String.valueOf(Product.getLimitQte()).contains(txtRecherche);
         });
 
-        SortedList<Medication> sortedList = new SortedList<>(filteredData);
+        SortedList<Product> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedList);
 

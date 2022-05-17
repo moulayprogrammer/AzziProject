@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.ArchiveController">
+<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ProductControllers.ArchiveController">
    <content>
       <BorderPane>
          <center>
@@ -43,7 +43,7 @@
                            <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" visible="false" />
                            <TableColumn fx:id="clName" prefWidth="449.0" text="الاسم" />
                            <TableColumn fx:id="clReference" minWidth="0.0" prefWidth="274.0" text="المرجع" />
-                           <TableColumn fx:id="clLimiteQte" prefWidth="250.0" text=" اقل كمية بالكلغ" />
+                           <TableColumn fx:id="clLimitQte" prefWidth="250.0" text=" اقل كمية بالكلغ" />
                        </columns>
                    </TableView>
                </children>

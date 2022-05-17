@@ -1,5 +1,6 @@
 package BddPackage;
 
+import Models.Medication;
 import Models.Product;
 
 import java.sql.PreparedStatement;
@@ -75,6 +76,57 @@ public class ProductOperation extends BDD<Product> {
     public ArrayList<Product> getAll() {     
         ArrayList<Product> list = new ArrayList<>();
         String query = "SELECT * FROM المنتجات WHERE ارشيف = 0";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Product product = new Product();
+
+                product.setId(resultSet.getInt("المعرف"));
+                product.setName(resultSet.getString("الاسم"));
+                product.setReference(resultSet.getString("المرجع"));
+                product.setLimitQte(resultSet.getInt("اقل_كمية"));
+
+                list.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean AddToArchive(Product product){
+        boolean upd = false;
+        String query = "UPDATE المنتجات SET ارشيف = 1 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,product.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public boolean DeleteFromArchive(Product product){
+        boolean upd = false;
+        String query = "UPDATE المنتجات SET ارشيف = 0 WHERE المعرف = ?; ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,product.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public ArrayList<Product> getAllArchive() {
+        ArrayList<Product> list = new ArrayList<>();
+        String query = "SELECT * FROM المنتجات WHERE ارشيف = 1";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();

@@ -45,7 +45,19 @@ public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
 
     @Override
     public boolean delete(ComponentProduction o) {
-        return false;
+        boolean del = false;
+        String query = "DELETE FROM خلطة_المواد_الخام WHERE خلطة_المواد_الخام.معرف_المادة_الخام = ? AND خلطة_المواد_الخام.معرف_المنتج = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getIdComponent());
+            preparedStmt.setInt(2,o.getIdProduct());
+
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return del;
     }
 
     @Override
