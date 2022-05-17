@@ -1,8 +1,7 @@
-package Controllers.ProviderControllers;
+package Controllers.ReceiptMedicationControllers;
 
-import BddPackage.ProviderOperation;
+import BddPackage.ClientOperation;
 import Models.Client;
-import Models.Provider;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,25 +22,25 @@ import java.util.function.Predicate;
 public class MainController implements Initializable {
 
     @FXML
+    AnchorPane MainPanel;
+    @FXML
     TextField tfRecherche;
     @FXML
-    TableView<Provider> table;
+    TableView<Client> table;
     @FXML
-    TableColumn<Client,String> clName,clAddress,clActivity,clNationalNbr;
+    TableColumn<Client,String> clName,clAddress;
     @FXML
     TableColumn<Client,Integer> clId;
 
 
-    private final ObservableList<Provider> dataTable = FXCollections.observableArrayList();
-    private final ProviderOperation operation = new ProviderOperation();
+    private final ObservableList<Client> dataTable = FXCollections.observableArrayList();
+    private final ClientOperation operation = new ClientOperation();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
-        clActivity.setCellValueFactory(new PropertyValueFactory<>("activity"));
-        clNationalNbr.setCellValueFactory(new PropertyValueFactory<>("nationalNumber"));
 
 
         refresh();
@@ -49,7 +49,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProviderViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -66,13 +66,14 @@ public class MainController implements Initializable {
     @FXML
     private void ActionUpdate(){
 
-        Provider provider = table.getSelectionModel().getSelectedItem();
-        if (provider != null){
+
+        Client client = table.getSelectionModel().getSelectedItem();
+        if (client != null){
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProviderViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
-                controller.InitUpdate(provider);
+                controller.InitUpdate(client);
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
@@ -85,7 +86,7 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
-            alertWarning.setContentText("الرجاء اختيار مورد من اجل التعديل");
+            alertWarning.setContentText("الرجاء اختيار زبون من اجل التعديل");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -94,14 +95,14 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionAddToArchive(){
-        Provider provider = table.getSelectionModel().getSelectedItem();
+        Client client = table.getSelectionModel().getSelectedItem();
 
-        if (provider != null){
+        if (client != null){
             try {
 
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة المورد" );
+                alertConfirmation.setContentText("هل انت متاكد من ارشفة الزبون" );
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -112,7 +113,7 @@ public class MainController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(provider);
+                        operation.AddToArchive(client);
                         refresh();
                     }
                 });
@@ -123,7 +124,7 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار مورد لارشفته");
+            alertWarning.setContentText("الرجاء اختيار زبون لارشفته");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -134,7 +135,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionDeleteFromArchive(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProviderViews/ArchiveView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -148,8 +149,8 @@ public class MainController implements Initializable {
     }
 
     private void refresh(){
-        ArrayList<Provider> providers = operation.getAll();
-        dataTable.setAll(providers);
+        ArrayList<Client> clients = operation.getAll();
+        dataTable.setAll(clients);
         table.setItems(dataTable);
     }
 
@@ -166,24 +167,20 @@ public class MainController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<Provider> dataProviders = table.getItems();
-        FilteredList<Provider> filteredData = new FilteredList<>(dataProviders, e -> true);
+        ObservableList<Client> dataClient = table.getItems();
+        FilteredList<Client> filteredData = new FilteredList<>(dataClient, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
-        filteredData.setPredicate((Predicate<? super Provider>) provider -> {
+        filteredData.setPredicate((Predicate<? super Client>) client -> {
             if (txtRecherche.isEmpty()) {
                 //loadDataInTable();
                 return true;
-            } else if (provider.getName().contains(txtRecherche)) {
+            } else if (client.getName().contains(txtRecherche)) {
                 return true;
-            }else if (provider.getAddress().contains(txtRecherche)) {
-                return true;
-            }else if (provider.getActivity().contains(txtRecherche)) {
-                return true;
-            } else return  (provider.getNationalNumber().contains(txtRecherche)) ;
+            } else return  (client.getAddress().contains(txtRecherche)) ;
         });
 
-        SortedList<Provider> sortedList = new SortedList<>(filteredData);
+        SortedList<Client> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedList);
     }
