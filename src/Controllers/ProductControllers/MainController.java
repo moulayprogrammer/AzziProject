@@ -1,8 +1,6 @@
 package Controllers.ProductControllers;
 
-import BddPackage.MedicationOperation;
 import BddPackage.ProductOperation;
-import Models.Medication;
 import Models.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +20,6 @@ import java.util.function.Predicate;
 
 public class MainController implements Initializable {
 
-
     @FXML
     TextField tfRecherche;
     @FXML
@@ -31,7 +28,6 @@ public class MainController implements Initializable {
     TableColumn<Product,String> clName,clReference;
     @FXML
     TableColumn<Product,Integer> clId,clLimiteQte;
-
 
     private final ObservableList<Product> dataTable = FXCollections.observableArrayList();
     private final ProductOperation operation = new ProductOperation();
@@ -131,7 +127,6 @@ public class MainController implements Initializable {
         }
     }
 
-
     @FXML
     private void ActionDeleteFromArchive(){
         try {
@@ -167,23 +162,23 @@ public class MainController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        /*ObservableList<Medication> dataMedication = table.getItems();
-        FilteredList<Medication> filteredData = new FilteredList<>(dataMedication, e -> true);
+        ObservableList<Product> dataProduct = table.getItems();
+        FilteredList<Product> filteredData = new FilteredList<>(dataProduct, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
-        filteredData.setPredicate((Predicate<? super Medication>) medication -> {
+        filteredData.setPredicate((Predicate<? super Product>) product -> {
             if (txtRecherche.isEmpty()) {
                 //loadDataInTable();
                 return true;
-            } else if (medication.getName().contains(txtRecherche)) {
+            } else if (product.getName().contains(txtRecherche)) {
                 return true;
-            } else if (medication.getReference().contains(txtRecherche)) {
+            } else if (product.getReference().contains(txtRecherche)) {
                 return true;
-            } else return String.valueOf(medication.getLimiteQte()).contains(txtRecherche);
+            } else return String.valueOf(product.getLimitQte()).contains(txtRecherche);
         });
 
-        SortedList<Medication> sortedList = new SortedList<>(filteredData);
+        SortedList<Product> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(table.comparatorProperty());
-        table.setItems(sortedList);*/
+        table.setItems(sortedList);
     }
 }
