@@ -1,75 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ClientControllers.AddController">
+<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReceiptMedicationControllers.AddController">
    <content>
-      <AnchorPane prefHeight="493.0" prefWidth="550.0" style="-fx-background-color: #FFF;">
+      <AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;">
          <children>
-            <HBox layoutX="14.0" layoutY="46.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0">
+            <HBox layoutX="130.0" layoutY="96.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0">
                <children>
-                  <VBox prefWidth="200.0" spacing="30.0">
+                  <VBox prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label prefHeight="25.0" text="الإسم">
+                        <Label prefHeight="25.0" prefWidth="130.0" text="الادوية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" text="العنوان">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
+                        <TextField fx:id="tfRechercheRawMad" prefHeight="25.0" promptText="بحث" />
+                        <TableView fx:id="rawMedTable" maxHeight="1.7976931348623157E308">
+                          <columns>
+                              <TableColumn fx:id="tcTypeComponent" prefWidth="54.0" text="النوع" visible="false" />
+                              <TableColumn fx:id="tcIdComponent" prefWidth="54.0" text="المعرف" visible="false" />
+                              <TableColumn fx:id="tcNameComponent" prefWidth="100.0" text="الاسم" />
+                              <TableColumn fx:id="tcReferenceComponent" prefWidth="100.0" text="المرجع" />
+                          </columns>
+                        </TableView>
+                        <HBox prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" prefWidth="70.0" text="اضافة" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToComposition" text="  اضافة بالكمية" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
-                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="30.0">
+                  <VBox maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="tfName" prefHeight="26.0" prefWidth="268.0" />
-                     <TextField fx:id="tfAddress" prefHeight="26.0" prefWidth="268.0" />
+                        <Label prefHeight="25.0" prefWidth="130.0" text="المشتريات">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية" />
+                              <TextField fx:id="tfRecherche" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
+                              <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
+                              <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableComposition" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <columns>
+                              <TableColumn fx:id="tcType" prefWidth="75.0" text="النوع" visible="false" />
+                              <TableColumn fx:id="tcId" prefWidth="75.0" text="معرف الدواء" />
+                              <TableColumn fx:id="tcName" prefWidth="245.0" text="اسم الدواء" />
+                              <TableColumn fx:id="tcReference" prefWidth="250.0" text="سعر الوحدة" />
+                              <TableColumn fx:id="tcQte" prefWidth="150.0" text="الكمية (كغ)" />
+                              <TableColumn fx:id="tcQte1" prefWidth="300.0" text="السعر الكلي" />
+                           </columns>
+                        </TableView>
+                        <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0" spacing="10.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="310.0" text="تعديل الكمية" />
+                              <TextField fx:id="tfRecherche1" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
             </HBox>
+            <VBox layoutX="23.0" layoutY="35.0" prefHeight="90.0" prefWidth="300.0" spacing="5.0" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="77.0" text="المورد">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ComboBox prefHeight="25.0" prefWidth="220.0" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="77.0" text="الدين">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="77.0" text="المعاملات">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox layoutX="29.0" layoutY="15.0" prefHeight="90.0" prefWidth="300.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="120.0" text="التاريخ ">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker prefWidth="220.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="120.0" text="رقم الفاتورة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+               </children>
+            </VBox>
          </children>
       </AnchorPane>
    </content>
    <header>
       <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
          <children>
-            <Button fx:id="btnInsert" layoutX="650.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionInsert" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8" AnchorPane.rightAnchor="187.0">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/Save.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button layoutX="838.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionAnnulledAdd" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/delete.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label layoutX="26.0" layoutY="20.0" text="إضافة زبون">
+            <Label layoutX="26.0" layoutY="19.0" text="فاتورة شراء " AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
