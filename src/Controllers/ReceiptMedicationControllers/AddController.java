@@ -29,15 +29,20 @@ import java.util.function.Predicate;
 
 public class AddController implements Initializable {
 
-
     @FXML
-    TextField tfName,tfReference,tfLimiteQte,tfRechercheRawMad,tfRecherche;
+    DatePicker dpDate;
     @FXML
-    TableView<List<StringProperty>> rawMedTable,tableComposition;
+    Label lbFactureNbr,lbDebt,lbTransaction,lbSumWeight,lbSumTotal;
     @FXML
-    TableColumn<List<StringProperty>,String>  tcIdComponent,tcNameComponent,tcTypeComponent,tcReferenceComponent;
+    ComboBox<String> cbProvider;
     @FXML
-    TableColumn<List<StringProperty>,String> tcType,tcId,tcName,tcReference,tcQte;
+    TextField tfRechercheMad,tfRecherche;
+    @FXML
+    TableView<List<StringProperty>> medTable, tablePurchases;
+    @FXML
+    TableColumn<List<StringProperty>,String>  tcIdMed,tcNameMed,tcReferenceMed;
+    @FXML
+    TableColumn<List<StringProperty>,String> tcId,tcName,tcReference,tcQte;
     @FXML
     Button btnInsert;
 
@@ -57,23 +62,21 @@ public class AddController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
 
-        tcTypeComponent.setCellValueFactory(data -> data.getValue().get(0));
-        tcIdComponent.setCellValueFactory(data -> data.getValue().get(1));
-        tcNameComponent.setCellValueFactory(data -> data.getValue().get(2));
-        tcReferenceComponent.setCellValueFactory(data -> data.getValue().get(3));
+        tcIdMed.setCellValueFactory(data -> data.getValue().get(0));
+        tcNameMed.setCellValueFactory(data -> data.getValue().get(1));
+        tcReferenceMed.setCellValueFactory(data -> data.getValue().get(2));
 
-        tcType.setCellValueFactory(data -> data.getValue().get(0));
-        tcId.setCellValueFactory(data -> data.getValue().get(1));
-        tcName.setCellValueFactory(data -> data.getValue().get(2));
-        tcReference.setCellValueFactory(data -> data.getValue().get(3));
-        tcQte.setCellValueFactory(data -> data.getValue().get(4));
+        tcId.setCellValueFactory(data -> data.getValue().get(0));
+        tcName.setCellValueFactory(data -> data.getValue().get(1));
+        tcReference.setCellValueFactory(data -> data.getValue().get(2));
+        tcQte.setCellValueFactory(data -> data.getValue().get(3));
 
         refreshComponent();
 
-        tfRechercheRawMad.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
-                ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+                ObservableList<List<StringProperty>> items = medTable.getItems();
                 FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
                 filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
@@ -86,8 +89,8 @@ public class AddController implements Initializable {
                 });
 
                 SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-                sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
-                rawMedTable.setItems(sortedList);
+                sortedList.comparatorProperty().bind(medTable.comparatorProperty());
+                medTable.setItems(sortedList);
             }else {
                 refreshComponent();
             }
@@ -127,13 +130,13 @@ public class AddController implements Initializable {
             e.printStackTrace();
         }
 
-        rawMedTable.setItems(componentDataTable);
+        medTable.setItems(componentDataTable);
 
     }
 
     @FXML
     private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = medTable.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
@@ -158,7 +161,7 @@ public class AddController implements Initializable {
                     e.printStackTrace();
                 }
             }
-            tableComposition.setItems(dataTable);
+            tablePurchases.setItems(dataTable);
         }
     }
 
@@ -175,7 +178,7 @@ public class AddController implements Initializable {
 
     @FXML
     private void ActionAddToComposition(){
-        List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = medTable.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
@@ -210,12 +213,12 @@ public class AddController implements Initializable {
                     e.printStackTrace();
                 }
             }
-            tableComposition.setItems(dataTable);
+            tablePurchases.setItems(dataTable);
         }
     }
     @FXML
     private void ActionModifiedQte(){
-        int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
+        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             TextInputDialog dialog = new TextInputDialog();
 
@@ -228,16 +231,16 @@ public class AddController implements Initializable {
 
             result.ifPresent(qte -> {
                 dataTable.get(compoSelectedIndex).get(4).setValue(qte);
-                tableComposition.setItems(dataTable);
+                tablePurchases.setItems(dataTable);
             });
         }
     }
     @FXML
     private void ActionDeleteFromComposition(){
-        int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
+        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             dataTable.remove(compoSelectedIndex);
-            tableComposition.setItems(dataTable);
+            tablePurchases.setItems(dataTable);
         }
     }
     @FXML
@@ -248,7 +251,7 @@ public class AddController implements Initializable {
     @FXML
     void ActionInsert(ActionEvent event) {
 
-        String name = tfName.getText().trim();
+        /*String name = tfName.getText().trim();
         String reference = tfReference.getText().trim();
         String limitQte = tfLimiteQte.getText().trim();
 
@@ -279,7 +282,7 @@ public class AddController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }
+        }*/
     }
 
     private void insertComponent(ObservableList<List<StringProperty>> dataTable , int idProduct) {
@@ -346,9 +349,9 @@ public class AddController implements Initializable {
     @FXML
     void ActionSearchRawMadTable() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = rawMedTable.getItems();
+        ObservableList<List<StringProperty>> items = medTable.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRechercheRawMad.getText().trim();
+        String txtRecherche = tfRechercheMad.getText().trim();
 
         filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
             if (txtRecherche.isEmpty()) {
@@ -362,14 +365,14 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(rawMedTable.comparatorProperty());
-        rawMedTable.setItems(sortedList);
+        sortedList.comparatorProperty().bind(medTable.comparatorProperty());
+        medTable.setItems(sortedList);
     }
 
     @FXML
     private void ActionRefresh(){
         clearRecherche();
-        tableComposition.setItems(dataTable);
+        tablePurchases.setItems(dataTable);
     }
 
     private void clearRecherche(){
@@ -379,7 +382,7 @@ public class AddController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tableComposition.getItems();
+        ObservableList<List<StringProperty>> items = tablePurchases.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
@@ -397,7 +400,7 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tableComposition.comparatorProperty());
-        tableComposition.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
+        tablePurchases.setItems(sortedList);
     }
 }

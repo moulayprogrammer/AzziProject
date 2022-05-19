@@ -15,7 +15,7 @@
 
 <DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReceiptMedicationControllers.AddController">
    <content>
-      <AnchorPane prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;">
+      <AnchorPane minHeight="600.0" style="-fx-background-color: #FFF;">
          <children>
             <HBox layoutX="130.0" layoutY="96.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0">
                <children>
@@ -26,8 +26,8 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfRechercheRawMad" prefHeight="25.0" promptText="بحث" />
-                        <TableView fx:id="rawMedTable" maxHeight="1.7976931348623157E308">
+                        <TextField fx:id="tfRechercheMad" prefHeight="25.0" promptText="بحث" />
+                        <TableView fx:id="medTable" maxHeight="1.7976931348623157E308" minHeight="400.0">
                           <columns>
                               <TableColumn fx:id="tcTypeComponent" prefWidth="54.0" text="النوع" visible="false" />
                               <TableColumn fx:id="tcIdComponent" prefWidth="54.0" text="المعرف" visible="false" />
@@ -52,13 +52,15 @@
                         </Label>
                         <HBox prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية" />
+                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية او السعر" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="حذف سطر" />
+                              <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="tfRecherche" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableComposition" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0">
                            <columns>
                               <TableColumn fx:id="tcType" prefWidth="75.0" text="النوع" visible="false" />
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="معرف الدواء" />
@@ -70,8 +72,26 @@
                         </TableView>
                         <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="310.0" text="تعديل الكمية" />
-                              <TextField fx:id="tfRecherche1" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
+                              <Label prefHeight="25.0" prefWidth="320.0" text="المجموع" visible="false">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="230.0" text="المجموع">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lbSumWeight" layoutX="340.0" layoutY="10.0" prefHeight="25.0" prefWidth="140.0" text="المجموع">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lbSumTotal" layoutX="580.0" layoutY="10.0" prefHeight="25.0" prefWidth="300.0" text="المجموع">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </HBox>
                      </children>
@@ -87,7 +107,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <ComboBox prefHeight="25.0" prefWidth="220.0" />
+                        <ComboBox fx:id="cbProvider" prefHeight="25.0" prefWidth="220.0" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
@@ -97,7 +117,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                        <Label fx:id="lbDebt" prefHeight="25.0" prefWidth="220.0" text="الدين">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -111,7 +131,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                        <Label fx:id="lbTransaction" prefHeight="25.0" prefWidth="220.0" text="الدين">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -129,7 +149,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <DatePicker prefWidth="220.0" HBox.hgrow="ALWAYS" />
+                        <DatePicker fx:id="dpDate" prefWidth="220.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox prefHeight="100.0" prefWidth="200.0">
@@ -139,7 +159,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" prefWidth="220.0" text="الدين">
+                        <Label fx:id="lbFactureNbr" prefHeight="25.0" prefWidth="220.0" text="الدين">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
