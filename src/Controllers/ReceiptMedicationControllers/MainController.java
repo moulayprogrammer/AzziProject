@@ -4,20 +4,17 @@ import BddPackage.ClientOperation;
 import Models.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 
 public class MainController implements Initializable {
 
@@ -49,11 +46,14 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/AddView.fxml"));
             DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
+            Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
@@ -66,8 +66,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionUpdate(){
 
-
-        Client client = table.getSelectionModel().getSelectedItem();
+     /*   Client client = table.getSelectionModel().getSelectedItem();
         if (client != null){
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/UpdateView.fxml"));
@@ -90,12 +89,12 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }
+        }*/
     }
 
     @FXML
     private void ActionAddToArchive(){
-        Client client = table.getSelectionModel().getSelectedItem();
+        /*Client client = table.getSelectionModel().getSelectedItem();
 
         if (client != null){
             try {
@@ -128,13 +127,13 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }
+        }*/
     }
 
 
     @FXML
     private void ActionDeleteFromArchive(){
-        try {
+        /*try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -145,13 +144,13 @@ public class MainController implements Initializable {
             refresh();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void refresh(){
-        ArrayList<Client> clients = operation.getAll();
+       /* ArrayList<Client> clients = operation.getAll();
         dataTable.setAll(clients);
-        table.setItems(dataTable);
+        table.setItems(dataTable);*/
     }
 
     @FXML
@@ -167,7 +166,7 @@ public class MainController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<Client> dataClient = table.getItems();
+        /*ObservableList<Client> dataClient = table.getItems();
         FilteredList<Client> filteredData = new FilteredList<>(dataClient, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
@@ -182,6 +181,6 @@ public class MainController implements Initializable {
 
         SortedList<Client> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(table.comparatorProperty());
-        table.setItems(sortedList);
+        table.setItems(sortedList);*/
     }
 }

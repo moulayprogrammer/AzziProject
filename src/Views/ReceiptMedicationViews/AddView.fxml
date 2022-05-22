@@ -27,18 +27,16 @@
                            </font>
                         </Label>
                         <TextField fx:id="tfRechercheMad" prefHeight="25.0" promptText="بحث" />
-                        <TableView fx:id="medTable" maxHeight="1.7976931348623157E308" minHeight="400.0">
+                        <TableView fx:id="tableMed" maxHeight="1.7976931348623157E308" minHeight="400.0">
                           <columns>
-                              <TableColumn fx:id="tcTypeComponent" prefWidth="54.0" text="النوع" visible="false" />
-                              <TableColumn fx:id="tcIdComponent" prefWidth="54.0" text="المعرف" visible="false" />
-                              <TableColumn fx:id="tcNameComponent" prefWidth="100.0" text="الاسم" />
-                              <TableColumn fx:id="tcReferenceComponent" prefWidth="100.0" text="المرجع" />
+                              <TableColumn fx:id="tcIdMed" prefWidth="54.0" text="المعرف" visible="false" />
+                              <TableColumn fx:id="tcNameMed" prefWidth="100.0" text="الاسم" />
+                              <TableColumn fx:id="tcReferenceMed" prefWidth="100.0" text="المرجع" />
                           </columns>
                         </TableView>
                         <HBox prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" prefWidth="70.0" text="اضافة" />
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToComposition" text="  اضافة بالكمية" HBox.hgrow="ALWAYS" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" text="اضافة" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
@@ -52,8 +50,9 @@
                         </Label>
                         <HBox prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية او السعر" />
-                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="حذف سطر" />
+                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionModifiedPrice" prefHeight="25.0" prefWidth="150.0" text="تعديل السعر" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="150.0" text="حذف سطر" />
                               <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="tfRecherche" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
@@ -62,12 +61,11 @@
                         </HBox>
                         <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0">
                            <columns>
-                              <TableColumn fx:id="tcType" prefWidth="75.0" text="النوع" visible="false" />
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="معرف الدواء" />
                               <TableColumn fx:id="tcName" prefWidth="245.0" text="اسم الدواء" />
-                              <TableColumn fx:id="tcReference" prefWidth="250.0" text="سعر الوحدة" />
+                              <TableColumn fx:id="tcPriceU" prefWidth="250.0" text="سعر الوحدة" />
                               <TableColumn fx:id="tcQte" prefWidth="150.0" text="الكمية (كغ)" />
-                              <TableColumn fx:id="tcQte1" prefWidth="300.0" text="السعر الكلي" />
+                              <TableColumn fx:id="tcPriceTotal" prefWidth="300.0" text="السعر الكلي" />
                            </columns>
                         </TableView>
                         <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0" spacing="10.0">

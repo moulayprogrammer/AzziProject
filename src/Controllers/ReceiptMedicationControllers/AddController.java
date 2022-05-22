@@ -20,10 +20,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
@@ -38,25 +35,23 @@ public class AddController implements Initializable {
     @FXML
     TextField tfRechercheMad,tfRecherche;
     @FXML
-    TableView<List<StringProperty>> medTable, tablePurchases;
+    TableView<List<StringProperty>> tableMed, tablePurchases;
     @FXML
     TableColumn<List<StringProperty>,String>  tcIdMed,tcNameMed,tcReferenceMed;
     @FXML
-    TableColumn<List<StringProperty>,String> tcId,tcName,tcReference,tcQte;
+    TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
     Button btnInsert;
 
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
-
     private final ProductOperation operation = new ProductOperation();
-    private final RawMaterialOperation materialOperation = new RawMaterialOperation();
     private final MedicationOperation medicationOperation = new MedicationOperation();
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
     private final ComponentMedicationOperation componentMedicationOperation = new ComponentMedicationOperation();
-
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
+    private final List<Double> priceList = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -68,15 +63,16 @@ public class AddController implements Initializable {
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
-        tcReference.setCellValueFactory(data -> data.getValue().get(2));
+        tcPriceU.setCellValueFactory(data -> data.getValue().get(2));
         tcQte.setCellValueFactory(data -> data.getValue().get(3));
+        tcPriceTotal.setCellValueFactory(data -> data.getValue().get(4));
 
         refreshComponent();
 
         tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
-                ObservableList<List<StringProperty>> items = medTable.getItems();
+                ObservableList<List<StringProperty>> items = tableMed.getItems();
                 FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
                 filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
@@ -89,8 +85,8 @@ public class AddController implements Initializable {
                 });
 
                 SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-                sortedList.comparatorProperty().bind(medTable.comparatorProperty());
-                medTable.setItems(sortedList);
+                sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
+                tableMed.setItems(sortedList);
             }else {
                 refreshComponent();
             }
@@ -104,7 +100,6 @@ public class AddController implements Initializable {
 
             medications.forEach(medication -> {
                 List<StringProperty> data = new ArrayList<>();
-                data.add(new SimpleStringProperty("med"));
                 data.add( new SimpleStringProperty(String.valueOf(medication.getId())));
                 data.add( new SimpleStringProperty(medication.getName()));
                 data.add(new SimpleStringProperty(medication.getReference()));
@@ -115,7 +110,7 @@ public class AddController implements Initializable {
             e.printStackTrace();
         }
 
-        try {
+       /* try {
             ArrayList<RawMaterial> rawMaterials =  materialOperation.getAll();
 
             rawMaterials.forEach(rawMaterial -> {
@@ -128,35 +123,49 @@ public class AddController implements Initializable {
             });
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
 
-        medTable.setItems(componentDataTable);
+        tableMed.setItems(componentDataTable);
 
     }
 
     @FXML
     private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = medTable.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
                 try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
+                    int val = Integer.parseInt(dataTable.get(ex).get(3).getValue()) + 1 ;
+                    double pr = priceList.get(ex);
+                    dataTable.get(ex).get(3).setValue(String.valueOf(val));
+                    dataTable.get(ex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (val * pr)));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }else {
                 try {
-                    List<StringProperty> data = new ArrayList<>();
-                    data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                    data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                    data.add(2, new SimpleStringProperty(dataSelected.get(2).getValue()));
-                    data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
-                    data.add(4, new SimpleStringProperty(String.valueOf(1)));
+                    TextInputDialog dialog = new TextInputDialog();
 
+                    dialog.setTitle("السعر");
+                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.setHeaderText("ادخل سعر الشراء ");
+                    dialog.setContentText("السعر :");
 
-                    dataTable.add(data);
+                    Optional<String> result = dialog.showAndWait();
+
+                    result.ifPresent(price -> {
+                        double pr = Double.parseDouble(price);
+                        List<StringProperty> data = new ArrayList<>();
+                        data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
+                        data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
+                        data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
+                        data.add(3, new SimpleStringProperty(String.valueOf(1)));
+                        data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
+
+                        priceList.add(pr);
+                        dataTable.add(data);
+                    });
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -168,7 +177,7 @@ public class AddController implements Initializable {
     private int exist(List<StringProperty> dataSelected){
         AtomicInteger ex = new AtomicInteger(-1);
             for (int i = 0 ; i < dataTable.size() ; i++) {
-                if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) && dataTable.get(i).get(1).getValue().equals(dataSelected.get(1).getValue()) ){
+                if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) ){
                     ex.set(i);
                     break;
                 }
@@ -176,9 +185,9 @@ public class AddController implements Initializable {
         return ex.get();
     }
 
-    @FXML
+   /* @FXML
     private void ActionAddToComposition(){
-        List<StringProperty> dataSelected = medTable.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
@@ -215,7 +224,7 @@ public class AddController implements Initializable {
             }
             tablePurchases.setItems(dataTable);
         }
-    }
+    }*/
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
@@ -230,8 +239,38 @@ public class AddController implements Initializable {
             Optional<String> result = dialog.showAndWait();
 
             result.ifPresent(qte -> {
-                dataTable.get(compoSelectedIndex).get(4).setValue(qte);
-                tablePurchases.setItems(dataTable);
+                if (!qte.isEmpty()) {
+                    int q = Integer.parseInt(qte);
+                    double pr = priceList.get(compoSelectedIndex);
+                    dataTable.get(compoSelectedIndex).get(3).setValue(qte);
+                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
+                    tablePurchases.setItems(dataTable);
+                }
+            });
+        }
+    }
+    @FXML
+    private void ActionModifiedPrice(){
+        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+        if (compoSelectedIndex != -1){
+            TextInputDialog dialog = new TextInputDialog();
+
+            dialog.setTitle("السعر");
+            dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            dialog.setHeaderText("تعديل السعر ");
+            dialog.setContentText("السعر :");
+
+            Optional<String> result = dialog.showAndWait();
+
+            result.ifPresent(price -> {
+                if (!price.isEmpty()) {
+                    double pr = Double.parseDouble(price);
+                    int q = Integer.parseInt(dataTable.get(compoSelectedIndex).get(3).getValue());
+                    priceList.set(compoSelectedIndex, pr);
+                    dataTable.get(compoSelectedIndex).get(2).setValue(String.format(Locale.FRANCE, "%,.2f", pr ));
+                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
+                    tablePurchases.setItems(dataTable);
+                }
             });
         }
     }
@@ -349,7 +388,7 @@ public class AddController implements Initializable {
     @FXML
     void ActionSearchRawMadTable() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = medTable.getItems();
+        ObservableList<List<StringProperty>> items = tableMed.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
         String txtRecherche = tfRechercheMad.getText().trim();
 
@@ -365,8 +404,8 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(medTable.comparatorProperty());
-        medTable.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
+        tableMed.setItems(sortedList);
     }
 
     @FXML
