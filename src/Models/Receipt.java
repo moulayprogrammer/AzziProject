@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Receipt {
 
     private int id;
+    private int number;
     private int idProvider;
     private LocalDate date;
     private double paying;
@@ -14,6 +15,14 @@ public class Receipt {
 
     public Receipt(int id, int idProvider, LocalDate date, double paying) {
         this.id = id;
+        this.idProvider = idProvider;
+        this.date = date;
+        this.paying = paying;
+    }
+
+    public Receipt(int id, int number, int idProvider, LocalDate date, double paying) {
+        this.id = id;
+        this.number = number;
         this.idProvider = idProvider;
         this.date = date;
         this.paying = paying;
@@ -49,5 +58,13 @@ public class Receipt {
 
     public void setPaying(double paying) {
         this.paying = paying;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

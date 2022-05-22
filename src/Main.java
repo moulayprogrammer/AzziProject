@@ -16,7 +16,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.getIcons().add(new Image("Images/logo.png"));
 
-//        primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
