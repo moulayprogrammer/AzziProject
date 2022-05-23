@@ -74,6 +74,30 @@ public class ReceiptOperation extends BDD<Receipt> {
         return list;
     }
 
+    public ArrayList<Receipt> getAllByProvider(int idProvider) {
+        ArrayList<Receipt> list = new ArrayList<>();
+        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProvider);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Receipt receipt = new Receipt();
+                receipt.setId(resultSet.getInt("المعرف"));
+                receipt.setIdProvider(resultSet.getInt("معرف_المورد"));
+                receipt.setNumber(resultSet.getInt("رقم_الفاتورة"));
+                receipt.setDate(resultSet.getDate("تاريخ_الشراء").toLocalDate());
+                receipt.setPaying(resultSet.getDouble("الدفع"));
+
+                list.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public int getLastNumber(){
         int nbr = 0;
         try {

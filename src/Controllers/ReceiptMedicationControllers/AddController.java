@@ -10,12 +10,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -89,7 +91,7 @@ public class AddController implements Initializable {
         cbProvider.setOnAction(event -> {
             int index = cbProvider.getSelectionModel().getSelectedIndex();
             selectedProvider = idProviderCombo.get(index);
-            setProviderTransaction();
+            setProviderTransaction(selectedProvider);
         });
 
         tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -114,12 +116,12 @@ public class AddController implements Initializable {
         });
     }
 
-    private void setProviderTransaction() {
+    private void setProviderTransaction(int idProvider) {
         try {
             double debt = 0.0;
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
-            ArrayList<Receipt> receipts = operation.getAll();
+            ArrayList<Receipt> receipts = operation.getAllByProvider(idProvider);
             receipts.forEach(receipt -> {
                 ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
@@ -200,6 +202,58 @@ public class AddController implements Initializable {
 
         tableMed.setItems(componentDataTable);
 
+    }
+
+    @FXML
+    private void ActionAddProvider(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProviderViews/AddView.fxml"));
+            DialogPane temp = loader.load();
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(temp);
+            dialog.resizableProperty().setValue(false);
+            dialog.showAndWait();
+
+            refreshComboProvider();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ActionPayDebtProvider(){
+        TextInputDialog dialog = new TextInputDialog();
+
+        dialog.setTitle("التسديد");
+        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        dialog.setHeaderText("ادخل السعر المسدد ");
+        dialog.setContentText("السعر :");
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(price -> {
+
+            if (!price.isEmpty() && !lbDebt.getText().equals("0.0")) {
+                double pr = Double.parseDouble(price);
+
+                double debt = 0.0;
+                AtomicReference<Double> trans = new AtomicReference<>(0.0);
+                AtomicReference<Double> pay = new AtomicReference<>(0.0);
+                ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
+                receipts.forEach(receipt -> {
+                    ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                    AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                    componentReceipts.forEach(componentReceipt -> {
+                        double pre = componentReceipt.getPrice() * componentReceipt.getQte();
+                        sumR.updateAndGet(v -> (double) (v + pre));
+                    });
+                });
+                debt = trans.get() - pay.get();
+                lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
+                lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
+            }
+        });
     }
 
     @FXML
