@@ -1,11 +1,13 @@
 package BddPackage;
 
+import Models.ComponentProduction;
 import Models.Receipt;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ReceiptOperation extends BDD<Receipt> {
@@ -23,7 +25,7 @@ public class ReceiptOperation extends BDD<Receipt> {
             preparedStmt.setInt(1,receipt.getIdProvider());
             preparedStmt.setDate(2, Date.valueOf(receipt.getDate()));
             preparedStmt.setInt(3,receipt.getNumber());
-            preparedStmt.setDouble(3,receipt.getPaying());
+            preparedStmt.setDouble(4,receipt.getPaying());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = preparedStmt.getGeneratedKeys().getInt(1);
 
@@ -50,13 +52,32 @@ public class ReceiptOperation extends BDD<Receipt> {
 
     @Override
     public ArrayList<Receipt> getAll() {
-        return null;
+        ArrayList<Receipt> list = new ArrayList<>();
+        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Receipt receipt = new Receipt();
+                receipt.setId(resultSet.getInt("المعرف"));
+                receipt.setIdProvider(resultSet.getInt("معرف_المورد"));
+                receipt.setNumber(resultSet.getInt("رقم_الفاتورة"));
+                receipt.setDate(resultSet.getDate("تاريخ_الشراء").toLocalDate());
+                receipt.setPaying(resultSet.getDouble("الدفع"));
+
+                list.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public int getLastNumber(){
         int nbr = 0;
         try {
-            String query = "SELECT فاتورة_شراء_الدواء.رقم_الفاتورة , فاتورة_شراء_الدواء.المعرف  FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 ORDER BY(المعرف) DESC LIMIT 1 ;";
+            String query = "SELECT فاتورة_شراء_الدواء.رقم_الفاتورة , فاتورة_شراء_الدواء.المعرف  FROM فاتورة_شراء_الدواء ORDER BY(المعرف) DESC LIMIT 1 ;";
             try {
                 PreparedStatement preparedStmt = conn.prepareStatement(query);
                 ResultSet resultSet = preparedStmt.executeQuery();

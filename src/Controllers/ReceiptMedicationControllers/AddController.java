@@ -24,6 +24,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class AddController implements Initializable {
@@ -45,18 +46,18 @@ public class AddController implements Initializable {
     @FXML
     Button btnInsert;
 
-
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final ReceiptOperation operation = new ReceiptOperation();
     private final MedicationOperation medicationOperation = new MedicationOperation();
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
-    private final ComponentMedicationOperation componentMedicationOperation = new ComponentMedicationOperation();
+    private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
     private final List<Integer> idProviderCombo = new ArrayList<>();
     private int selectedProvider = 0;
+    private double totalFacture = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,6 +89,7 @@ public class AddController implements Initializable {
         cbProvider.setOnAction(event -> {
             int index = cbProvider.getSelectionModel().getSelectedIndex();
             selectedProvider = idProviderCombo.get(index);
+            setProviderTransaction();
         });
 
         tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -110,6 +112,30 @@ public class AddController implements Initializable {
                 refreshComponent();
             }
         });
+    }
+
+    private void setProviderTransaction() {
+        try {
+            double debt = 0.0;
+            AtomicReference<Double> trans = new AtomicReference<>(0.0);
+            AtomicReference<Double> pay = new AtomicReference<>(0.0);
+            ArrayList<Receipt> receipts = operation.getAll();
+            receipts.forEach(receipt -> {
+                ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                componentReceipts.forEach(componentReceipt -> {
+                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
+                    sumR.updateAndGet(v -> (double) (v + pr));
+                });
+                pay.updateAndGet(v -> (double) (v + receipt.getPaying()));
+                trans.updateAndGet(v -> (double) (v + sumR.get()));
+            });
+            debt = trans.get() - pay.get();
+            lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
+            lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void setFactureNumber() {
@@ -344,6 +370,7 @@ public class AddController implements Initializable {
             double price = priceList.get(i);
             totalPrice += (price * qte);
         }
+        this.totalFacture = totalPrice;
         lbSumTotal.setText(String.format(Locale.FRANCE, "%,.2f", totalPrice));
         lbSumWeight.setText(String.valueOf(totalling));
     }
@@ -369,82 +396,71 @@ public class AddController implements Initializable {
                 String lbFactTxt = lbFactureNbr.getText().trim();
                 int nbr = Integer.parseInt(lbFactTxt.substring(0,lbFactTxt.indexOf('/')));
                 double paying = Double.parseDouble(price);
-                if (date != null && !lbFactTxt.isEmpty() ) {
-                    Receipt receipt = new Receipt();
-                    receipt.setNumber(nbr);
-                    receipt.setIdProvider(selectedProvider);
-                    receipt.setDate(date);
-                    receipt.setPaying(paying);
 
-                    int ins = insert(receipt);
-                    if (ins != -1 ) {
-                        insertComponent(ins);
-                        ActionAnnulledAdd();
+                if (date != null && selectedProvider != 0) {
+                    if (paying <= totalFacture) {
+                        Receipt receipt = new Receipt();
+                        receipt.setNumber(nbr);
+                        receipt.setIdProvider(selectedProvider);
+                        receipt.setDate(date);
+                        receipt.setPaying(paying);
+
+                        int ins = insert(receipt);
+                        if (ins != -1) {
+                            insertComponent(ins);
+                            ActionAnnulledAdd();
+                        } else {
+                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                            alertWarning.setHeaderText("تحذير ");
+                            alertWarning.setContentText("خطأ غير معروف");
+                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                            okButton.setText("موافق");
+                            alertWarning.showAndWait();
+                        }
+                    }else {
+                        Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                        alertWarning.setHeaderText("تحذير ");
+                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                        okButton.setText("موافق");
+                        alertWarning.showAndWait();
                     }
+                }else {
+                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                    alertWarning.setHeaderText("تحذير ");
+                    alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertWarning.showAndWait();
                 }
-
-            }
-        });
-
-        /*LocalDate date = dpDate.getValue();
-        String lbFactTxt = lbFactureNbr.getText().trim();
-        String nbr = lbFactTxt.substring(0,lbFactTxt.indexOf('/'));
-
-        String name = tfName.getText().trim();
-        String reference = tfReference.getText().trim();
-        String limitQte = tfLimiteQte.getText().trim();
-
-        if (!name.isEmpty() && !reference.isEmpty() && !limitQte.isEmpty() && dataTable.size() != 0){
-
-            Product product = new Product();
-            product.setName(name);
-            product.setReference(reference);
-            product.setLimitQte(Integer.parseInt(limitQte));
-
-            int ins = insert(product);
-            if (ins != -1 ) {
-                insertComponent(dataTable, ins);
-                ActionAnnulledAdd();
-            }
-            else {
+            }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
             }
-        }else {
-            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء ملأ جميع الحقول");
-            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setText("موافق");
-            alertWarning.showAndWait();
-        }*/
+        });
     }
 
-    private void insertComponent(int idProvider) {
+    private void insertComponent(int idReceipt) {
 
-        dataTable.forEach(stringProperties -> {
-            String type =  stringProperties.get(0).getValue();
-            int id = Integer.parseInt(stringProperties.get(1).getValue());
-            int qte = Integer.parseInt(stringProperties.get(4).getValue());
+        for (int i = 0; i < dataTable.size(); i++) {
 
-            ComponentProduction componentProduction = new ComponentProduction();
-            componentProduction.setIdComponent(id);
-            componentProduction.setIdProduct(idProvider);
-            componentProduction.setQte(qte);
+            List<StringProperty> stringProperties = dataTable.get(i);
 
-            switch (type){
-                case "med":
-                    insertComponentMedication(componentProduction);
-                    break;
-                case "raw":
-                    insertComponentRawMaterial(componentProduction);
-                    break;
-            }
-        });
+            int id = Integer.parseInt(stringProperties.get(0).getValue());
+            int qte = Integer.parseInt(stringProperties.get(3).getValue());
+
+            ComponentReceipt componentReceipt = new ComponentReceipt();
+            componentReceipt.setIdReceipt(idReceipt);
+            componentReceipt.setIdComponent(id);
+            componentReceipt.setQte(qte);
+            componentReceipt.setPrice(this.priceList.get(i));
+
+            insertComponentMedication(componentReceipt);
+        }
     }
 
     private int insert(Receipt receipt) {
@@ -458,10 +474,10 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentMedication(ComponentProduction componentProduction){
+    private boolean insertComponentMedication(ComponentReceipt componentReceipt){
         boolean insert = false;
         try {
-            insert = componentMedicationOperation.insert(componentProduction);
+            insert = componentMedicationOperation.insert(componentReceipt);
             return insert;
         }catch (Exception e){
             e.printStackTrace();

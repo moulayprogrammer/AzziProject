@@ -1,14 +1,13 @@
 package BddPackage;
 
 import Models.ComponentProduction;
-import Models.Product;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ComponentMedicationOperation extends BDD<ComponentProduction> {
+public class ComponentProductionMedicationOperation extends BDD<ComponentProduction> {
 
     @Override
     public boolean insert(ComponentProduction o) {

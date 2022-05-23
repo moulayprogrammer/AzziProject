@@ -3,7 +3,7 @@ package Models;
 public class ComponentReceipt {
 
     private int idReceipt;
-    public int idComponent;
+    private int idComponent;
     private int qte;
     private double price;
 
