@@ -1,16 +1,14 @@
 package BddPackage;
 
-import Models.ComponentProduction;
 import Models.Receipt;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ReceiptOperation extends BDD<Receipt> {
+public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     @Override
     public boolean insert(Receipt o) {
@@ -38,6 +36,20 @@ public class ReceiptOperation extends BDD<Receipt> {
     @Override
     public boolean update(Receipt o1, Receipt o2) {
         return false;
+    }
+    public boolean updatePaying(Receipt o1, Receipt o2) {
+        boolean upd = false;
+        String query = "UPDATE فاتورة_شراء_الدواء SET الدفع = ? WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setDouble(1,o1.getPaying());
+            preparedStmt.setInt(2,o2.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
     }
 
     @Override

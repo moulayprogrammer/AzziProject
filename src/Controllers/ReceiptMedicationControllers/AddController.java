@@ -50,7 +50,7 @@ public class AddController implements Initializable {
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
-    private final ReceiptOperation operation = new ReceiptOperation();
+    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
     private final MedicationOperation medicationOperation = new MedicationOperation();
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
     private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
@@ -237,23 +237,55 @@ public class AddController implements Initializable {
             if (!price.isEmpty() && !lbDebt.getText().equals("0.0")) {
                 double pr = Double.parseDouble(price);
 
-                double debt = 0.0;
-                AtomicReference<Double> trans = new AtomicReference<>(0.0);
-                AtomicReference<Double> pay = new AtomicReference<>(0.0);
                 ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
-                receipts.forEach(receipt -> {
+                for (int i = 0; i < receipts.size(); i++) {
+                    Receipt receipt = receipts.get(i);
                     ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                     componentReceipts.forEach(componentReceipt -> {
                         double pre = componentReceipt.getPrice() * componentReceipt.getQte();
                         sumR.updateAndGet(v -> (double) (v + pre));
                     });
-                });
-                debt = trans.get() - pay.get();
-                lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
-                lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
+                    double debt = sumR.get() - receipt.getPaying();
+                    if (debt > 0){
+                        if (pr <= debt){
+                            double newPaying = pr + receipt.getPaying();
+                            pr = 0;
+                            PayDebtReceipt(receipt.getId(),newPaying);
+                            break;
+                        }else {
+                            double newPaying = debt + receipt.getPaying();
+                            pr = pr - debt;
+                            PayDebtReceipt(receipt.getId(),newPaying);
+                        }
+                    }
+                }
+                if (pr > 0 ){
+                    Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                    alertInformation.setHeaderText("المبلغ المتبقي ");
+                    alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
+                    Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertInformation.showAndWait();
+                }
+                setProviderTransaction(selectedProvider);
             }
         });
+    }
+
+    private void PayDebtReceipt(int receiptId , double price) {
+        try {
+            Receipt receipt1 = new Receipt();
+            receipt1.setPaying(price);
+
+            Receipt receipt2 =  new Receipt();
+            receipt2.setId(receiptId);
+
+            operation.updatePaying(receipt1,receipt2);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML

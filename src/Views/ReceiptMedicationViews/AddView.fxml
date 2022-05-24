@@ -125,7 +125,7 @@
                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionPayDebtProvider" text="تسديد الدين" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0">
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
                         <Label prefHeight="25.0" prefWidth="77.0" text="المعاملات">
                            <font>
