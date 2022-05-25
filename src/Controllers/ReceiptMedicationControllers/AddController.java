@@ -52,6 +52,7 @@ public class AddController implements Initializable {
     private Connection conn;
     private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
     private final MedicationOperation medicationOperation = new MedicationOperation();
+    private final ProviderOperation providerOperation = new ProviderOperation();
     private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
     private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
@@ -87,13 +88,6 @@ public class AddController implements Initializable {
         cbProvider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         TextFields.bindAutoCompletion(cbProvider.getEditor(), cbProvider.getItems());
 
-        // select id Provider From Combo
-        cbProvider.setOnAction(event -> {
-            int index = cbProvider.getSelectionModel().getSelectedIndex();
-            selectedProvider = idProviderCombo.get(index);
-            setProviderTransaction(selectedProvider);
-        });
-
         tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
@@ -114,6 +108,15 @@ public class AddController implements Initializable {
                 refreshComponent();
             }
         });
+    }
+
+    @FXML
+    private void ActionComboProvider(){
+        int index = cbProvider.getSelectionModel().getSelectedIndex();
+        if (index >= 0 ) {
+            selectedProvider = idProviderCombo.get(index);
+            setProviderTransaction(selectedProvider);
+        }
     }
 
     private void setProviderTransaction(int idProvider) {
@@ -147,24 +150,25 @@ public class AddController implements Initializable {
     }
 
     private void refreshComboProvider() {
-        comboProviderData.clear();
-        idProviderCombo.clear();
+        clearCombo();
         try {
-            String query = "SELECT * FROM المورد  WHERE ارشيف = 0;";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                while (resultSet.next()){
-                    comboProviderData.add(resultSet.getString("الاسم"));
-                    idProviderCombo.add(resultSet.getInt("المعرف"));
-                }
-                cbProvider.setItems(comboProviderData);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ArrayList<Provider> providers = providerOperation.getAll();
+            providers.forEach(provider -> {
+                comboProviderData.add(provider.getName());
+                idProviderCombo.add(provider.getId());
+            });
+            cbProvider.setItems(comboProviderData);
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void clearCombo(){
+        cbProvider.getSelectionModel().clearSelection();
+        comboProviderData.clear();
+        idProviderCombo.clear();
+        lbDebt.setText("");
+        lbTransaction.setText("");
     }
 
     private void refreshComponent(){
@@ -184,21 +188,6 @@ public class AddController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-       /* try {
-            ArrayList<RawMaterial> rawMaterials =  materialOperation.getAll();
-
-            rawMaterials.forEach(rawMaterial -> {
-                List<StringProperty> data = new ArrayList<>();
-                data.add(0, new SimpleStringProperty("raw"));
-                data.add(1, new SimpleStringProperty(String.valueOf(rawMaterial.getId())));
-                data.add(2, new SimpleStringProperty(rawMaterial.getName()));
-                data.add(3, new SimpleStringProperty(rawMaterial.getReference()));
-                componentDataTable.add(data);
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
 
         tableMed.setItems(componentDataTable);
 

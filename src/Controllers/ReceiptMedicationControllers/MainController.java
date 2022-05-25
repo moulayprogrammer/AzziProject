@@ -19,7 +19,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -29,6 +28,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -39,8 +39,6 @@ import java.util.function.Predicate;
 public class MainController implements Initializable {
 
     @FXML
-    AnchorPane MainPanel;
-    @FXML
     TextField tfRecherche;
     @FXML
     TableView<List<StringProperty>> table;
@@ -50,9 +48,9 @@ public class MainController implements Initializable {
     Label lbSumAmount,lbSumPaying,lbSumDebt;
     @FXML
     ComboBox<String> cbProvider;
+    @FXML
+    DatePicker dpFirst,dpSecond;
 
-
-//    private final ObservableList<Receipt> dataTable = FXCollections.observableArrayList();
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
@@ -81,14 +79,34 @@ public class MainController implements Initializable {
         cbProvider.setEditable(true);
         cbProvider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         TextFields.bindAutoCompletion(cbProvider.getEditor(), cbProvider.getItems());
+    }
 
-        cbProvider.setOnAction(event -> {
-            int index = cbProvider.getSelectionModel().getSelectedIndex();
-            if (index >= 0) {
-                selectedProvider = idProviderCombo.get(index);
-                setProviderReceipt(selectedProvider);
-            }
-        });
+    @FXML
+    private void ActionSelectComboProvider(){
+        int index = cbProvider.getSelectionModel().getSelectedIndex();
+        LocalDate dateFirst = dpFirst.getValue();
+        LocalDate dateSecond = dpSecond.getValue();
+        if (index >= 0) {
+            selectedProvider = idProviderCombo.get(index);
+            if (dateFirst != null && dateSecond != null) setProviderDateReceipt(selectedProvider,dateFirst,dateSecond);
+            else setProviderReceipt(selectedProvider);
+        }
+    }
+    @FXML
+    private void ActionSelectDate(){
+        LocalDate dateFirst = dpFirst.getValue();
+        LocalDate dateSecond = dpSecond.getValue();
+        if (dateFirst != null && dateSecond != null){
+            if (selectedProvider > 0) setProviderDateReceipt(selectedProvider,dateFirst,dateSecond);
+            else setDateReceipt(dateFirst,dateSecond);
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير");
+            alertWarning.setContentText("الرجاء تحديد تاريخ");
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
     }
 
     @FXML
@@ -113,17 +131,19 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionUpdate(){
-
-     /*   Client client = table.getSelectionModel().getSelectedItem();
-        if (client != null){
+        Receipt receipt = operation.get(Integer.parseInt(table.getSelectionModel().getSelectedItem().get(0).getValue()));
+        if (receipt != null){
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
-                controller.InitUpdate(client);
+                controller.Init(receipt);
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
                 dialog.showAndWait();
                 refresh();
 
@@ -137,7 +157,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
@@ -293,19 +313,111 @@ public class MainController implements Initializable {
         }
     }
 
+    private void setDateReceipt(LocalDate dateFirst, LocalDate dateSecond) {
+        try {
+            ArrayList<Receipt> receipts = operation.getAllByDate(dateFirst,dateSecond);
+            dataTable.clear();
+            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
+            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
+            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
+            receipts.forEach(receipt -> {
+                Provider provider = providerOperation.get(receipt.getIdProvider());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                componentReceipts.forEach(componentReceipt -> {
+                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
+                    sumR.updateAndGet(v -> (double) (v + pr));
+                });
+
+                List<StringProperty> data = new ArrayList<>();
+                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
+                data.add( new SimpleStringProperty(provider.getName()));//1
+                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+
+                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
+                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
+                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+
+                dataTable.add(data);
+            });
+            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
+            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
+            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
+            table.setItems(dataTable);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void setProviderDateReceipt(int selectedProvider ,LocalDate dateFirst, LocalDate dateSecond ){
+        try {
+            ArrayList<Receipt> receipts = operation.getAllByDateProvider(selectedProvider,dateFirst,dateSecond);
+            dataTable.clear();
+            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
+            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
+            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
+            receipts.forEach(receipt -> {
+                Provider provider = providerOperation.get(receipt.getIdProvider());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                componentReceipts.forEach(componentReceipt -> {
+                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
+                    sumR.updateAndGet(v -> (double) (v + pr));
+                });
+
+                List<StringProperty> data = new ArrayList<>();
+                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
+                data.add( new SimpleStringProperty(provider.getName()));//1
+                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+
+                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
+                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
+                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+
+                dataTable.add(data);
+            });
+            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
+            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
+            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
+            table.setItems(dataTable);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void ActionRefreshCombo(){
         cbProvider.getSelectionModel().clearSelection();
-        refresh();
+        LocalDate dateFirst = dpFirst.getValue();
+        LocalDate dateSecond = dpSecond.getValue();
+        if (dateFirst != null && dateSecond != null) setDateReceipt(dateFirst , dateSecond);
+        else refresh();
+    }
+    @FXML
+    private void ActionRefreshDate(){
+        dpFirst.setValue(null);
+        dpSecond.setValue(null);
+        if (selectedProvider > 0 ) setProviderReceipt(selectedProvider);
+        else refresh();
     }
     @FXML
     private void ActionRefresh(){
         clearRecherche();
+
         refresh();
     }
 
     private void clearRecherche(){
         tfRecherche.clear();
+        cbProvider.getSelectionModel().clearSelection();
+        dpFirst.setValue(null);
+        dpSecond.setValue(null);
     }
 
     @FXML

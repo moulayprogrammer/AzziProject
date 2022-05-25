@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class ReceiptMedicationOperation extends BDD<Receipt> {
@@ -86,12 +87,87 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         return list;
     }
 
+    public Receipt get(int id) {
+        ArrayList<Receipt> list = new ArrayList<>();
+        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Receipt receipt = new Receipt();
+                receipt.setId(resultSet.getInt("المعرف"));
+                receipt.setIdProvider(resultSet.getInt("معرف_المورد"));
+                receipt.setNumber(resultSet.getInt("رقم_الفاتورة"));
+                receipt.setDate(resultSet.getDate("تاريخ_الشراء").toLocalDate());
+                receipt.setPaying(resultSet.getDouble("الدفع"));
+
+                list.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list.get(0);
+    }
+
     public ArrayList<Receipt> getAllByProvider(int idProvider) {
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idProvider);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Receipt receipt = new Receipt();
+                receipt.setId(resultSet.getInt("المعرف"));
+                receipt.setIdProvider(resultSet.getInt("معرف_المورد"));
+                receipt.setNumber(resultSet.getInt("رقم_الفاتورة"));
+                receipt.setDate(resultSet.getDate("تاريخ_الشراء").toLocalDate());
+                receipt.setPaying(resultSet.getDouble("الدفع"));
+
+                list.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<Receipt> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
+        ArrayList<Receipt> list = new ArrayList<>();
+        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setDate(1,Date.valueOf(dateFirst));
+            preparedStmt.setDate(2,Date.valueOf(dateSecond));
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                Receipt receipt = new Receipt();
+                receipt.setId(resultSet.getInt("المعرف"));
+                receipt.setIdProvider(resultSet.getInt("معرف_المورد"));
+                receipt.setNumber(resultSet.getInt("رقم_الفاتورة"));
+                receipt.setDate(resultSet.getDate("تاريخ_الشراء").toLocalDate());
+                receipt.setPaying(resultSet.getDouble("الدفع"));
+
+                list.add(receipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<Receipt> getAllByDateProvider(int idProvider, LocalDate dateFirst, LocalDate dateSecond) {
+        ArrayList<Receipt> list = new ArrayList<>();
+        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ? AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProvider);
+            preparedStmt.setDate(2,Date.valueOf(dateFirst));
+            preparedStmt.setDate(3,Date.valueOf(dateSecond));
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 

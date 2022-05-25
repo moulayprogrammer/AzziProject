@@ -106,25 +106,25 @@
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <DatePicker layoutX="255.0" layoutY="43.0" />
-            <DatePicker layoutX="255.0" layoutY="73.0" />
+            <DatePicker fx:id="dpFirst" layoutX="255.0" layoutY="43.0" />
+            <DatePicker fx:id="dpSecond" layoutX="255.0" layoutY="73.0" />
             <Separator layoutX="453.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" />
             <Label layoutX="465.0" layoutY="14.0" text="المورد">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
             </Label>
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="376.0" layoutY="15.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="376.0" layoutY="15.0" onMousePressed="#ActionSelectDate" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/recherche.png.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="413.0" layoutY="15.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="413.0" layoutY="15.0" onMousePressed="#ActionRefreshDate" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/refresh.jpeg" />
                </image>
             </ImageView>
-            <ComboBox fx:id="cbProvider" layoutX="467.0" layoutY="44.0" prefHeight="25.0" prefWidth="219.0" />
+            <ComboBox fx:id="cbProvider" layoutX="467.0" layoutY="44.0" onAction="#ActionSelectComboProvider" prefHeight="25.0" prefWidth="219.0" />
             <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="700.0" layoutY="47.0" onMousePressed="#ActionRefreshCombo" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/refresh.jpeg" />

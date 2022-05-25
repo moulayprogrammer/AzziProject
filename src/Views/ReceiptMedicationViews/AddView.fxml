@@ -106,7 +106,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <ComboBox fx:id="cbProvider" prefHeight="25.0" prefWidth="220.0" />
+                        <ComboBox onAction="#ActionComboProvider" fx:id="cbProvider" prefHeight="25.0" prefWidth="220.0" />
                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddProvider" text="اضافة مورد" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
