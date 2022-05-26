@@ -36,7 +36,20 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     @Override
     public boolean update(Receipt o1, Receipt o2) {
-        return false;
+        boolean upd = false;
+        String query = "UPDATE فاتورة_شراء_الدواء SET معرف_المورد = ?, تاريخ_الشراء = ?, الدفع = ? WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o1.getIdProvider());
+            preparedStmt.setDate(2,Date.valueOf(o1.getDate()));
+            preparedStmt.setDouble(3,o1.getPaying());
+            preparedStmt.setInt(4,o2.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
     }
     public boolean updatePaying(Receipt o1, Receipt o2) {
         boolean upd = false;

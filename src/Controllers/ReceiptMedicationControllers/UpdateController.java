@@ -2,7 +2,6 @@ package Controllers.ReceiptMedicationControllers;
 
 import BddPackage.*;
 import Models.*;
-import com.sun.org.apache.regexp.internal.RE;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -47,7 +46,7 @@ public class UpdateController implements Initializable {
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
-    Button btnInsert;
+    Button btnUpdate;
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
@@ -79,7 +78,6 @@ public class UpdateController implements Initializable {
 
         refreshComponent();
         refreshComboProvider();
-        setFactureNumber();
 
         // set Date
         dpDate.setValue(LocalDate.now());
@@ -119,6 +117,41 @@ public class UpdateController implements Initializable {
         Provider provider = providerOperation.get(receipt.getIdProvider());
         cbProvider.getSelectionModel().select(provider.getName());
         ActionComboProvider();
+        refreshPurchases();
+    }
+
+    private void refreshPurchases() {
+        dataTable.clear();
+        priceList.clear();
+        try {
+            String query = "SELECT مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.معرف_الفاتورة , مشتريات_الدواء.الكمية , مشتريات_الدواء.سعر_الوحدة , الادوية.المعرف , الادوية.الاسم " +
+                    "FROM مشتريات_الدواء , الادوية WHERE الادوية.ارشيف = 0 AND مشتريات_الدواء.معرف_الفاتورة = ? AND الادوية.المعرف = مشتريات_الدواء.معرف_الدواء ;" ;
+            try {
+                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt(1,this.receiptSelected.getId());
+                ResultSet resultSet = preparedStmt.executeQuery();
+                while (resultSet.next()){
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(0, new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                    data.add(1, new SimpleStringProperty(resultSet.getString("الاسم")));
+                    double pr = resultSet.getDouble("سعر_الوحدة");
+                    data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
+                    int qte = resultSet.getInt("الكمية");
+                    data.add(3, new SimpleStringProperty(String.valueOf(qte)));
+                    data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", ( pr * qte ))));
+
+                    priceList.add(pr);
+                    dataTable.add(data);
+                }
+                tablePurchases.setItems(dataTable);
+                sumTotalTablePorches();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @FXML
@@ -152,12 +185,6 @@ public class UpdateController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private void setFactureNumber() {
-        int nbr = operation.getLastNumber();
-        int year = LocalDate.now().getYear();
-        lbFactureNbr.setText((nbr + 1) + "/" + year );
     }
 
     private void refreshComboProvider() {
@@ -344,46 +371,6 @@ public class UpdateController implements Initializable {
         return ex.get();
     }
 
-   /* @FXML
-    private void ActionAddToComposition(){
-        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
-        if (dataSelected != null) {
-            int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    TextInputDialog dialog = new TextInputDialog();
-
-                    dialog.setTitle("الكمية");
-                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل الكمية ");
-                    dialog.setContentText("الكمية :");
-
-                    Optional<String> result = dialog.showAndWait();
-
-                    result.ifPresent(qte -> {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                        data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                        data.add(2, new SimpleStringProperty(dataSelected.get(2).getValue()));
-                        data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
-                        data.add(4, new SimpleStringProperty(qte));
-
-                        dataTable.add(data);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            tablePurchases.setItems(dataTable);
-        }
-    }*/
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
@@ -460,13 +447,13 @@ public class UpdateController implements Initializable {
         lbSumWeight.setText(String.valueOf(totalling));
     }
     @FXML
-    private void ActionAnnulledAdd(){
-        closeDialog(btnInsert);
+    private void ActionAnnulledUpdate(){
+        closeDialog(btnUpdate);
     }
 
     @FXML
     private void ActionUpdate(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog();
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(receiptSelected.getPaying()));
 
         dialog.setTitle("الدفع ");
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
@@ -490,10 +477,9 @@ public class UpdateController implements Initializable {
                         receipt.setDate(date);
                         receipt.setPaying(paying);
 
-                        int ins = insert(receipt);
-                        if (ins != -1) {
-                            insertComponent(ins);
-                            ActionAnnulledAdd();
+                        boolean upd = update(receipt);
+                        if (upd) {
+                            ActionAnnulledUpdate();
                         } else {
                             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                             alertWarning.setHeaderText("تحذير ");
@@ -548,14 +534,14 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private int insert(Receipt receipt) {
-        int insert = 0;
+    private boolean update(Receipt receipt) {
+        boolean update = false;
         try {
-            insert = operation.insertId(receipt);
-            return insert;
+            update = operation.update(receipt,receiptSelected);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
-            return insert;
+            return update;
         }
     }
 
@@ -567,6 +553,28 @@ public class UpdateController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
             return insert;
+        }
+    }
+
+    private boolean updateComponentMedication(ComponentReceipt componentReceipt){
+        boolean update = false;
+        try {
+            update = componentMedicationOperation.update(componentReceipt,componentReceipt);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return update;
+        }
+    }
+
+    private boolean deleteComponentMedication(ComponentReceipt componentReceipt){
+        boolean delete = false;
+        try {
+            delete = componentMedicationOperation.delete(componentReceipt);
+            return delete;
+        }catch (Exception e){
+            e.printStackTrace();
+            return delete;
         }
     }
 

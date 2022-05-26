@@ -181,7 +181,7 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnInsert" buttonType="RAISED" layoutX="1137.0" layoutY="16.0" onAction="#ActionUpdate" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="تحديث الفاتورة" textFill="#e10bbd">
+            <JFXButton fx:id="btnUpdate" buttonType="RAISED" layoutX="1137.0" layoutY="16.0" onAction="#ActionUpdate" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="تحديث الفاتورة" textFill="#e10bbd">
                <font>
                   <Font size="14.0" />
                </font>

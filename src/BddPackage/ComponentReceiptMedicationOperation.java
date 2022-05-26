@@ -29,12 +29,37 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
 
     @Override
     public boolean update(ComponentReceipt o1, ComponentReceipt o2) {
-        return false;
+        boolean upd = false;
+        String query = "UPDATE مشتريات_الدواء SET الكمية = ? , سعر_الوحدة = ? WHERE معرف_الفاتورة = ? AND معرف_الدواء = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o1.getQte());
+            preparedStmt.setDouble(2,o1.getPrice());
+            preparedStmt.setInt(3,o1.getIdReceipt());
+            preparedStmt.setInt(4,o2.getIdComponent());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
     }
 
     @Override
     public boolean delete(ComponentReceipt o) {
-        return false;
+        boolean del = false;
+        String query = "DELETE FROM مشتريات_الدواء WHERE معرف_الفاتورة = ? AND معرف_الدواء = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getIdReceipt());
+            preparedStmt.setInt(2,o.getIdComponent());
+
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return del;
     }
 
     @Override
