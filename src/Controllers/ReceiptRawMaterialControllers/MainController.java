@@ -1,12 +1,9 @@
-package Controllers.ReceiptMedicationControllers;
+package Controllers.ReceiptRawMaterialControllers;
 
-import BddPackage.ComponentReceiptMedicationOperation;
-import BddPackage.ConnectBD;
-import BddPackage.ReceiptMedicationOperation;
-import BddPackage.ProviderOperation;
+import BddPackage.*;
+import Models.ComponentReceipt;
 import Models.Provider;
 import Models.Receipt;
-import Models.ComponentReceipt;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -19,7 +16,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
@@ -56,9 +52,9 @@ public class MainController implements Initializable {
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
     private final List<Integer> idProviderCombo = new ArrayList<>();
-    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
+    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptMedicationOperation componentReceiptMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private int selectedProvider = 0;
 
     @Override
@@ -112,7 +108,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -135,7 +131,7 @@ public class MainController implements Initializable {
         if (data != null){
             try {
                 Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
                 controller.Init(receipt);
@@ -154,7 +150,7 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
-            alertWarning.setContentText("الرجاء اختيار زبون من اجل التعديل");
+            alertWarning.setContentText("الرجاء اختيار فاتورة من اجل التعديل");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -202,7 +198,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionDeleteFromArchive(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/ArchiveView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -227,7 +223,7 @@ public class MainController implements Initializable {
             AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
             receipts.forEach(receipt -> {
                 Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -286,7 +282,7 @@ public class MainController implements Initializable {
             AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
             receipts.forEach(receipt -> {
                 Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -325,7 +321,7 @@ public class MainController implements Initializable {
             AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
             receipts.forEach(receipt -> {
                 Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -364,7 +360,7 @@ public class MainController implements Initializable {
             AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
             receipts.forEach(receipt -> {
                 Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();

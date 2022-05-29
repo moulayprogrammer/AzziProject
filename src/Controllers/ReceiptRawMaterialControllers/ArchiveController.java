@@ -1,7 +1,6 @@
-package Controllers.ReceiptMedicationControllers;
+package Controllers.ReceiptRawMaterialControllers;
 
 import BddPackage.*;
-import Models.Client;
 import Models.ComponentReceipt;
 import Models.Provider;
 import Models.Receipt;
@@ -14,11 +13,9 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,9 +33,9 @@ public class ArchiveController implements Initializable {
     TableColumn<List<StringProperty>,String> clId,clProvider,clDate,clAmount,clPaying,clDebt;
 
 
-    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
+    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptMedicationOperation componentReceiptMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
 
     @Override
@@ -114,7 +111,7 @@ public class ArchiveController implements Initializable {
 
             receipts.forEach(receipt -> {
                 Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();

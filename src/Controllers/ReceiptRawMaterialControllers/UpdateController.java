@@ -1,7 +1,10 @@
-package Controllers.ReceiptMedicationControllers;
+package Controllers.ReceiptRawMaterialControllers;
 
 import BddPackage.*;
-import Models.*;
+import Models.ComponentReceipt;
+import Models.RawMaterial;
+import Models.Provider;
+import Models.Receipt;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -38,11 +41,11 @@ public class UpdateController implements Initializable {
     @FXML
     ComboBox<String> cbProvider;
     @FXML
-    TextField tfRechercheMad,tfRecherche;
+    TextField tfRechercheMaterial,tfRecherche;
     @FXML
-    TableView<List<StringProperty>> tableMed, tablePurchases;
+    TableView<List<StringProperty>> tableMaterial, tablePurchases;
     @FXML
-    TableColumn<List<StringProperty>,String>  tcIdMed,tcNameMed,tcReferenceMed;
+    TableColumn<List<StringProperty>,String> tcIdMaterial, tcNameMaterial, tcReferenceMaterial;
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
@@ -50,10 +53,10 @@ public class UpdateController implements Initializable {
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
-    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
-    private final MedicationOperation medicationOperation = new MedicationOperation();
+    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
+    private final RawMaterialOperation rawMaterialOperation = new RawMaterialOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
@@ -66,9 +69,9 @@ public class UpdateController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
 
-        tcIdMed.setCellValueFactory(data -> data.getValue().get(0));
-        tcNameMed.setCellValueFactory(data -> data.getValue().get(1));
-        tcReferenceMed.setCellValueFactory(data -> data.getValue().get(2));
+        tcIdMaterial.setCellValueFactory(data -> data.getValue().get(0));
+        tcNameMaterial.setCellValueFactory(data -> data.getValue().get(1));
+        tcReferenceMaterial.setCellValueFactory(data -> data.getValue().get(2));
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
@@ -87,10 +90,10 @@ public class UpdateController implements Initializable {
         cbProvider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         TextFields.bindAutoCompletion(cbProvider.getEditor(), cbProvider.getItems());
 
-        tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfRechercheMaterial.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
-                ObservableList<List<StringProperty>> items = tableMed.getItems();
+                ObservableList<List<StringProperty>> items = tableMaterial.getItems();
                 FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
                 filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
@@ -101,8 +104,8 @@ public class UpdateController implements Initializable {
                 });
 
                 SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-                sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-                tableMed.setItems(sortedList);
+                sortedList.comparatorProperty().bind(tableMaterial.comparatorProperty());
+                tableMaterial.setItems(sortedList);
             }else {
                 refreshComponent();
             }
@@ -124,8 +127,8 @@ public class UpdateController implements Initializable {
         dataTable.clear();
         priceList.clear();
         try {
-            String query = "SELECT مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.معرف_الفاتورة , مشتريات_الدواء.الكمية , مشتريات_الدواء.سعر_الوحدة , الادوية.المعرف , الادوية.الاسم " +
-                    "FROM مشتريات_الدواء , الادوية WHERE الادوية.ارشيف = 0 AND مشتريات_الدواء.معرف_الفاتورة = ? AND الادوية.المعرف = مشتريات_الدواء.معرف_الدواء ;" ;
+            String query = "SELECT مشتريات_مواد_خام.معرف_المادة_الخام , مشتريات_مواد_خام.معرف_الفاتورة , مشتريات_مواد_خام.الكمية , مشتريات_مواد_خام.سعر_الوحدة , المواد_الخام.المعرف , المواد_الخام.الاسم " +
+                    "FROM مشتريات_مواد_خام , المواد_الخام WHERE المواد_الخام.ارشيف = 0 AND مشتريات_مواد_خام.معرف_الفاتورة = ? AND المواد_الخام.المعرف = مشتريات_مواد_خام.معرف_المادة_الخام ;" ;
             try {
                 PreparedStatement preparedStmt = conn.prepareStatement(query);
                 preparedStmt.setInt(1,this.receiptSelected.getId());
@@ -170,7 +173,7 @@ public class UpdateController implements Initializable {
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
             ArrayList<Receipt> receipts = operation.getAllByProvider(idProvider);
             receipts.forEach(receipt -> {
-                ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -212,9 +215,9 @@ public class UpdateController implements Initializable {
         ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
 
         try {
-            ArrayList<Medication> medications = medicationOperation.getAll();
+            ArrayList<RawMaterial> rawMaterials = rawMaterialOperation.getAll();
 
-            medications.forEach(medication -> {
+            rawMaterials.forEach(medication -> {
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(medication.getId())));
                 data.add( new SimpleStringProperty(medication.getName()));
@@ -226,7 +229,7 @@ public class UpdateController implements Initializable {
             e.printStackTrace();
         }
 
-        tableMed.setItems(componentDataTable);
+        tableMaterial.setItems(componentDataTable);
 
     }
 
@@ -266,7 +269,7 @@ public class UpdateController implements Initializable {
                 ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
                 for (int i = 0; i < receipts.size(); i++) {
                     Receipt receipt = receipts.get(i);
-                    ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                    ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                     componentReceipts.forEach(componentReceipt -> {
                         double pre = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -316,7 +319,7 @@ public class UpdateController implements Initializable {
 
     @FXML
     private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = tableMaterial.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
@@ -536,7 +539,7 @@ public class UpdateController implements Initializable {
         componentReceipt.setQte(qte);
         componentReceipt.setPrice(this.priceList.get(index));
 
-        insertComponentMedication(componentReceipt);
+        insertComponentMaterial(componentReceipt);
     }
 
     private void updateComponent(int index) {
@@ -550,7 +553,7 @@ public class UpdateController implements Initializable {
         componentReceipt.setQte(qte);
         componentReceipt.setPrice(this.priceList.get(index));
 
-        updateComponentMedication(componentReceipt);
+        updateComponentMaterial(componentReceipt);
     }
 
     private void deleteComponent(int index) {
@@ -564,7 +567,7 @@ public class UpdateController implements Initializable {
         componentReceipt.setQte(qte);
         componentReceipt.setPrice(this.priceList.get(index));
 
-        deleteComponentMedication(componentReceipt);
+        deleteComponentMaterial(componentReceipt);
     }
 
     private boolean update(Receipt receipt) {
@@ -578,10 +581,10 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean insertComponentMedication(ComponentReceipt componentReceipt){
+    private boolean insertComponentMaterial(ComponentReceipt componentReceipt){
         boolean insert = false;
         try {
-            insert = componentMedicationOperation.insert(componentReceipt);
+            insert = componentReceiptRawMaterialOperation.insert(componentReceipt);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -589,10 +592,10 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean updateComponentMedication(ComponentReceipt componentReceipt){
+    private boolean updateComponentMaterial(ComponentReceipt componentReceipt){
         boolean update = false;
         try {
-            update = componentMedicationOperation.update(componentReceipt,componentReceipt);
+            update = componentReceiptRawMaterialOperation.update(componentReceipt,componentReceipt);
             return update;
         }catch (Exception e){
             e.printStackTrace();
@@ -600,10 +603,10 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean deleteComponentMedication(ComponentReceipt componentReceipt){
+    private boolean deleteComponentMaterial(ComponentReceipt componentReceipt){
         boolean delete = false;
         try {
-            delete = componentMedicationOperation.delete(componentReceipt);
+            delete = componentReceiptRawMaterialOperation.delete(componentReceipt);
             return delete;
         }catch (Exception e){
             e.printStackTrace();
@@ -618,9 +621,9 @@ public class UpdateController implements Initializable {
     @FXML
     void ActionSearchRawMadTable() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tableMed.getItems();
+        ObservableList<List<StringProperty>> items = tableMaterial.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRechercheMad.getText().trim();
+        String txtRecherche = tfRechercheMaterial.getText().trim();
 
         filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
             if (txtRecherche.isEmpty()) {
@@ -634,8 +637,8 @@ public class UpdateController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-        tableMed.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tableMaterial.comparatorProperty());
+        tableMaterial.setItems(sortedList);
     }
 
     @FXML

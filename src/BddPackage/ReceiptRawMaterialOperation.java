@@ -1,6 +1,5 @@
 package BddPackage;
 
-import Models.Product;
 import Models.Receipt;
 
 import java.sql.Date;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ReceiptMedicationOperation extends BDD<Receipt> {
+public class ReceiptRawMaterialOperation extends BDD<Receipt> {
 
     @Override
     public boolean insert(Receipt o) {
@@ -19,7 +18,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public int insertId(Receipt receipt) {
         int ins = 0;
-        String query = "INSERT INTO فاتورة_شراء_الدواء (معرف_المورد,تاريخ_الشراء, رقم_الفاتورة, الدفع)  VALUES (?,?,?,?);";
+        String query = "INSERT INTO فاتورة_شراء_المواد_الخام (معرف_المورد,تاريخ_الشراء, رقم_الفاتورة, الدفع)  VALUES (?,?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,receipt.getIdProvider());
@@ -38,7 +37,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
     @Override
     public boolean update(Receipt o1, Receipt o2) {
         boolean upd = false;
-        String query = "UPDATE فاتورة_شراء_الدواء SET معرف_المورد = ?, تاريخ_الشراء = ?, الدفع = ? WHERE المعرف = ?;";
+        String query = "UPDATE فاتورة_شراء_المواد_الخام SET معرف_المورد = ?, تاريخ_الشراء = ?, الدفع = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o1.getIdProvider());
@@ -54,7 +53,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
     }
     public boolean updatePaying(Receipt o1, Receipt o2) {
         boolean upd = false;
-        String query = "UPDATE فاتورة_شراء_الدواء SET الدفع = ? WHERE المعرف = ?;";
+        String query = "UPDATE فاتورة_شراء_المواد_الخام SET الدفع = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDouble(1,o1.getPaying());
@@ -80,7 +79,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
     @Override
     public ArrayList<Receipt> getAll() {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -103,7 +102,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public Receipt get(int id) {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND المعرف = ?;";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0 AND المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);
@@ -127,7 +126,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public Receipt getArchive(int id) {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 1 AND المعرف = ?;";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 1 AND المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);
@@ -151,7 +150,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public ArrayList<Receipt> getAllByProvider(int idProvider) {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ?;";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0 AND معرف_المورد = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idProvider);
@@ -175,7 +174,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public ArrayList<Receipt> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDate(1,Date.valueOf(dateFirst));
@@ -200,7 +199,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public ArrayList<Receipt> getAllByDateProvider(int idProvider, LocalDate dateFirst, LocalDate dateSecond) {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ? AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0 AND معرف_المورد = ? AND تاريخ_الشراء BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idProvider);
@@ -227,7 +226,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
     public int getLastNumber(){
         int nbr = 0;
         try {
-            String query = "SELECT فاتورة_شراء_الدواء.رقم_الفاتورة , فاتورة_شراء_الدواء.المعرف  FROM فاتورة_شراء_الدواء ORDER BY(المعرف) DESC LIMIT 1 ;";
+            String query = "SELECT فاتورة_شراء_المواد_الخام.رقم_الفاتورة , فاتورة_شراء_المواد_الخام.المعرف  FROM فاتورة_شراء_المواد_الخام ORDER BY(المعرف) DESC LIMIT 1 ;";
             try {
                 PreparedStatement preparedStmt = conn.prepareStatement(query);
                 ResultSet resultSet = preparedStmt.executeQuery();
@@ -245,7 +244,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public boolean AddToArchive(Receipt receipt){
         boolean upd = false;
-        String query = "UPDATE فاتورة_شراء_الدواء SET ارشيف = 1 WHERE المعرف = ?;";
+        String query = "UPDATE فاتورة_شراء_المواد_الخام SET ارشيف = 1 WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,receipt.getId());
@@ -259,7 +258,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public boolean DeleteFromArchive(Receipt receipt){
         boolean upd = false;
-        String query = "UPDATE فاتورة_شراء_الدواء SET ارشيف = 0 WHERE المعرف = ?;";
+        String query = "UPDATE فاتورة_شراء_المواد_الخام SET ارشيف = 0 WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,receipt.getId());
@@ -273,7 +272,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     public ArrayList<Receipt> getAllArchive() {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 1";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 1";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
