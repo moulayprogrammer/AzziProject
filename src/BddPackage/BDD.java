@@ -15,8 +15,8 @@ abstract class BDD<Object> {
 
     public Connection connect(){
         // db parameters
-        String url = "jdbc:sqlite:C:\\Users\\INFO\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
-//        String url = "jdbc:sqlite:C:\\Users\\moula\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
+//        String url = "jdbc:sqlite:C:\\Users\\INFO\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
+        String url = "jdbc:sqlite:C:\\Users\\moula\\IdeaProjects\\AzziProject\\src\\Database\\db.db";
         String user = "root";
         String password = "";
         String unicode= "?useUnicode=yes&characterEncoding=UTF-8";
