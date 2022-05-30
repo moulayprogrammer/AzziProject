@@ -1,4 +1,4 @@
-package Controllers.ReceiptMedicationControllers;
+package Controllers.DeliveryArrivalMedicationControllers;
 
 import BddPackage.*;
 import Models.*;
@@ -22,7 +22,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -36,13 +35,13 @@ public class AddController implements Initializable {
     @FXML
     Label lbFactureNbr,lbDebt,lbTransaction,lbSumWeight,lbSumTotal;
     @FXML
-    ComboBox<String> cbProvider;
+    ComboBox<String> cbDelivery;
     @FXML
-    TextField tfRechercheMad,tfRecherche;
+    TextField tfRecherchePurchases, tfRechercheDeliveryComponent;
     @FXML
-    TableView<List<StringProperty>> tableMed, tablePurchases;
+    TableView<List<StringProperty>> tablePurchases, tableDeliveryComponent;
     @FXML
-    TableColumn<List<StringProperty>,String>  tcIdMed,tcNameMed,tcReferenceMed;
+    TableColumn<List<StringProperty>,String> tcIdPurchases, tcNamePurchases, tcQteRested, tcQteFactored;
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
@@ -50,47 +49,50 @@ public class AddController implements Initializable {
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
-    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
-    private final MedicationOperation medicationOperation = new MedicationOperation();
+    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
+    private final RawMaterialOperation rawMaterialOperation = new RawMaterialOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
+    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
     private final List<Integer> idProviderCombo = new ArrayList<>();
     private int selectedProvider = 0;
     private double totalFacture = 0;
+    private int idFacture = 5 ;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
 
-        tcIdMed.setCellValueFactory(data -> data.getValue().get(0));
-        tcNameMed.setCellValueFactory(data -> data.getValue().get(1));
-        tcReferenceMed.setCellValueFactory(data -> data.getValue().get(2));
+        tcIdPurchases.setCellValueFactory(data -> data.getValue().get(0));
+        tcNamePurchases.setCellValueFactory(data -> data.getValue().get(1));
+        tcQteRested.setCellValueFactory(data -> data.getValue().get(2));
+        tcQteFactored.setCellValueFactory(data -> data.getValue().get(3));
 
-        tcId.setCellValueFactory(data -> data.getValue().get(0));
+        /*tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
         tcPriceU.setCellValueFactory(data -> data.getValue().get(2));
         tcQte.setCellValueFactory(data -> data.getValue().get(3));
-        tcPriceTotal.setCellValueFactory(data -> data.getValue().get(4));
+        tcPriceTotal.setCellValueFactory(data -> data.getValue().get(4));*/
 
-        refreshComponent();
-        refreshComboProvider();
-        setFactureNumber();
-
+        refreshPurchases();
+        /*refreshComboProvider();
+        setFactureNumber();*/
+/*
         // set Date
         dpDate.setValue(LocalDate.now());
 
         //set Combo Search
-        cbProvider.setEditable(true);
-        cbProvider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        TextFields.bindAutoCompletion(cbProvider.getEditor(), cbProvider.getItems());
+        cbDelivery.setEditable(true);
+        cbDelivery.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        TextFields.bindAutoCompletion(cbDelivery.getEditor(), cbDelivery.getItems());
 
-        tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfRecherchePurchases.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
-                ObservableList<List<StringProperty>> items = tableMed.getItems();
+                ObservableList<List<StringProperty>> items = tablePurchases.getItems();
                 FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
                 filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
@@ -101,17 +103,19 @@ public class AddController implements Initializable {
                 });
 
                 SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-                sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-                tableMed.setItems(sortedList);
+                sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
+                tablePurchases.setItems(sortedList);
             }else {
-                refreshComponent();
+                refreshPurchases();
             }
-        });
+        });*/
     }
-
+    public void Init(int idFacture){
+        this.idFacture = 5 ; //idFacture;
+    }
     @FXML
     private void ActionComboProvider(){
-        int index = cbProvider.getSelectionModel().getSelectedIndex();
+        int index = cbDelivery.getSelectionModel().getSelectedIndex();
         if (index >= 0 ) {
             selectedProvider = idProviderCombo.get(index);
             setProviderTransaction(selectedProvider);
@@ -123,10 +127,9 @@ public class AddController implements Initializable {
             double debt = 0.0;
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
-            // Medication
             ArrayList<Receipt> receipts = operation.getAllByProvider(idProvider);
             receipts.forEach(receipt -> {
-                ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentReceipts.forEach(componentReceipt -> {
                     double pr = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -135,7 +138,6 @@ public class AddController implements Initializable {
                 pay.updateAndGet(v -> (double) (v + receipt.getPaying()));
                 trans.updateAndGet(v -> (double) (v + sumR.get()));
             });
-
             debt = trans.get() - pay.get();
             lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
             lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
@@ -158,39 +160,58 @@ public class AddController implements Initializable {
                 comboProviderData.add(provider.getName());
                 idProviderCombo.add(provider.getId());
             });
-            cbProvider.setItems(comboProviderData);
+            cbDelivery.setItems(comboProviderData);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     private void clearCombo(){
-        cbProvider.getSelectionModel().clearSelection();
+        cbDelivery.getSelectionModel().clearSelection();
         comboProviderData.clear();
         idProviderCombo.clear();
         lbDebt.setText("");
         lbTransaction.setText("");
     }
 
-    private void refreshComponent(){
-        ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
+    private void refreshPurchases(){
+        ObservableList<List<StringProperty>> purchasesDataTable = FXCollections.observableArrayList();
 
         try {
-            ArrayList<Medication> medications = medicationOperation.getAll();
+            String query = "SELECT الادوية.الاسم ,  مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.الكمية ,  sum( توصيل_الدواء.الكمية_المفوترة ) as الكمية_المفوترة \n" +
+                    "FROM فاتورة_شراء_الدواء , وصل_توصيل_الدواء , توصيل_الدواء , مشتريات_الدواء , الادوية\n" +
+                    "WHERE وصل_توصيل_الدواء.ارشيف = 0\n" +
+                    "AND فاتورة_شراء_الدواء.المعرف = ?\n" +
+                    "AND الادوية.المعرف = مشتريات_الدواء.معرف_الدواء \n" +
+                    "AND توصيل_الدواء.معرف_الدواء = مشتريات_الدواء.معرف_الدواء\n" +
+                    "AND   فاتورة_شراء_الدواء.المعرف = مشتريات_الدواء.معرف_الفاتورة\n" +
+                    "AND فاتورة_شراء_الدواء.المعرف = وصل_توصيل_الدواء.معرف_الفاتورة \n" +
+                    "AND وصل_توصيل_الدواء.المعرف = توصيل_الدواء.معرف_الوصل  ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,this.idFacture);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+                int qteFacture = resultSet.getInt("الكمية");
+                int qteDelivried = resultSet.getInt("الكمية_المفوترة");
+                int qteRested = qteFacture - qteDelivried ;
 
-            medications.forEach(medication -> {
-                List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(medication.getId())));
-                data.add( new SimpleStringProperty(medication.getName()));
-                data.add(new SimpleStringProperty(medication.getReference()));
-                componentDataTable.add(data);
-            });
+                if (qteRested > 0 ){
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الدواء"))));
+                    data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                    data.add( new SimpleStringProperty(String.valueOf(qteRested)));
+                    data.add( new SimpleStringProperty(String.valueOf(qteFacture)));
+
+                    purchasesDataTable.add(data);
+                }
+
+            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
-        tableMed.setItems(componentDataTable);
+        tablePurchases.setItems(purchasesDataTable);
 
     }
 
@@ -230,7 +251,7 @@ public class AddController implements Initializable {
                 ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
                 for (int i = 0; i < receipts.size(); i++) {
                     Receipt receipt = receipts.get(i);
-                    ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                    ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                     componentReceipts.forEach(componentReceipt -> {
                         double pre = componentReceipt.getPrice() * componentReceipt.getQte();
@@ -280,7 +301,7 @@ public class AddController implements Initializable {
 
     @FXML
     private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
+        List<StringProperty> dataSelected = tablePurchases.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
@@ -294,12 +315,12 @@ public class AddController implements Initializable {
                 }
             }else {
                 try {
-                    TextInputDialog dialog = new TextInputDialog();
+                    TextInputDialog dialog = new TextInputDialog("");
 
-                    dialog.setTitle("السعر");
+                    dialog.setTitle("الكمية");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل سعر الشراء ");
-                    dialog.setContentText("السعر :");
+                    dialog.setHeaderText("ادخل الكمية الموصلة ");
+                    dialog.setContentText("الكمية :");
 
                     Optional<String> result = dialog.showAndWait();
 
@@ -319,7 +340,7 @@ public class AddController implements Initializable {
                     e.printStackTrace();
                 }
             }
-            tablePurchases.setItems(dataTable);
+            tableDeliveryComponent.setItems(dataTable);
             sumTotalTablePorches();
         }
     }
@@ -377,7 +398,7 @@ public class AddController implements Initializable {
     }*/
     @FXML
     private void ActionModifiedQte(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+        int compoSelectedIndex = tableDeliveryComponent.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             TextInputDialog dialog = new TextInputDialog();
 
@@ -394,7 +415,7 @@ public class AddController implements Initializable {
                     double pr = priceList.get(compoSelectedIndex);
                     dataTable.get(compoSelectedIndex).get(3).setValue(qte);
                     dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
+                    tableDeliveryComponent.setItems(dataTable);
                     sumTotalTablePorches();
                 }
             });
@@ -402,7 +423,7 @@ public class AddController implements Initializable {
     }
     @FXML
     private void ActionModifiedPrice(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+        int compoSelectedIndex = tableDeliveryComponent.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             TextInputDialog dialog = new TextInputDialog();
 
@@ -420,7 +441,7 @@ public class AddController implements Initializable {
                     priceList.set(compoSelectedIndex, pr);
                     dataTable.get(compoSelectedIndex).get(2).setValue(String.format(Locale.FRANCE, "%,.2f", pr ));
                     dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
+                    tableDeliveryComponent.setItems(dataTable);
                     sumTotalTablePorches();
                 }
             });
@@ -428,10 +449,10 @@ public class AddController implements Initializable {
     }
     @FXML
     private void ActionDeleteFromComposition(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+        int compoSelectedIndex = tableDeliveryComponent.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             dataTable.remove(compoSelectedIndex);
-            tablePurchases.setItems(dataTable);
+            tableDeliveryComponent.setItems(dataTable);
 
             sumTotalTablePorches();
         }
@@ -553,7 +574,18 @@ public class AddController implements Initializable {
     private boolean insertComponentMedication(ComponentReceipt componentReceipt){
         boolean insert = false;
         try {
-            insert = componentMedicationOperation.insert(componentReceipt);
+            insert = componentReceiptRawMaterialOperation.insert(componentReceipt);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
+        }
+    }
+
+    private boolean insertComponentRawMaterial(ComponentProduction componentProduction){
+        boolean insert = false;
+        try {
+            insert = componentMaterialOperation.insert(componentProduction);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -569,9 +601,9 @@ public class AddController implements Initializable {
     @FXML
     void ActionSearchRawMadTable() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tableMed.getItems();
+        ObservableList<List<StringProperty>> items = tablePurchases.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRechercheMad.getText().trim();
+        String txtRecherche = tfRecherchePurchases.getText().trim();
 
         filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
             if (txtRecherche.isEmpty()) {
@@ -585,26 +617,26 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-        tableMed.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
+        tablePurchases.setItems(sortedList);
     }
 
     @FXML
     private void ActionRefresh(){
         clearRecherche();
-        tablePurchases.setItems(dataTable);
+        tableDeliveryComponent.setItems(dataTable);
     }
 
     private void clearRecherche(){
-        tfRecherche.clear();
+        tfRechercheDeliveryComponent.clear();
     }
 
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tablePurchases.getItems();
+        ObservableList<List<StringProperty>> items = tableDeliveryComponent.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRecherche.getText().trim();
+        String txtRecherche = tfRechercheDeliveryComponent.getText().trim();
 
         filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
             if (txtRecherche.isEmpty()) {
@@ -620,7 +652,7 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
-        tablePurchases.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tableDeliveryComponent.comparatorProperty());
+        tableDeliveryComponent.setItems(sortedList);
     }
 }

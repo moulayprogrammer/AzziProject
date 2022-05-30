@@ -20,7 +20,7 @@ public class  MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         mainPane.setPadding(new Insets(0,10,5,10));
 
-        ShowReceiptRawMaterialScreen();
+        ShowDeliveryArrivalMedicationScreen();
     }
 
     @FXML
@@ -120,6 +120,17 @@ public class  MainController implements Initializable {
     private void ShowReceiptRawMaterialScreen(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowDeliveryArrivalMedicationScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/MainView.fxml"));
             BorderPane temp = loader.load();
             mainPane.setCenter(temp);
         } catch (IOException e) {

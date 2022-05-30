@@ -64,29 +64,29 @@
                   <Image url="@../../Icons/pdf.png" />
                </image>
             </ImageView>
-            <TextField fx:id="tfRecherche" layoutX="1040.0" layoutY="73.0" prefHeight="26.0" prefWidth="234.0">
+            <TextField fx:id="tfRecherche" layoutX="1040.0" layoutY="73.0" prefHeight="26.0" prefWidth="234.0" AnchorPane.rightAnchor="6.0">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </TextField>
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="1208.0" layoutY="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="1208.0" layoutY="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="52.0">
                <image>
                   <Image url="@../../Icons/recherche.png.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="1254.0" layoutY="23.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="1254.0" layoutY="23.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
                <image>
                   <Image url="@../../Icons/refresh.jpeg" />
                </image>
             </ImageView>
             <Separator layoutX="213.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <Separator layoutX="1027.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Separator layoutX="1031.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="243.0" AnchorPane.topAnchor="10.0" />
             <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="67.0" layoutY="63.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/deleteArchive.png" />
                </image>
             </ImageView>
-            <Label layoutX="1042.0" layoutY="24.0" text="البحث">
+            <Label layoutX="1042.0" layoutY="24.0" text="البحث" AnchorPane.rightAnchor="204.0">
                <font>
                   <Font name="System Bold" size="14.0" />
                </font>
@@ -138,7 +138,7 @@
          <center>
             <HBox spacing="15.0" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="table">
+                  <TableView fx:id="table" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="clId" text="المعرف" />
                       <TableColumn fx:id="clProvider" prefWidth="250.0" text="المورد" />
@@ -148,7 +148,7 @@
                         <TableColumn fx:id="clDebt" prefWidth="180.0" text="المبلغ المدين" />
                     </columns>
                   </TableView>
-                  <AnchorPane style="-fx-background-color: #FFF; -fx-border-color: GRAY; -fx-border-width: 0.5;" HBox.hgrow="ALWAYS">
+                  <AnchorPane style="-fx-background-color: #FFF; -fx-border-color: GRAY; -fx-border-width: 0.5;" HBox.hgrow="NEVER">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>

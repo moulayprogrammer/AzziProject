@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.AddController">
+   <content>
+      <AnchorPane minHeight="600.0" style="-fx-background-color: #FFF;">
+         <children>
+            <HBox layoutX="130.0" layoutY="96.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="100.0">
+               <children>
+                  <VBox prefWidth="300.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="130.0" text="المشتريات">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfRecherchePurchases" prefHeight="25.0" promptText="بحث" />
+                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" minHeight="400.0">
+                          <columns>
+                              <TableColumn fx:id="tcIdPurchases" prefWidth="54.0" text="المعرف" visible="false" />
+                              <TableColumn fx:id="tcNamePurchases" prefWidth="100.0" text="الاسم" />
+                              <TableColumn fx:id="tcQteRested" prefWidth="100.0" text="الكمية غير موصلة" />
+                              <TableColumn fx:id="tcQteFactored" prefWidth="100.0" text="الكمية المشترات" />
+                          </columns>
+                        </TableView>
+                        <HBox prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" text="اضافة" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <VBox maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="130.0" text="المواد الموصلة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <HBox prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="150.0" text="حذف سطر" />
+                              <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="tfRechercheDeliveryComponent" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
+                              <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
+                              <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
+                           </children>
+                        </HBox>
+                        <TableView fx:id="tableDeliveryComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0">
+                           <columns>
+                              <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
+                              <TableColumn fx:id="tcName" prefWidth="382.0" text="الاسم" />
+                              <TableColumn fx:id="tcPriceU" prefWidth="208.0" text="الكمية الموصلة" />
+                              <TableColumn fx:id="tcQte" prefWidth="254.0" text="الكمية في الفاتورة " />
+                           </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <VBox layoutX="23.0" layoutY="35.0" prefHeight="90.0" prefWidth="400.0" spacing="5.0" AnchorPane.leftAnchor="500.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="90.0" text="الموصل">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbDelivery" onAction="#ActionComboProvider" prefHeight="25.0" prefWidth="200.0" />
+                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddProvider" text="اضافة موصل" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="90.0" text="سعر التوصيل">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfRechercheMaterial1" prefHeight="25.0" prefWidth="200.0" promptText="السعر" />
+                     </children>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="58.0" prefHeight="100.0" prefWidth="200.0" spacing="10.0" visible="false">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="90.0" text="سعر التوصيل">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfRechercheMaterial11" prefHeight="25.0" prefWidth="200.0" promptText="السعر" visible="false" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <VBox layoutX="29.0" layoutY="15.0" prefHeight="90.0" prefWidth="300.0" spacing="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="120.0" text="التاريخ ">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="dpDate" prefWidth="220.0" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label prefHeight="25.0" prefWidth="120.0" text="رقم الفاتورة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lbFactureNbr" prefHeight="25.0" prefWidth="220.0" text="الدين">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" />
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </content>
+   <header>
+      <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
+         <children>
+            <Label layoutX="26.0" layoutY="19.0" text="وصل توصيل" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <JFXButton fx:id="btnInsert" buttonType="RAISED" layoutX="1137.0" layoutY="16.0" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="تاكيد التوصيل" textFill="#e10bbd">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+         </children>
+      </AnchorPane>
+   </header>
+</DialogPane>
