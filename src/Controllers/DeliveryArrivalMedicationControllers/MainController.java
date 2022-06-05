@@ -59,10 +59,12 @@ public class MainController implements Initializable {
     private final ProviderOperation providerOperation = new ProviderOperation();
     private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private int selectedProvider = 0;
+    private Receipt receipt;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
+        receipt = new Receipt();
 
         /*clId.setCellValueFactory(data -> data.getValue().get(0));
         clDelivery.setCellValueFactory(data -> data.getValue().get(1));
@@ -111,8 +113,37 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
+            selectReceipt();
+
+            if (this.receipt.getDate() != null) {
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
+                DialogPane temp = loader.load();
+                AddController controller = loader.getController();
+                controller.Init(this.receipt);
+                Dialog<Boolean> dialog = new Dialog<>();
+                dialog.setDialogPane(temp);
+                dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
+                dialog.showAndWait();
+            }
+
+            refresh();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void selectReceipt(){
+        try {
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/SelectedReceiptMedicationView.fxml"));
             DialogPane temp = loader.load();
+            SelectedReceiptMedicationController controller = loader.getController();
+            controller.Init(this.receipt);
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
@@ -120,8 +151,6 @@ public class MainController implements Initializable {
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
             dialog.showAndWait();
-
-            refresh();
 
         } catch (IOException e) {
             e.printStackTrace();
