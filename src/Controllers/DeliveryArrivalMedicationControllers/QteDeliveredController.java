@@ -29,7 +29,7 @@ public class QteDeliveredController implements Initializable {
 
         if (strings.size() > 1){
             tfQteFractured.setText(strings.get(0));
-            tfQteDelivered.setText(strings.get(0));
+            tfQteDelivered.setText(strings.get(1));
         }else {
             tfQteFractured.setText(strings.get(0));
             tfQteDelivered.setText(strings.get(0));

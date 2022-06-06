@@ -26,8 +26,9 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
             preparedStmt.setDate(3,Date.valueOf(deliveryArrival.getDate()));
             preparedStmt.setDouble(4,deliveryArrival.getPrice());
             int insert = preparedStmt.executeUpdate();
-            if(insert != -1) ins = preparedStmt.getGeneratedKeys().getInt(1);
-
+            if(insert != -1) {
+                ins = preparedStmt.getGeneratedKeys().getInt(1);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

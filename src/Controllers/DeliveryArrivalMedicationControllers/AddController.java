@@ -50,8 +50,6 @@ public class AddController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
-    private final ReceiptMedicationOperation receiptMedicationOperation = new ReceiptMedicationOperation();
-    private final ComponentReceiptMedicationOperation componentReceiptMedicationOperation = new ComponentReceiptMedicationOperation();
     private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
@@ -70,13 +68,11 @@ public class AddController implements Initializable {
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
-        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(2));
-        tcQteFacture.setCellValueFactory(data -> data.getValue().get(3));
+        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
+        tcQteFacture.setCellValueFactory(data -> data.getValue().get(2));
         tcQteRestedFact.setCellValueFactory(data -> data.getValue().get(4));
 
-
         refreshComboDelivery();
-
 
         // set Date
         dpDate.setValue(LocalDate.now());
@@ -149,51 +145,59 @@ public class AddController implements Initializable {
         ObservableList<List<StringProperty>> purchasesDataTable = FXCollections.observableArrayList();
 
         try {
-            ArrayList<ComponentReceipt> componentReceipts =  componentReceiptMedicationOperation.getAllByReceipt(this.receiptSelected.getId());
-            ArrayList<DeliveryArrival> deliveryArrivals = operation.getAllByReceipt(this.receiptSelected.getId());
+            if (conn.isClosed()) conn = connectBD.connect();
 
-            componentReceipts.forEach(componentReceipt -> {
-                deliveryArrivals.forEach(deliveryArrival -> {
-
-                    ArrayList<ComponentDeliveryArrival> componentDeliveryArrivals = componentDeliveryArrivalMedicationOperation.getAllByDeliveryArrivalAndMedication(deliveryArrival.getId(),componentReceipt.getIdComponent());
-
-
-                });
-            });
-
-            String query = "SELECT الادوية.الاسم ,  مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.الكمية ,  sum( توصيل_الدواء.الكمية_المفوترة ) as الكمية_المفوترة \n" +
-                    "FROM فاتورة_شراء_الدواء , وصل_توصيل_الدواء , توصيل_الدواء , مشتريات_الدواء , الادوية\n" +
-                    "WHERE وصل_توصيل_الدواء.ارشيف = 0\n" +
-                    "AND فاتورة_شراء_الدواء.المعرف = ?\n" +
-                    "AND الادوية.المعرف = مشتريات_الدواء.معرف_الدواء \n" +
-                    "AND توصيل_الدواء.معرف_الدواء = مشتريات_الدواء.معرف_الدواء\n" +
-                    "AND   فاتورة_شراء_الدواء.المعرف = مشتريات_الدواء.معرف_الفاتورة\n" +
-                    "AND فاتورة_شراء_الدواء.المعرف = وصل_توصيل_الدواء.معرف_الفاتورة \n" +
-                    "AND وصل_توصيل_الدواء.المعرف = توصيل_الدواء.معرف_الوصل  ;";
+            String query = "SELECT * FROM مشتريات_الدواء , الادوية WHERE  معرف_الفاتورة = ? AND معرف_الدواء = المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,this.receiptSelected.getId());
-            ResultSet resultSet = preparedStmt.executeQuery();
-            while (resultSet.next()){
-                int qteFacture = resultSet.getInt("الكمية");
-                int qteDelivried = resultSet.getInt("الكمية_المفوترة");
-                int qteRested = qteFacture - qteDelivried ;
+            preparedStmt.setInt(1,receiptSelected.getId());
+            ResultSet resultSetComponent = preparedStmt.executeQuery();
 
-                if (qteRested > 0 ){
-                    List<StringProperty> data = new ArrayList<>();
-                    data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الدواء"))));
-                    data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
-                    data.add( new SimpleStringProperty(String.valueOf(qteRested)));
-                    data.add( new SimpleStringProperty(String.valueOf(qteFacture)));
+            while (resultSetComponent.next()) {
 
-                    purchasesDataTable.add(data);
+                query = "SELECT sum( توصيل_الدواء.الكمية_المفوترة ) as الكمية_المفوترة\n" +
+                        "FROM وصل_توصيل_الدواء , توصيل_الدواء \n" +
+                        "WHERE وصل_توصيل_الدواء.ارشيف = 0\n" +
+                        "AND وصل_توصيل_الدواء.معرف_الفاتورة = ? \n" +
+                        "AND توصيل_الدواء.معرف_الدواء = ? \n" +
+                        "AND توصيل_الدواء.معرف_الوصل = وصل_توصيل_الدواء.المعرف ;";
+
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt(1, this.receiptSelected.getId());
+                preparedStmt.setInt(2, resultSetComponent.getInt("معرف_الدواء"));
+                ResultSet resultSet = preparedStmt.executeQuery();
+                if (resultSet.next()) {
+
+                    int qteFacture = resultSetComponent.getInt("الكمية");
+                    int qteDelivered = resultSet.getInt("الكمية_المفوترة");
+                    int qteRested = qteFacture - qteDelivered;
+
+                    if (qteRested > 0) {
+                        List<StringProperty> data = new ArrayList<>();
+                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
+                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
+                        data.add(new SimpleStringProperty(String.valueOf(qteRested)));
+                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+
+                        purchasesDataTable.add(data);
+                    } else {
+                        List<StringProperty> data = new ArrayList<>();
+                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
+                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
+                        data.add(new SimpleStringProperty(String.valueOf(0)));
+                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+
+                        purchasesDataTable.add(data);
+                    }
                 }
             }
+
+            conn.close();
+
         }catch (Exception e){
             e.printStackTrace();
         }
 
         tablePurchases.setItems(purchasesDataTable);
-
     }
 
     @FXML

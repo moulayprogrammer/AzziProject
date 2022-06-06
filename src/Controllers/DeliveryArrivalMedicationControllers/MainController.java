@@ -42,9 +42,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId, clDelivery,clDate, clFacture, clPrice,clDebt;
-    @FXML
-    Label lbSumAmount,lbSumPaying,lbSumDebt;
+    TableColumn<List<StringProperty>,String> clId, clDelivery,clDate, clFacture, clPrice;
     @FXML
     ComboBox<String> cbDelivery;
     @FXML
@@ -66,15 +64,14 @@ public class MainController implements Initializable {
         conn = connectBD.connect();
         receipt = new Receipt();
 
-        /*clId.setCellValueFactory(data -> data.getValue().get(0));
+        clId.setCellValueFactory(data -> data.getValue().get(0));
         clDelivery.setCellValueFactory(data -> data.getValue().get(1));
         clDate.setCellValueFactory(data -> data.getValue().get(2));
         clFacture.setCellValueFactory(data -> data.getValue().get(3));
         clPrice.setCellValueFactory(data -> data.getValue().get(4));
-        clDebt.setCellValueFactory(data -> data.getValue().get(5));
 
         refresh();
-        refreshComboProvider();
+    /*    refreshComboProvider();
 
         //set Combo Search
         cbDelivery.setEditable(true);
@@ -247,42 +244,27 @@ public class MainController implements Initializable {
     }
 
     private void refresh(){
-        /*try {
-            ArrayList<Receipt> receipts = operation.getAll();
+        try {
             dataTable.clear();
-            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-            receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
 
+            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
-
-                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
 
                 dataTable.add(data);
-            });
-            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
-            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
-            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
+            }
+
             table.setItems(dataTable);
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
     private void refreshComboProvider() {
         /*comboProviderData.clear();
@@ -470,7 +452,7 @@ public class MainController implements Initializable {
                 return true;
             } else if (stringProperties.get(4).toString().contains(txtRecherche)) {
                 return true;
-            }  else return stringProperties.get(5).toString().contains(txtRecherche);
+            }  else return stringProperties.get(4).toString().contains(txtRecherche);
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
