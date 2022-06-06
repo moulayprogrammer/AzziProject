@@ -86,6 +86,30 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         return list;
     }
 
+    public ArrayList<DeliveryArrival> getAllByReceipt(int idReceipt) {
+        ArrayList<DeliveryArrival> list = new ArrayList<>();
+        String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 0 AND معرف_الفاتورة = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idReceipt);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                DeliveryArrival deliveryArrival = new DeliveryArrival();
+                deliveryArrival.setId(resultSet.getInt("المعرف"));
+                deliveryArrival.setIdDelivery(resultSet.getInt("معرف_الموصل"));
+                deliveryArrival.setIdReceipt(resultSet.getInt("معرف_الفاتورة"));
+                deliveryArrival.setDate(resultSet.getDate("التاريخ").toLocalDate());
+                deliveryArrival.setPrice(resultSet.getDouble("السعر"));
+
+                list.add(deliveryArrival);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public DeliveryArrival get(int id) {
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 0 AND المعرف = ?;";

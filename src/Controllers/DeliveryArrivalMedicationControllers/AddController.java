@@ -51,6 +51,7 @@ public class AddController implements Initializable {
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
     private final ReceiptMedicationOperation receiptMedicationOperation = new ReceiptMedicationOperation();
+    private final ComponentReceiptMedicationOperation componentReceiptMedicationOperation = new ComponentReceiptMedicationOperation();
     private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
@@ -148,6 +149,18 @@ public class AddController implements Initializable {
         ObservableList<List<StringProperty>> purchasesDataTable = FXCollections.observableArrayList();
 
         try {
+            ArrayList<ComponentReceipt> componentReceipts =  componentReceiptMedicationOperation.getAllByReceipt(this.receiptSelected.getId());
+            ArrayList<DeliveryArrival> deliveryArrivals = operation.getAllByReceipt(this.receiptSelected.getId());
+
+            componentReceipts.forEach(componentReceipt -> {
+                deliveryArrivals.forEach(deliveryArrival -> {
+
+                    ArrayList<ComponentDeliveryArrival> componentDeliveryArrivals = componentDeliveryArrivalMedicationOperation.getAllByDeliveryArrivalAndMedication(deliveryArrival.getId(),componentReceipt.getIdComponent());
+
+
+                });
+            });
+
             String query = "SELECT الادوية.الاسم ,  مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.الكمية ,  sum( توصيل_الدواء.الكمية_المفوترة ) as الكمية_المفوترة \n" +
                     "FROM فاتورة_شراء_الدواء , وصل_توصيل_الدواء , توصيل_الدواء , مشتريات_الدواء , الادوية\n" +
                     "WHERE وصل_توصيل_الدواء.ارشيف = 0\n" +
