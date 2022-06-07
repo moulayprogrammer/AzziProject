@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReceiptRawMaterialControllers.ArchiveController">
+<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.ArchiveController">
    <content>
       <BorderPane>
          <center>
-            <VBox prefHeight="400.0" prefWidth="600.0">
+            <VBox prefHeight="400.0" prefWidth="600.0" spacing="20.0">
                <children>
                    <AnchorPane prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: #FFF;">
                        <children>
@@ -38,14 +38,13 @@
                            </TextField>
                        </children>
                    </AnchorPane>
-                  <TableView fx:id="table" minHeight="450.0">
+                  <TableView fx:id="table" maxWidth="1.7976931348623157E308" minHeight="450.0">
                      <columns>
-                        <TableColumn fx:id="clId" text="المعرف" />
-                        <TableColumn fx:id="clProvider" prefWidth="250.0" text="المورد" />
-                        <TableColumn fx:id="clDate" prefWidth="140.0" text="تاريخ الشراء" />
-                        <TableColumn fx:id="clAmount" prefWidth="180.0" text="مبلغ الفاتورة" />
-                        <TableColumn fx:id="clPaying" prefWidth="180.0" text="المبلغ المسدد" />
-                        <TableColumn fx:id="clDebt" prefWidth="180.0" text="المبلغ المدين" />
+                        <TableColumn fx:id="clId" text="المعرف" visible="false" />
+                        <TableColumn fx:id="clDelivery" prefWidth="250.0" text="الموصل" />
+                        <TableColumn fx:id="clDate" prefWidth="260.0" text="تاريخ التوصيل" />
+                        <TableColumn fx:id="clFacture" prefWidth="192.0" text="معرف الفاتورة " />
+                        <TableColumn fx:id="clPrice" prefWidth="250.0" text="سعر التوصيل" />
                      </columns>
                   </TableView>
                </children>

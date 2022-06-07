@@ -1,9 +1,8 @@
 package Controllers.DeliveryArrivalMedicationControllers;
 
-import BddPackage.ComponentReceiptRawMaterialOperation;
-import BddPackage.ProviderOperation;
-import BddPackage.ReceiptRawMaterialOperation;
+import BddPackage.*;
 import Models.ComponentReceipt;
+import Models.DeliveryArrival;
 import Models.Provider;
 import Models.Receipt;
 import javafx.beans.property.SimpleStringProperty;
@@ -18,6 +17,9 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,23 +34,25 @@ public class ArchiveController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId,clProvider,clDate,clAmount,clPaying,clDebt;
+    TableColumn<List<StringProperty>,String> clId, clDelivery,clDate, clFacture, clPrice;
 
 
-    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
-    private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
+    private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
+
+    private final ConnectBD connectBD = new ConnectBD();
+    private Connection conn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
+        conn = connectBD.connect();
+
         clId.setCellValueFactory(data -> data.getValue().get(0));
-        clProvider.setCellValueFactory(data -> data.getValue().get(1));
+        clDelivery.setCellValueFactory(data -> data.getValue().get(1));
         clDate.setCellValueFactory(data -> data.getValue().get(2));
-        clAmount.setCellValueFactory(data -> data.getValue().get(3));
-        clPaying.setCellValueFactory(data -> data.getValue().get(4));
-        clDebt.setCellValueFactory(data -> data.getValue().get(5));
+        clFacture.setCellValueFactory(data -> data.getValue().get(3));
+        clPrice.setCellValueFactory(data -> data.getValue().get(4));
 
         refresh();
     }
@@ -58,11 +62,11 @@ public class ArchiveController implements Initializable {
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
             try {
-                Receipt receipt = operation.getArchive(Integer.parseInt(data.get(0).getValue()));
+                DeliveryArrival deliveryArrival = operation.getArchive(Integer.parseInt(data.get(0).getValue()));
 
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الفاتورة" );
+                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الوصل " );
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -73,7 +77,8 @@ public class ArchiveController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(receipt);
+                        operation.DeleteFromArchive(deliveryArrival);
+
                         ActionAnnuler();
                     }
                 });
@@ -84,7 +89,7 @@ public class ArchiveController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار فاتورة لالغاء أرشفتها");
+            alertWarning.setContentText("الرجاء اختيار الوصل لالغاء أرشفته ");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -108,28 +113,21 @@ public class ArchiveController implements Initializable {
 
     private void refresh(){
         try {
-            ArrayList<Receipt> receipts = operation.getAllArchive();
             dataTable.clear();
 
-            receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
-
+            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 1 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
 
                 dataTable.add(data);
-            });
+            }
 
             table.setItems(dataTable);
         }catch (Exception e){
@@ -156,7 +154,7 @@ public class ArchiveController implements Initializable {
                 return true;
             } else if (stringProperties.get(4).toString().contains(txtRecherche)) {
                 return true;
-            }  else return stringProperties.get(5).toString().contains(txtRecherche);
+            }  else return stringProperties.get(4).toString().contains(txtRecherche);
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);

@@ -1,11 +1,8 @@
 package Controllers.DeliveryArrivalMedicationControllers;
 
-import BddPackage.ComponentReceiptRawMaterialOperation;
-import BddPackage.ConnectBD;
-import BddPackage.ProviderOperation;
-import BddPackage.ReceiptRawMaterialOperation;
-import Models.ComponentReceipt;
-import Models.Provider;
+import BddPackage.*;
+import Models.Delivery;
+import Models.DeliveryArrival;
 import Models.Receipt;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -24,15 +21,14 @@ import org.controlsfx.control.textfield.TextFields;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class MainController implements Initializable {
@@ -51,12 +47,14 @@ public class MainController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
-    private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
-    private final List<Integer> idProviderCombo = new ArrayList<>();
-    private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
+    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
+    private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
+    private final List<Integer> idDeliveryCombo = new ArrayList<>();
+
+    private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
     private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
-    private int selectedProvider = 0;
+    private int selectedDelivery = 0;
     private Receipt receipt;
 
     @Override
@@ -71,32 +69,32 @@ public class MainController implements Initializable {
         clPrice.setCellValueFactory(data -> data.getValue().get(4));
 
         refresh();
-    /*    refreshComboProvider();
+        refreshComboDelivery();
 
         //set Combo Search
         cbDelivery.setEditable(true);
         cbDelivery.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        TextFields.bindAutoCompletion(cbDelivery.getEditor(), cbDelivery.getItems());*/
+        TextFields.bindAutoCompletion(cbDelivery.getEditor(), cbDelivery.getItems());
     }
 
     @FXML
     private void ActionSelectComboProvider(){
-        /*int index = cbDelivery.getSelectionModel().getSelectedIndex();
+        int index = cbDelivery.getSelectionModel().getSelectedIndex();
         LocalDate dateFirst = dpFirst.getValue();
         LocalDate dateSecond = dpSecond.getValue();
         if (index >= 0) {
-            selectedProvider = idProviderCombo.get(index);
-            if (dateFirst != null && dateSecond != null) setProviderDateReceipt(selectedProvider,dateFirst,dateSecond);
-            else setProviderReceipt(selectedProvider);
-        }*/
+            selectedDelivery = idDeliveryCombo.get(index);
+            if (dateFirst != null && dateSecond != null) setDeliveryDateDeliveryArrival(selectedDelivery,dateFirst,dateSecond);
+            else setDeliveryToDeliveryArrival(selectedDelivery);
+        }
     }
     @FXML
     private void ActionSelectDate(){
-        /*LocalDate dateFirst = dpFirst.getValue();
+        LocalDate dateFirst = dpFirst.getValue();
         LocalDate dateSecond = dpSecond.getValue();
         if (dateFirst != null && dateSecond != null){
-            if (selectedProvider > 0) setProviderDateReceipt(selectedProvider,dateFirst,dateSecond);
-            else setDateReceipt(dateFirst,dateSecond);
+            if (selectedDelivery > 0) setDeliveryDateDeliveryArrival(selectedDelivery,dateFirst,dateSecond);
+            else setDateDeliveryArrival(dateFirst,dateSecond);
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
@@ -104,7 +102,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
@@ -127,7 +125,7 @@ public class MainController implements Initializable {
                 dialog.showAndWait();
             }
 
-            refresh();
+            ActionRefresh();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,13 +186,13 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionAddToArchive(){
-        /*List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
             try {
-                Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
+                DeliveryArrival  deliveryArrival = operation.get(Integer.parseInt(data.get(0).getValue()));
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الفاتورة" );
+                alertConfirmation.setContentText("هل انت متاكد من ارشفة الوصل" );
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -205,8 +203,9 @@ public class MainController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(receipt);
-                        refresh();
+                        operation.AddToArchive(deliveryArrival);
+
+                        ActionRefresh();
                     }
                 });
 
@@ -216,18 +215,18 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار فاتورة لارشفتها");
+            alertWarning.setContentText("الرجاء اختيار وصل لارشفته");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
 
     @FXML
     private void ActionDeleteFromArchive(){
-       /* try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/ArchiveView.fxml"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -237,10 +236,10 @@ public class MainController implements Initializable {
             closeButton.setVisible(false);
             dialog.showAndWait();
 
-            refresh();
+            ActionRefresh();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void refresh(){
@@ -266,157 +265,120 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
-    private void refreshComboProvider() {
-        /*comboProviderData.clear();
-        idProviderCombo.clear();
+    private void refreshComboDelivery() {
+        clearCombo();
         try {
-            String query = "SELECT * FROM المورد  WHERE ارشيف = 0;";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                while (resultSet.next()){
-                    comboProviderData.add(resultSet.getString("الاسم"));
-                    idProviderCombo.add(resultSet.getInt("المعرف"));
-                }
-                cbDelivery.setItems(comboProviderData);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            ArrayList<Delivery> deliveries = deliveryOperation.getAll();
+
+            deliveries.forEach(delivery -> {
+                comboDeliveryData.add(delivery.getName());
+                idDeliveryCombo.add(delivery.getId());
+            });
+            cbDelivery.setItems(comboDeliveryData);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void clearCombo(){
+        cbDelivery.getSelectionModel().clearSelection();
+        comboDeliveryData.clear();
+        idDeliveryCombo.clear();
+    }
+
+    private void setDeliveryToDeliveryArrival(int selectedDelivery) {
+        try {
+            dataTable.clear();
+
+            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف  ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1, selectedDelivery);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+                List<StringProperty> data = new ArrayList<>();
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
+
+                dataTable.add(data);
             }
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-    }
 
-    private void setProviderReceipt(int selectedProvider) {
-        /*try {
-            ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
-            dataTable.clear();
-            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-            receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
-
-                List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
-
-                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
-
-                dataTable.add(data);
-            });
-            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
-            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
-            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
             table.setItems(dataTable);
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
+
     }
 
-    private void setDateReceipt(LocalDate dateFirst, LocalDate dateSecond) {
-        /*try {
-            ArrayList<Receipt> receipts = operation.getAllByDate(dateFirst,dateSecond);
+    private void setDateDeliveryArrival(LocalDate dateFirst, LocalDate dateSecond) {
+        try {
             dataTable.clear();
-            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-            receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
 
+            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setDate(1, Date.valueOf(dateFirst));
+            preparedStmt.setDate(2, Date.valueOf(dateSecond));
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
-
-                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
 
                 dataTable.add(data);
-            });
-            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
-            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
-            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
+            }
+
             table.setItems(dataTable);
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
 
-    private void setProviderDateReceipt(int selectedProvider ,LocalDate dateFirst, LocalDate dateSecond ){
-        /*try {
-            ArrayList<Receipt> receipts = operation.getAllByDateProvider(selectedProvider,dateFirst,dateSecond);
+    private void setDeliveryDateDeliveryArrival(int selectedDelivery , LocalDate dateFirst, LocalDate dateSecond ){
+        try {
             dataTable.clear();
-            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-            receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
 
+            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1, selectedDelivery);
+            preparedStmt.setDate(2, Date.valueOf(dateFirst));
+            preparedStmt.setDate(3, Date.valueOf(dateSecond));
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
-
-                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
 
                 dataTable.add(data);
-            });
-            lbSumAmount.setText(String.format(Locale.FRANCE, "%,.2f", (sumAmount.get())));
-            lbSumPaying.setText(String.format(Locale.FRANCE, "%,.2f", (sumPaying.get())));
-            lbSumDebt.setText(String.format(Locale.FRANCE, "%,.2f", (sumDebt.get())));
+            }
+
             table.setItems(dataTable);
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
 
     @FXML
     private void ActionRefreshCombo(){
         cbDelivery.getSelectionModel().clearSelection();
+        selectedDelivery = 0;
         LocalDate dateFirst = dpFirst.getValue();
         LocalDate dateSecond = dpSecond.getValue();
-        if (dateFirst != null && dateSecond != null) setDateReceipt(dateFirst , dateSecond);
+        if (dateFirst != null && dateSecond != null) setDateDeliveryArrival(dateFirst , dateSecond);
         else refresh();
     }
     @FXML
     private void ActionRefreshDate(){
         dpFirst.setValue(null);
         dpSecond.setValue(null);
-        if (selectedProvider > 0 ) setProviderReceipt(selectedProvider);
+        if (selectedDelivery > 0 ) setDeliveryToDeliveryArrival(selectedDelivery);
         else refresh();
     }
     @FXML

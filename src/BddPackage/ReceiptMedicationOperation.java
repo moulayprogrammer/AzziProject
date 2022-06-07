@@ -250,7 +250,13 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,receipt.getId());
             int update = preparedStmt.executeUpdate();
-            if(update != -1) upd = true;
+            if(update != -1){
+                query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 1 WHERE معرف_الفاتورة = ?;";
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt(1,receipt.getId());
+                preparedStmt.executeUpdate();
+                upd = true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -264,7 +270,13 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,receipt.getId());
             int update = preparedStmt.executeUpdate();
-            if(update != -1) upd = true;
+            if(update != -1){
+                query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 0 WHERE معرف_الفاتورة = ?;";
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt(1,receipt.getId());
+                preparedStmt.executeUpdate();
+                upd = true;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

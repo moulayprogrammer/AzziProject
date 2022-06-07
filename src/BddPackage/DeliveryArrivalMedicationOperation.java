@@ -1,6 +1,7 @@
 package BddPackage;
 
 import Models.DeliveryArrival;
+import Models.Receipt;
 
 
 import java.sql.Date;
@@ -133,6 +134,81 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
             e.printStackTrace();
         }
         return list.get(0);
+    }
+
+    public ArrayList<DeliveryArrival> getAllArchive() {
+        ArrayList<DeliveryArrival> list = new ArrayList<>();
+        String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 1";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                DeliveryArrival deliveryArrival = new DeliveryArrival();
+                deliveryArrival.setId(resultSet.getInt("المعرف"));
+                deliveryArrival.setIdDelivery(resultSet.getInt("معرف_الموصل"));
+                deliveryArrival.setIdReceipt(resultSet.getInt("معرف_الفاتورة"));
+                deliveryArrival.setDate(resultSet.getDate("التاريخ").toLocalDate());
+                deliveryArrival.setPrice(resultSet.getDouble("السعر"));
+
+                list.add(deliveryArrival);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public DeliveryArrival getArchive(int id) {
+        ArrayList<DeliveryArrival> list = new ArrayList<>();
+        String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 1 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                DeliveryArrival deliveryArrival = new DeliveryArrival();
+                deliveryArrival.setId(resultSet.getInt("المعرف"));
+                deliveryArrival.setIdDelivery(resultSet.getInt("معرف_الموصل"));
+                deliveryArrival.setIdReceipt(resultSet.getInt("معرف_الفاتورة"));
+                deliveryArrival.setDate(resultSet.getDate("التاريخ").toLocalDate());
+                deliveryArrival.setPrice(resultSet.getDouble("السعر"));
+
+                list.add(deliveryArrival);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list.get(0);
+    }
+
+    public boolean AddToArchive(DeliveryArrival deliveryArrival){
+        boolean upd = false;
+        String query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 1 WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,deliveryArrival.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
+    }
+
+    public boolean DeleteFromArchive(DeliveryArrival deliveryArrival){
+        boolean upd = false;
+        String query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 0 WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,deliveryArrival.getId());
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return upd;
     }
 
 }
