@@ -257,8 +257,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
                 preparedStmt.executeUpdate();
                 upd = true;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {            e.printStackTrace();
         }
         return upd;
     }

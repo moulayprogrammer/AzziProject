@@ -165,28 +165,37 @@ public class MainController implements Initializable {
     private void ActionAddToArchive(){
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
-            try {
-                Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الفاتورة" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+            if (data.get(5).getValue().equals("0,00")) {
+                try {
+                    Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الارشفة");
+                    alertConfirmation.setContentText("هل انت متاكد من ارشفة الفاتورة");
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.AddToArchive(receipt);
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("يجب دفع الديون حتى تستطيع ارشفة الفاتورة ");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(receipt);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertWarning.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
