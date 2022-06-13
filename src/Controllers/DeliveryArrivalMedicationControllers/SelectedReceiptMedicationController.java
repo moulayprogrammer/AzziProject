@@ -117,14 +117,15 @@ public class SelectedReceiptMedicationController implements Initializable {
                 });
 
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add( new SimpleStringProperty(provider.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+                data.add(new SimpleStringProperty(String.valueOf(receipt.getId())));//0
+                data.add(new SimpleStringProperty(provider.getName()));//1
+                data.add(new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
+                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
+                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
+                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
 
                 dataTable.add(data);
+
             });
 
             table.setItems(dataTable);

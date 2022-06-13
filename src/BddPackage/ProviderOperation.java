@@ -82,27 +82,26 @@ public class ProviderOperation extends BDD<Provider> {
     }
 
     public Provider get(int id) {
-        ArrayList<Provider> list = new ArrayList<>();
-        String query = "SELECT * FROM المورد  WHERE ارشيف = 0 AND المعرف = ?;";
+        Provider provider = new Provider();
+        String query = "SELECT * FROM المورد WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);
             ResultSet resultSet = preparedStmt.executeQuery();
-            while (resultSet.next()){
+            if (resultSet.next()){
 
-                Provider provider = new Provider();
                 provider.setId(resultSet.getInt("المعرف"));
                 provider.setName(resultSet.getString("الاسم"));
+                System.out.println("p  =  " + resultSet.getString("الاسم") );
                 provider.setAddress(resultSet.getString("العنوان"));
                 provider.setActivity(resultSet.getString("النشاط"));
                 provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
 
-                list.add(provider);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list.get(0);
+        return provider;
     }
 
     public boolean AddToArchive(Provider provider){

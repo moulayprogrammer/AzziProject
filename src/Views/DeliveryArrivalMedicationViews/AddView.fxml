@@ -34,6 +34,7 @@
                               <TableColumn fx:id="tcNamePurchases" prefWidth="100.0" text="الاسم" />
                               <TableColumn fx:id="tcQteRested" prefWidth="100.0" text="الكمية غير موصلة" />
                               <TableColumn fx:id="tcQteFactored" prefWidth="100.0" text="الكمية المشترات" />
+                              <TableColumn fx:id="tcPrice" prefWidth="100.0" text="السعر" visible="false"/>
                           </columns>
                         </TableView>
                         <HBox prefWidth="200.0" spacing="5.0">
@@ -66,7 +67,8 @@
                               <TableColumn fx:id="tcName" prefWidth="382.0" text="الاسم" />
                               <TableColumn fx:id="tcQteDelivery" prefWidth="208.0" text="الكمية الموصلة" />
                               <TableColumn fx:id="tcQteFacture" prefWidth="254.0" text="الكمية في الفاتورة " />
-                              <TableColumn fx:id="tcQteRestedFact" prefWidth="254.0" text="الكمية في الفاتورة " visible="false" />
+                              <TableColumn fx:id="tcQteRestedFact" prefWidth="254.0" text="الكمية المتبقية في الفاتورة " visible="false" />
+                              <TableColumn fx:id="tcPriceUnite" prefWidth="100.0" text="سعر الوحدة" visible="false" />
                            </columns>
                         </TableView>
                      </children>

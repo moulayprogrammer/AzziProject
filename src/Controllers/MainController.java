@@ -20,7 +20,7 @@ public class  MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         mainPane.setPadding(new Insets(0,10,5,10));
 
-        ShowProviderScreen();
+        ShowDeliveryArrivalMedicationScreen();
     }
 
     @FXML

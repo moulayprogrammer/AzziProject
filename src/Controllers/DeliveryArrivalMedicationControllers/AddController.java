@@ -41,16 +41,16 @@ public class AddController implements Initializable {
     @FXML
     TableView<List<StringProperty>> tablePurchases, tableDeliveryComponent;
     @FXML
-    TableColumn<List<StringProperty>,String> tcIdPurchases, tcNamePurchases, tcQteRested, tcQteFactored;
+    TableColumn<List<StringProperty>,String> tcIdPurchases, tcNamePurchases, tcQteRested, tcQteFactored, tcPrice;
     @FXML
-    TableColumn<List<StringProperty>,String> tcId,tcName,tcQteDelivery,tcQteFacture,tcQteRestedFact;
+    TableColumn<List<StringProperty>,String> tcId,tcName,tcQteDelivery,tcQteFacture, tcQteRestedFact, tcPriceUnite;
     @FXML
     Button btnInsert;
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
-    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
+//    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
@@ -65,12 +65,14 @@ public class AddController implements Initializable {
         tcNamePurchases.setCellValueFactory(data -> data.getValue().get(1));
         tcQteRested.setCellValueFactory(data -> data.getValue().get(2));
         tcQteFactored.setCellValueFactory(data -> data.getValue().get(3));
+        tcPrice.setCellValueFactory(data -> data.getValue().get(4));
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
         tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
         tcQteFacture.setCellValueFactory(data -> data.getValue().get(2));
         tcQteRestedFact.setCellValueFactory(data -> data.getValue().get(4));
+        tcPriceUnite.setCellValueFactory(data -> data.getValue().get(5));
 
         refreshComboDelivery();
 
@@ -123,6 +125,8 @@ public class AddController implements Initializable {
     private void refreshComboDelivery() {
         clearCombo();
         try {
+            conn.close();
+            DeliveryOperation deliveryOperation = new DeliveryOperation();
             ArrayList<Delivery> deliveries = deliveryOperation.getAll();
 
             deliveries.forEach(delivery -> {
@@ -177,6 +181,7 @@ public class AddController implements Initializable {
                         data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(qteRested)));
                         data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
 
                         purchasesDataTable.add(data);
                     } else {
@@ -185,6 +190,7 @@ public class AddController implements Initializable {
                         data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(0)));
                         data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
 
                         purchasesDataTable.add(data);
                     }
@@ -250,6 +256,7 @@ public class AddController implements Initializable {
                         data.add(2, new SimpleStringProperty(qteList.get(0)));
                         data.add(3, new SimpleStringProperty(qteList.get(1)));
                         data.add(4, new SimpleStringProperty(dataSelected.get(2).getValue()));
+                        data.add(5, new SimpleStringProperty(dataSelected.get(4).getValue()));
 
                         dataTable.add(data);
                     }
