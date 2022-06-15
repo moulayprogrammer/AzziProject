@@ -48,12 +48,13 @@ public class MainController implements Initializable {
     private Connection conn;
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final DeliveryOperation deliveryOperation = new DeliveryOperation();
+    private final ReceiptMedicationOperation receiptMedicationOperation = new ReceiptMedicationOperation();
+    private final DeliveryArrivalMedicationOperation deliveryArrivalMedicationOperation = new  DeliveryArrivalMedicationOperation();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
 
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
-    private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
+
     private int selectedDelivery = 0;
     private Receipt receipt;
 
@@ -154,10 +155,13 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionUpdate(){
-       /* List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+
         if (data != null){
             try {
-                Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
+                Receipt receipt = receiptMedicationOperation.get(Integer.parseInt(data.get(3).getValue()));
+                DeliveryArrival deliveryArrival = deliveryArrivalMedicationOperation.get(Integer.parseInt(data.get(0).getValue()));
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
@@ -181,7 +185,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
@@ -244,6 +248,7 @@ public class MainController implements Initializable {
 
     private void refresh(){
         try {
+            if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
             String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
@@ -259,6 +264,8 @@ public class MainController implements Initializable {
 
                 dataTable.add(data);
             }
+
+            conn.close();
 
             table.setItems(dataTable);
         }catch (Exception e){

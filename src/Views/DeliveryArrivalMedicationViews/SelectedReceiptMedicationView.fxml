@@ -17,7 +17,7 @@
    <content>
       <BorderPane>
          <center>
-            <VBox prefHeight="400.0" prefWidth="600.0">
+            <VBox prefHeight="400.0" prefWidth="600.0" spacing="10.0">
                <children>
                    <AnchorPane prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: #FFF;">
                        <children>
@@ -38,7 +38,7 @@
                            </TextField>
                        </children>
                    </AnchorPane>
-                  <TableView fx:id="table" minHeight="450.0">
+                  <TableView fx:id="table" minHeight="500.0">
                      <columns>
                         <TableColumn fx:id="clId" text="المعرف" />
                         <TableColumn fx:id="clProvider" prefWidth="250.0" text="المورد" />

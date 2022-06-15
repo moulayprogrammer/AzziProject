@@ -12,6 +12,7 @@ public class ProviderOperation extends BDD<Provider> {
 
     @Override
     public boolean insert(Provider o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO المورد (الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?)";
         try {
@@ -25,11 +26,13 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(Provider o1, Provider o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE المورد SET الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
         try {
@@ -44,6 +47,7 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -59,6 +63,7 @@ public class ProviderOperation extends BDD<Provider> {
 
     @Override
     public ArrayList<Provider> getAll() {
+        connectDatabase();
         ArrayList<Provider> list = new ArrayList<>();
         String query = "SELECT * FROM المورد  WHERE ارشيف = 0;";
         try {
@@ -78,10 +83,12 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public Provider get(int id) {
+        connectDatabase();
         Provider provider = new Provider();
         String query = "SELECT * FROM المورد WHERE المعرف = ?;";
         try {
@@ -92,7 +99,6 @@ public class ProviderOperation extends BDD<Provider> {
 
                 provider.setId(resultSet.getInt("المعرف"));
                 provider.setName(resultSet.getString("الاسم"));
-                System.out.println("p  =  " + resultSet.getString("الاسم") );
                 provider.setAddress(resultSet.getString("العنوان"));
                 provider.setActivity(resultSet.getString("النشاط"));
                 provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
@@ -101,10 +107,12 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return provider;
     }
 
     public boolean AddToArchive(Provider provider){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE المورد SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
@@ -115,10 +123,12 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(Provider provider){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE المورد SET ارشيف = 0 WHERE المعرف = ?; ";
         try {
@@ -129,10 +139,12 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public ArrayList<Provider> getAllArchive() {
+        connectDatabase();
         ArrayList<Provider> list = new ArrayList<>();
         String query = "SELECT * FROM المورد  WHERE ارشيف = 1;";
         try {
@@ -152,6 +164,7 @@ public class ProviderOperation extends BDD<Provider> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

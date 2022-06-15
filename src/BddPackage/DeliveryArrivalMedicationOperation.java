@@ -18,6 +18,7 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
     }
 
     public int insertId(DeliveryArrival deliveryArrival) {
+        connectDatabase();
         int ins = 0;
         String query = "INSERT INTO وصل_توصيل_الدواء ( معرف_الفاتورة , معرف_الموصل , التاريخ , السعر ) VALUES (?,?,?,?);";
         try {
@@ -33,11 +34,13 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(DeliveryArrival o1, DeliveryArrival o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE وصل_توصيل_الدواء SET معرف_الموصل = ?, التاريخ = ?, السعر = ? WHERE المعرف = ?;";
         try {
@@ -51,6 +54,7 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -66,6 +70,7 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
 
     @Override
     public ArrayList<DeliveryArrival> getAll() {
+        connectDatabase();
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 0";
         try {
@@ -85,10 +90,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public ArrayList<DeliveryArrival> getAllByReceipt(int idReceipt) {
+        connectDatabase();
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 0 AND معرف_الفاتورة = ? ;";
         try {
@@ -109,10 +116,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public DeliveryArrival get(int id) {
+        connectDatabase();
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 0 AND المعرف = ?;";
         try {
@@ -133,10 +142,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list.get(0);
     }
 
     public ArrayList<DeliveryArrival> getAllArchive() {
+        connectDatabase();
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 1";
         try {
@@ -156,10 +167,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public DeliveryArrival getArchive(int id) {
+        connectDatabase();
         ArrayList<DeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM وصل_توصيل_الدواء WHERE ارشيف = 1 AND المعرف = ?;";
         try {
@@ -180,10 +193,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list.get(0);
     }
 
     public boolean AddToArchive(DeliveryArrival deliveryArrival){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 1 WHERE المعرف = ?;";
         try {
@@ -194,10 +209,12 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(DeliveryArrival deliveryArrival){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 0 WHERE المعرف = ?;";
         try {
@@ -208,6 +225,7 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 

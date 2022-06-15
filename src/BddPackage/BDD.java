@@ -33,7 +33,7 @@ abstract class BDD<Object> {
         return conn;
     }
 
-    void close(){
+    public void closeDatabase(){
         try {
             if (!conn.isClosed()){
                 conn.close();
@@ -42,6 +42,17 @@ abstract class BDD<Object> {
             e.printStackTrace();
         }
     }
+
+    public void connectDatabase(){
+        try {
+            if (conn.isClosed()){
+                conn = connect();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     abstract public boolean insert(Object o);
     //o1 new value

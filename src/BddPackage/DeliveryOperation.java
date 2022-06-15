@@ -11,6 +11,7 @@ public class DeliveryOperation extends BDD<Delivery> {
 
     @Override
     public boolean insert(Delivery o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO الموصل (الاسم, رقم_رخصة_السياقة, ترقيم_الشاحنة, ترقيم_الشاحنة_2) VALUES (?,?,?,?)";
         try {
@@ -24,11 +25,13 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(Delivery o1, Delivery o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE  الموصل SET  الاسم = ?, رقم_رخصة_السياقة = ?, ترقيم_الشاحنة = ?, ترقيم_الشاحنة_2 = ? WHERE المعرف = ?;;";
         try {
@@ -43,6 +46,7 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -58,6 +62,7 @@ public class DeliveryOperation extends BDD<Delivery> {
 
     @Override
     public ArrayList<Delivery> getAll() {
+        connectDatabase();
         ArrayList<Delivery> list = new ArrayList<>();
         String query = "SELECT * FROM الموصل WHERE ارشيف = 0;;";
         try {
@@ -77,10 +82,12 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public boolean AddToArchive(Delivery delivery){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE الموصل SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
@@ -91,10 +98,12 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(Delivery delivery){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE الموصل SET ارشيف = 0 WHERE المعرف = ?; ";
         try {
@@ -105,10 +114,12 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public ArrayList<Delivery> getAllArchive() {
+        connectDatabase();
         ArrayList<Delivery> list = new ArrayList<>();
         String query = "SELECT * FROM الموصل WHERE ارشيف = 1;;";
         try {
@@ -128,6 +139,7 @@ public class DeliveryOperation extends BDD<Delivery> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

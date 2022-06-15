@@ -11,6 +11,7 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
 
     @Override
     public boolean insert(ComponentReceipt o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO مشتريات_الدواء (معرف_الفاتورة,معرف_الدواء,الكمية,سعر_الوحدة) VALUES (?,?,?,?);";
         try {
@@ -24,11 +25,13 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(ComponentReceipt o1, ComponentReceipt o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE مشتريات_الدواء SET الكمية = ? , سعر_الوحدة = ? WHERE معرف_الفاتورة = ? AND معرف_الدواء = ?;";
         try {
@@ -42,11 +45,13 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     @Override
     public boolean delete(ComponentReceipt o) {
+        connectDatabase();
         boolean del = false;
         String query = "DELETE FROM مشتريات_الدواء WHERE معرف_الفاتورة = ? AND معرف_الدواء = ? ;";
         try {
@@ -59,6 +64,7 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return del;
     }
 
@@ -73,6 +79,7 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
     }
 
     public ArrayList<ComponentReceipt> getAllByReceipt(int idReceipt) {
+        connectDatabase();
         ArrayList<ComponentReceipt> list = new ArrayList<>();
         String query = "SELECT * FROM مشتريات_الدواء WHERE  معرف_الفاتورة = ?;";
         try {
@@ -92,6 +99,7 @@ public class ComponentReceiptMedicationOperation extends BDD<ComponentReceipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

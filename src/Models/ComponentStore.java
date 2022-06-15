@@ -4,6 +4,7 @@ public class ComponentStore {
 
     private int idStore;
     private int idComponent;
+    private int idDeliveryArrival;
     private double price;
     private int qteStored;
     private int qteConsumed;
@@ -14,6 +15,15 @@ public class ComponentStore {
     public ComponentStore(int idStore, int idComponent, double price, int qteStored, int qteConsumed) {
         this.idStore = idStore;
         this.idComponent = idComponent;
+        this.price = price;
+        this.qteStored = qteStored;
+        this.qteConsumed = qteConsumed;
+    }
+
+    public ComponentStore(int idStore, int idComponent, int idDeliveryArrival, double price, int qteStored, int qteConsumed) {
+        this.idStore = idStore;
+        this.idComponent = idComponent;
+        this.idDeliveryArrival = idDeliveryArrival;
         this.price = price;
         this.qteStored = qteStored;
         this.qteConsumed = qteConsumed;
@@ -57,5 +67,13 @@ public class ComponentStore {
 
     public void setQteConsumed(int qteConsumed) {
         this.qteConsumed = qteConsumed;
+    }
+
+    public int getIdDeliveryArrival() {
+        return idDeliveryArrival;
+    }
+
+    public void setIdDeliveryArrival(int idDeliveryArrival) {
+        this.idDeliveryArrival = idDeliveryArrival;
     }
 }

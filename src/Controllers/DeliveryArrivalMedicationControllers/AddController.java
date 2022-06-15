@@ -50,7 +50,6 @@ public class AddController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
-//    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
@@ -125,7 +124,6 @@ public class AddController implements Initializable {
     private void refreshComboDelivery() {
         clearCombo();
         try {
-            conn.close();
             DeliveryOperation deliveryOperation = new DeliveryOperation();
             ArrayList<Delivery> deliveries = deliveryOperation.getAll();
 
@@ -134,6 +132,7 @@ public class AddController implements Initializable {
                 idDeliveryCombo.add(delivery.getId());
             });
             cbDelivery.setItems(comboDeliveryData);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -348,6 +347,7 @@ public class AddController implements Initializable {
             deliveryArrival.setIdDelivery(idDelivery);
             deliveryArrival.setDate(date);
             deliveryArrival.setPrice(paying);
+
 
             int ins = insert(deliveryArrival);
             if (ins != -1){

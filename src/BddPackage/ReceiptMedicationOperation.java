@@ -18,6 +18,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
     }
 
     public int insertId(Receipt receipt) {
+        connectDatabase();
         int ins = 0;
         String query = "INSERT INTO فاتورة_شراء_الدواء (معرف_المورد,تاريخ_الشراء, رقم_الفاتورة, الدفع)  VALUES (?,?,?,?);";
         try {
@@ -32,11 +33,13 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(Receipt o1, Receipt o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE فاتورة_شراء_الدواء SET معرف_المورد = ?, تاريخ_الشراء = ?, الدفع = ? WHERE المعرف = ?;";
         try {
@@ -50,9 +53,11 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
     public boolean updatePaying(Receipt o1, Receipt o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE فاتورة_شراء_الدواء SET الدفع = ? WHERE المعرف = ?;";
         try {
@@ -64,6 +69,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -79,6 +85,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
 
     @Override
     public ArrayList<Receipt> getAll() {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0";
         try {
@@ -98,10 +105,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public Receipt get(int id) {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND المعرف = ?;";
         try {
@@ -122,10 +131,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list.get(0);
     }
 
     public Receipt getArchive(int id) {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 1 AND المعرف = ?;";
         try {
@@ -146,10 +157,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list.get(0);
     }
 
     public ArrayList<Receipt> getAllByProvider(int idProvider) {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ?;";
         try {
@@ -170,10 +183,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public ArrayList<Receipt> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
         try {
@@ -195,10 +210,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public ArrayList<Receipt> getAllByDateProvider(int idProvider, LocalDate dateFirst, LocalDate dateSecond) {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 0 AND معرف_المورد = ? AND تاريخ_الشراء BETWEEN ? AND ? ;";
         try {
@@ -221,10 +238,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public int getLastNumber(){
+        connectDatabase();
         int nbr = 0;
         try {
             String query = "SELECT فاتورة_شراء_الدواء.رقم_الفاتورة , فاتورة_شراء_الدواء.المعرف  FROM فاتورة_شراء_الدواء ORDER BY(المعرف) DESC LIMIT 1 ;";
@@ -240,10 +259,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         }catch (Exception e){
             e.printStackTrace();
         }
+        closeDatabase();
         return nbr;
     }
 
     public boolean AddToArchive(Receipt receipt){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE فاتورة_شراء_الدواء SET ارشيف = 1 WHERE المعرف = ?;";
         try {
@@ -259,10 +280,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
             }
         } catch (SQLException e) {            e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(Receipt receipt){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE فاتورة_شراء_الدواء SET ارشيف = 0 WHERE المعرف = ?;";
         try {
@@ -279,10 +302,12 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public ArrayList<Receipt> getAllArchive() {
+        connectDatabase();
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_الدواء WHERE ارشيف = 1";
         try {
@@ -302,6 +327,7 @@ public class ReceiptMedicationOperation extends BDD<Receipt> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

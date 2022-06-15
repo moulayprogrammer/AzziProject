@@ -11,6 +11,7 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
 
     @Override
     public boolean insert(ComponentDeliveryArrival o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO توصيل_الدواء (معرف_الوصل, معرف_الدواء, الكمية_المفوترة , الكمية_الموصلة) VALUES  (?,?,?,?)";
         try {
@@ -24,11 +25,13 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(ComponentDeliveryArrival o1, ComponentDeliveryArrival o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE توصيل_الدواء SET  الكمية_المفوترة = ? , الكمية_الموصلة = ? WHERE معرف_الوصل = ? AND معرف_الدواء = ?";
         try {
@@ -43,11 +46,13 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     @Override
     public boolean delete(ComponentDeliveryArrival o) {
+        connectDatabase();
         boolean del = false;
         String query = "DELETE FROM توصيل_الدواء WHERE معرف_الوصل = ? AND معرف_الدواء = ? ;";
         try {
@@ -60,6 +65,7 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return del;
     }
 
@@ -70,6 +76,7 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
 
     @Override
     public ArrayList<ComponentDeliveryArrival> getAll() {
+        connectDatabase();
         ArrayList<ComponentDeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM توصيل_الدواء WHERE ارشيف = 0";
         try {
@@ -88,11 +95,13 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
 
     public ArrayList<ComponentDeliveryArrival> getAllByDeliveryArrivalAndMedication(int idDeliveryArrival , int idMedication) {
+        connectDatabase();
         ArrayList<ComponentDeliveryArrival> list = new ArrayList<>();
         String query = "SELECT * FROM توصيل_الدواء WHERE ارشيف = 0 AND معرف_الوصل = ? AND  معرف_الدواء = ?";
         try {
@@ -113,6 +122,7 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
