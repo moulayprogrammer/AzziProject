@@ -2,7 +2,6 @@ package Models;
 
 public class ComponentStore {
 
-    private int idStore;
     private int idComponent;
     private int idDeliveryArrival;
     private double price;
@@ -12,29 +11,12 @@ public class ComponentStore {
     public ComponentStore() {
     }
 
-    public ComponentStore(int idStore, int idComponent, double price, int qteStored, int qteConsumed) {
-        this.idStore = idStore;
-        this.idComponent = idComponent;
-        this.price = price;
-        this.qteStored = qteStored;
-        this.qteConsumed = qteConsumed;
-    }
-
-    public ComponentStore(int idStore, int idComponent, int idDeliveryArrival, double price, int qteStored, int qteConsumed) {
-        this.idStore = idStore;
+    public ComponentStore(int idComponent, int idDeliveryArrival, double price, int qteStored, int qteConsumed) {
         this.idComponent = idComponent;
         this.idDeliveryArrival = idDeliveryArrival;
         this.price = price;
         this.qteStored = qteStored;
         this.qteConsumed = qteConsumed;
-    }
-
-    public int getIdStore() {
-        return idStore;
-    }
-
-    public void setIdStore(int idStore) {
-        this.idStore = idStore;
     }
 
     public int getIdComponent() {

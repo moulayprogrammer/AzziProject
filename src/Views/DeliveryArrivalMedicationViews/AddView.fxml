@@ -34,7 +34,7 @@
                               <TableColumn fx:id="tcNamePurchases" prefWidth="100.0" text="الاسم" />
                               <TableColumn fx:id="tcQteRested" prefWidth="100.0" text="الكمية غير موصلة" />
                               <TableColumn fx:id="tcQteFactored" prefWidth="100.0" text="الكمية المشترات" />
-                              <TableColumn fx:id="tcPrice" prefWidth="100.0" text="السعر" visible="false"/>
+                              <TableColumn fx:id="tcPrice" prefWidth="100.0" text="السعر" visible="false" />
                           </columns>
                         </TableView>
                         <HBox prefWidth="200.0" spacing="5.0">
@@ -64,9 +64,9 @@
                         <TableView fx:id="tableDeliveryComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
-                              <TableColumn fx:id="tcName" prefWidth="382.0" text="الاسم" />
-                              <TableColumn fx:id="tcQteDelivery" prefWidth="208.0" text="الكمية الموصلة" />
-                              <TableColumn fx:id="tcQteFacture" prefWidth="254.0" text="الكمية في الفاتورة " />
+                              <TableColumn fx:id="tcName" prefWidth="371.0" text="الاسم" />
+                              <TableColumn fx:id="tcQteFacture" prefWidth="225.0" text="الكمية في الفاتورة" />
+                              <TableColumn fx:id="tcQteDelivery" prefWidth="220.0" text="الكمية الموصلة" />
                               <TableColumn fx:id="tcQteRestedFact" prefWidth="254.0" text="الكمية المتبقية في الفاتورة " visible="false" />
                               <TableColumn fx:id="tcPriceUnite" prefWidth="100.0" text="سعر الوحدة" visible="false" />
                            </columns>
@@ -150,7 +150,12 @@
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnInsert" buttonType="RAISED" layoutX="1137.0" layoutY="16.0" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="تاكيد التوصيل" textFill="#e10bbd">
+            <JFXButton fx:id="btnInsert" buttonType="RAISED" layoutX="975.0" layoutY="16.0" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="حفظ الوصل" textFill="#e10bbd">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+            <JFXButton fx:id="btnInsert1" buttonType="RAISED" layoutX="1116.0" layoutY="17.0" onAction="#ActionInsertAndStored" prefHeight="30.0" prefWidth="146.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="حفظ و تخزين الوصل" textFill="#e10bbd">
                <font>
                   <Font size="14.0" />
                </font>

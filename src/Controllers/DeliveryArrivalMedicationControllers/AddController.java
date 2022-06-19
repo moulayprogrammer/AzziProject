@@ -51,6 +51,7 @@ public class AddController implements Initializable {
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
@@ -68,8 +69,8 @@ public class AddController implements Initializable {
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
-        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
         tcQteFacture.setCellValueFactory(data -> data.getValue().get(2));
+        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
         tcQteRestedFact.setCellValueFactory(data -> data.getValue().get(4));
         tcPriceUnite.setCellValueFactory(data -> data.getValue().get(5));
 
@@ -174,25 +175,17 @@ public class AddController implements Initializable {
                     int qteDelivered = resultSet.getInt("الكمية_المفوترة");
                     int qteRested = qteFacture - qteDelivered;
 
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
+                    data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                     if (qteRested > 0) {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
-                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(qteRested)));
-                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
-
-                        purchasesDataTable.add(data);
                     } else {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
-                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(0)));
-                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
-
-                        purchasesDataTable.add(data);
                     }
+                    data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
+                    purchasesDataTable.add(data);
                 }
             }
 
@@ -351,7 +344,7 @@ public class AddController implements Initializable {
 
             int ins = insert(deliveryArrival);
             if (ins != -1){
-                insertComponent(ins);
+                insertDeliveryComponent(ins);
                 ActionAnnulledAdd();
             }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
@@ -372,15 +365,57 @@ public class AddController implements Initializable {
         }
     }
 
-    private void insertComponent(int idDeliveryArrival) {
+    @FXML
+    private void ActionInsertAndStored(){
+        int selectedIndexDelivery = cbDelivery.getSelectionModel().getSelectedIndex();
+        LocalDate date = dpDate.getValue();
+        String price = tfPrice.getText().trim();
+
+        if (selectedIndexDelivery != -1 && date != null && !price.isEmpty() && dataTable.size() != 0 ){
+
+            int idDelivery = idDeliveryCombo.get(selectedIndexDelivery);
+            double paying = Double.parseDouble(price);
+
+            DeliveryArrival deliveryArrival = new DeliveryArrival();
+            deliveryArrival.setIdReceipt(this.receiptSelected.getId());
+            deliveryArrival.setIdDelivery(idDelivery);
+            deliveryArrival.setDate(date);
+            deliveryArrival.setPrice(paying);
+
+
+            int ins = insert(deliveryArrival);
+            if (ins != -1){
+                insertDeliveryComponent(ins);
+                insertStoreComponent(ins , paying);
+                ActionAnnulledAdd();
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("خطأ غير معروف");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
+    }
+
+    private void insertDeliveryComponent(int idDeliveryArrival) {
 
         for (int i = 0; i < dataTable.size(); i++) {
 
             List<StringProperty> stringProperties = dataTable.get(i);
 
             int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
-            int qteDel = Integer.parseInt(stringProperties.get(2).getValue());
-            int qteFact = Integer.parseInt(stringProperties.get(3).getValue());
+            int qteDel = Integer.parseInt(stringProperties.get(3).getValue());
+            int qteFact = Integer.parseInt(stringProperties.get(2).getValue());
 
             ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
             componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
@@ -389,6 +424,33 @@ public class AddController implements Initializable {
             componentDeliveryArrival.setQteReceipt(qteFact);
 
             insertComponentDeliveryArrivalMedication(componentDeliveryArrival);
+        }
+    }
+
+    private void insertStoreComponent(int idDeliveryArrival , double payingDelivery){
+
+        int qteTotal = 0;
+        for (int i = 0; i < dataTable.size() ; i++) {
+            qteTotal += Integer.parseInt(dataTable.get(i).get(3).getValue());
+        }
+        double priceDeliveredUnit =  payingDelivery / qteTotal;
+
+        for (int i = 0; i < dataTable.size(); i++) {
+
+            List<StringProperty> stringProperties = dataTable.get(i);
+
+            int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
+            double priceUnit = Double.parseDouble(stringProperties.get(5).getValue()) + priceDeliveredUnit;
+            int qte = Integer.parseInt(stringProperties.get(3).getValue());
+
+            ComponentStore componentStore = new ComponentStore();
+            componentStore.setIdComponent(idComponent);
+            componentStore.setIdDeliveryArrival(idDeliveryArrival);
+            componentStore.setPrice(priceUnit);
+            componentStore.setQteStored(qte);
+            componentStore.setQteConsumed(0);
+
+            insertComponentStoreMedication(componentStore);
         }
     }
 
@@ -407,6 +469,17 @@ public class AddController implements Initializable {
         boolean insert = false;
         try {
             insert = componentDeliveryArrivalMedicationOperation.insert(componentDeliveryArrival);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
+        }
+    }
+
+    private boolean insertComponentStoreMedication(ComponentStore componentStore){
+        boolean insert = false;
+        try {
+            insert = componentStoreMedicationOperation.insert(componentStore);
             return insert;
         }catch (Exception e){
             e.printStackTrace();

@@ -13,15 +13,14 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public boolean insert(ComponentStore o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO تخزين_الادوية (معرف_المخزن, معرف_الدواء, معرف_وصل_التوصيل , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?,?) ; ";
+        String query = "INSERT INTO تخزين_الادوية ( معرف_الدواء, معرف_وصل_التوصيل , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?) ; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o.getIdStore());
-            preparedStmt.setInt(2,o.getIdComponent());
-            preparedStmt.setInt(3,o.getIdDeliveryArrival());
-            preparedStmt.setDouble(4,o.getPrice());
-            preparedStmt.setInt(5,o.getQteStored());
-            preparedStmt.setInt(6,o.getQteConsumed());
+            preparedStmt.setInt(1,o.getIdComponent());
+            preparedStmt.setInt(2,o.getIdDeliveryArrival());
+            preparedStmt.setDouble(3,o.getPrice());
+            preparedStmt.setInt(4,o.getQteStored());
+            preparedStmt.setInt(5,o.getQteConsumed());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -35,15 +34,14 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public boolean update(ComponentStore o1, ComponentStore o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE تخزين_الادوية SET  معرف_المخزن = ? , سعر_الوحدة = ? , كمية_مخزنة = ? , كمية_مستهلكة = ? WHERE معرف_الدواء = ? AND معرف_وصل_التوصيل = ?";
+        String query = "UPDATE تخزين_الادوية SET   سعر_الوحدة = ? , كمية_مخزنة = ? , كمية_مستهلكة = ? WHERE معرف_الدواء = ? AND معرف_وصل_التوصيل = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o1.getIdStore());
-            preparedStmt.setDouble(2,o1.getPrice());
-            preparedStmt.setInt(3,o2.getQteStored());
-            preparedStmt.setInt(4,o2.getQteConsumed());
+            preparedStmt.setDouble(1,o1.getPrice());
+            preparedStmt.setInt(2,o2.getQteStored());
+            preparedStmt.setInt(3,o2.getQteConsumed());
             preparedStmt.setInt(4,o2.getIdComponent());
-            preparedStmt.setInt(4,o2.getIdDeliveryArrival());
+            preparedStmt.setInt(5,o2.getIdDeliveryArrival());
 
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
@@ -90,7 +88,6 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
 
                 ComponentStore componentStore = new ComponentStore();
                 componentStore.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
-                componentStore.setIdStore(resultSet.getInt("معرف_المخزن"));
                 componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
                 componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));

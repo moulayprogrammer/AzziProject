@@ -1,6 +1,7 @@
 package Controllers.DeliveryArrivalMedicationControllers;
 
 import BddPackage.ComponentReceiptMedicationOperation;
+import BddPackage.ConnectBD;
 import BddPackage.ProviderOperation;
 import BddPackage.ReceiptMedicationOperation;
 import Models.ComponentReceipt;
@@ -18,6 +19,9 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,9 +45,12 @@ public class SelectedReceiptMedicationController implements Initializable {
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
 
     private Receipt receipt;
+    private final ConnectBD connectBD = new ConnectBD();
+    private Connection conn;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        conn = connectBD.connect();
 
         clId.setCellValueFactory(data -> data.getValue().get(0));
         clProvider.setCellValueFactory(data -> data.getValue().get(1));
@@ -107,28 +114,65 @@ public class SelectedReceiptMedicationController implements Initializable {
             ArrayList<Receipt> receipts = operation.getAll();
             dataTable.clear();
 
+            if (conn.isClosed()) conn = connectBD.connect();
             receipts.forEach(receipt -> {
-                Provider provider = providerOperation.get(receipt.getIdProvider());
-                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
+                try {
 
-                List<StringProperty> data = new ArrayList<>();
-                data.add(new SimpleStringProperty(String.valueOf(receipt.getId())));//0
-                data.add(new SimpleStringProperty(provider.getName()));//1
-                data.add(new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
-                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+                    int qteRested = 0;
 
-                dataTable.add(data);
+                    String query = "SELECT * FROM مشتريات_الدواء WHERE  معرف_الفاتورة = ? ;";
+                    PreparedStatement preparedStmt = conn.prepareStatement(query);
+                    preparedStmt.setInt(1,receipt.getId());
+                    ResultSet resultSetComponent = preparedStmt.executeQuery();
 
+                    while (resultSetComponent.next()) {
+
+                        query = "SELECT sum( توصيل_الدواء.الكمية_المفوترة ) as الكمية_المفوترة\n" +
+                                "FROM وصل_توصيل_الدواء , توصيل_الدواء \n" +
+                                "WHERE وصل_توصيل_الدواء.ارشيف = 0\n" +
+                                "AND وصل_توصيل_الدواء.معرف_الفاتورة = ? \n" +
+                                "AND توصيل_الدواء.معرف_الدواء = ? \n" +
+                                "AND توصيل_الدواء.معرف_الوصل = وصل_توصيل_الدواء.المعرف ;";
+
+                        preparedStmt = conn.prepareStatement(query);
+                        preparedStmt.setInt(1, receipt.getId());
+                        preparedStmt.setInt(2, resultSetComponent.getInt("معرف_الدواء"));
+                        ResultSet resultSet = preparedStmt.executeQuery();
+                        if (resultSet.next()) {
+
+                            int qteFacture = resultSetComponent.getInt("الكمية");
+                            int qteDelivered = resultSet.getInt("الكمية_المفوترة");
+                            qteRested = qteRested + ( qteFacture - qteDelivered );
+                        }
+                    }
+                    if (qteRested > 0) {
+                        Provider provider = providerOperation.get(receipt.getIdProvider());
+                        ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                        AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                        componentReceipts.forEach(componentReceipt -> {
+                            double pr = componentReceipt.getPrice() * componentReceipt.getQte();
+                            sumR.updateAndGet(v -> (double) (v + pr));
+                        });
+
+                        List<StringProperty> data = new ArrayList<>();
+                        data.add(new SimpleStringProperty(String.valueOf(receipt.getId())));//0
+                        data.add(new SimpleStringProperty(provider.getName()));//1
+                        data.add(new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
+                        data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
+                        data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
+                        data.add(new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+
+                        dataTable.add(data);
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             });
+            conn.close();
 
             table.setItems(dataTable);
+
         }catch (Exception e){
             e.printStackTrace();
         }

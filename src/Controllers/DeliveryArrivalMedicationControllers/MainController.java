@@ -124,9 +124,9 @@ public class MainController implements Initializable {
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);
                 dialog.showAndWait();
-            }
 
-            ActionRefresh();
+                ActionRefresh();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,6 +135,7 @@ public class MainController implements Initializable {
 
     private void selectReceipt(){
         try {
+            this.receipt = new Receipt();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/SelectedReceiptMedicationView.fxml"));
             DialogPane temp = loader.load();
