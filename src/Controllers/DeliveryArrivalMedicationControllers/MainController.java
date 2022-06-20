@@ -17,6 +17,7 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import org.controlsfx.control.textfield.TextFields;
+import sun.dc.pr.PRError;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,7 +39,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId, clDelivery,clDate, clFacture, clPrice;
+    TableColumn<List<StringProperty>,String> clId, clDelivery,clDate, clFacture, clPrice, clValidation;
     @FXML
     ComboBox<String> cbDelivery;
     @FXML
@@ -68,6 +69,7 @@ public class MainController implements Initializable {
         clDate.setCellValueFactory(data -> data.getValue().get(2));
         clFacture.setCellValueFactory(data -> data.getValue().get(3));
         clPrice.setCellValueFactory(data -> data.getValue().get(4));
+        clValidation.setCellValueFactory(data -> data.getValue().get(5));
 
         refresh();
         refreshComboDelivery();
@@ -190,60 +192,105 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionAddToArchive(){
+    private void ActionAddToStore(){
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
-            try {
-                DeliveryArrival  deliveryArrival = operation.get(Integer.parseInt(data.get(0).getValue()));
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الوصل" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+            if (data.get(5).getValue().equals("غير مأكد")) {
+                try {
+                    DeliveryArrival deliveryArrival = operation.get(Integer.parseInt(data.get(0).getValue()));
+
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    alertConfirmation.setHeaderText("تاكيد الوصل");
+                    alertConfirmation.setContentText("هل انت متاكد من تأكيد الوصل \n" +
+                            "\" لا يمكن تعديل أو حذف الوصل بعد التاكيد  \"");
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.StoreDeliveryArrival(deliveryArrival);
+
+                            ActionRefresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.INFORMATION);
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertWarning.setHeaderText("تأكيد ");
+                alertWarning.setContentText("الوصل مؤكد بالفعل");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(deliveryArrival);
-
-                        ActionRefresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertWarning.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار وصل لارشفته");
+            alertWarning.setContentText("الرجاء اختيار وصل لتأكيده");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
         }
     }
 
-
     @FXML
-    private void ActionDeleteFromArchive(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/ArchiveView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-            dialog.showAndWait();
+    private void ActionDelete(){
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+        if (data != null){
+            if (data.get(5).getValue().equals("غير مأكد")) {
+                try {
+                    DeliveryArrival deliveryArrival = operation.get(Integer.parseInt(data.get(0).getValue()));
 
-            ActionRefresh();
-        } catch (IOException e) {
-            e.printStackTrace();
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    alertConfirmation.setHeaderText("حذف الوصل");
+                    alertConfirmation.setContentText("هل انت متاكد من حذف الوصل ");
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.delete(deliveryArrival);
+
+                            ActionRefresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.INFORMATION);
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertWarning.setHeaderText("الحذف ");
+                alertWarning.setContentText("الوصل مؤكد بالفعل لا يمكنك حذفه");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء اختيار وصل لتأكيده");
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
         }
     }
 
@@ -252,16 +299,22 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
+
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
+                int confirmation = resultSet.getInt("التاكيد");
+                if (confirmation != 0 ) data.add( new SimpleStringProperty("مأكد"));
+                else data.add( new SimpleStringProperty("غير مأكد"));
 
                 dataTable.add(data);
             }
@@ -296,22 +349,30 @@ public class MainController implements Initializable {
 
     private void setDeliveryToDeliveryArrival(int selectedDelivery) {
         try {
+            if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف  ;";
+            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1, selectedDelivery);
+            preparedStmt.setInt(1,selectedDelivery);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
+
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
+                int confirmation = resultSet.getInt("التاكيد");
+                if (confirmation != 0 ) data.add( new SimpleStringProperty("مأكد"));
+                else data.add( new SimpleStringProperty("غير مأكد"));
 
                 dataTable.add(data);
             }
+            conn.close();
 
             table.setItems(dataTable);
         }catch (Exception e){
@@ -322,23 +383,31 @@ public class MainController implements Initializable {
 
     private void setDateDeliveryArrival(LocalDate dateFirst, LocalDate dateSecond) {
         try {
+            if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setDate(1, Date.valueOf(dateFirst));
-            preparedStmt.setDate(2, Date.valueOf(dateSecond));
+            preparedStmt.setDate(1,Date.valueOf(dateFirst));
+            preparedStmt.setDate(2,Date.valueOf(dateSecond));
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
+
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
+                int confirmation = resultSet.getInt("التاكيد");
+                if (confirmation != 0 ) data.add( new SimpleStringProperty("مأكد"));
+                else data.add( new SimpleStringProperty("غير مأكد"));
 
                 dataTable.add(data);
             }
+            conn.close();
 
             table.setItems(dataTable);
         }catch (Exception e){
@@ -348,24 +417,33 @@ public class MainController implements Initializable {
 
     private void setDeliveryDateDeliveryArrival(int selectedDelivery , LocalDate dateFirst, LocalDate dateSecond ){
         try {
+            if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT * FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+
+            String query = " SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1, selectedDelivery);
-            preparedStmt.setDate(2, Date.valueOf(dateFirst));
-            preparedStmt.setDate(3, Date.valueOf(dateSecond));
+            preparedStmt.setInt(1,selectedDelivery);
+            preparedStmt.setDate(2,Date.valueOf(dateFirst));
+            preparedStmt.setDate(3,Date.valueOf(dateSecond));
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
+
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add( new SimpleStringProperty(resultSet.getDate("التاريخ").toLocalDate().toString()));
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_الفاتورة"))));
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (resultSet.getDouble("السعر")))));
+                int confirmation = resultSet.getInt("التاكيد");
+                if (confirmation != 0 ) data.add( new SimpleStringProperty("مأكد"));
+                else data.add( new SimpleStringProperty("غير مأكد"));
 
                 dataTable.add(data);
             }
+            conn.close();
 
             table.setItems(dataTable);
         }catch (Exception e){
@@ -412,7 +490,7 @@ public class MainController implements Initializable {
 
         filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
             if (txtRecherche.isEmpty()) {
-                //loadDataInTable();
+                ActionRefresh();
                 return true;
             } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
                 return true;
@@ -422,7 +500,7 @@ public class MainController implements Initializable {
                 return true;
             } else if (stringProperties.get(4).toString().contains(txtRecherche)) {
                 return true;
-            }  else return stringProperties.get(4).toString().contains(txtRecherche);
+            }  else return stringProperties.get(5).toString().contains(txtRecherche);
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);

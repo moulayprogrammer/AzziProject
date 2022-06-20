@@ -95,10 +95,11 @@
          <center>
             <TableView fx:id="table" BorderPane.alignment="CENTER">
               <columns>
-                <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
-                <TableColumn fx:id="clName" prefWidth="525.0" text="الاسم" />
-                  <TableColumn fx:id="clReference" prefWidth="198.0" text="المرجع" />
-                  <TableColumn fx:id="clLimiteQte" prefWidth="369.0" text=" اقل كمية بالكلغ" />
+                 <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
+                 <TableColumn fx:id="clName" prefWidth="318.0" text="الاسم" />
+                 <TableColumn fx:id="clReference" prefWidth="260.0" text="المرجع" />
+                  <TableColumn fx:id="clQte" prefWidth="253.0" text="الكمية في المخزن" />
+                 <TableColumn fx:id="clLimiteQte" prefWidth="253.0" text="كمية التنبيه" />
               </columns>
             </TableView>
          </center>

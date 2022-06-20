@@ -9,6 +9,8 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -30,7 +32,7 @@ public class MainController implements Initializable {
     @FXML
     TableColumn<Medication,String> clName,clReference;
     @FXML
-    TableColumn<Medication,Integer> clId,clLimiteQte;
+    TableColumn<Medication,Integer> clId,clLimiteQte,clQte;
 
 
     private final ObservableList<Medication> dataTable = FXCollections.observableArrayList();
@@ -42,6 +44,7 @@ public class MainController implements Initializable {
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
         clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clQte.setCellValueFactory(new PropertyValueFactory<>("qte"));
 
         refresh();
     }
@@ -54,6 +57,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
@@ -76,6 +82,9 @@ public class MainController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
                 dialog.showAndWait();
                 refresh();
 
@@ -102,6 +111,7 @@ public class MainController implements Initializable {
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
                 alertConfirmation.setContentText("هل انت متاكد من ارشفة الدواء" );
+                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -139,6 +149,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
@@ -148,6 +161,7 @@ public class MainController implements Initializable {
     }
 
     private void refresh(){
+
         ArrayList<Medication> medication = operation.getAll();
         dataTable.setAll(medication);
         table.setItems(dataTable);

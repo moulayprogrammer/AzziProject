@@ -57,7 +57,9 @@ public class MedicationOperation extends BDD<Medication> {
     @Override
     public ArrayList<Medication> getAll() {
         ArrayList<Medication> list = new ArrayList<>();
-        String query = "SELECT * FROM الادوية WHERE ارشيف = 0;";
+        String query = "SELECT *,(SELECT SUM(تخزين_الادوية.كمية_مخزنة) FROM تخزين_الادوية WHERE تخزين_الادوية.معرف_الدواء = الادوية.المعرف) AS الكمية_المخزنة\n" +
+                "    ,(SELECT SUM(تخزين_الادوية.كمية_مستهلكة) FROM تخزين_الادوية WHERE تخزين_الادوية.معرف_الدواء = الادوية.المعرف) AS الكمية_المستهلكة \n" +
+                "    FROM  الادوية  WHERE ارشيف = 0;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -68,6 +70,7 @@ public class MedicationOperation extends BDD<Medication> {
                 medication.setName(resultSet.getString("الاسم"));
                 medication.setReference(resultSet.getString("المرجع"));
                 medication.setLimitQte(resultSet.getInt("اقل_كمية"));
+                medication.setQte(resultSet.getInt("الكمية_المخزنة") - resultSet.getInt("الكمية_المستهلكة"));
 
                 list.add(medication);
             }
@@ -118,6 +121,7 @@ public class MedicationOperation extends BDD<Medication> {
                 medication.setName(resultSet.getString("الاسم"));
                 medication.setReference(resultSet.getString("المرجع"));
                 medication.setLimitQte(resultSet.getInt("اقل_كمية"));
+
 
                 list.add(medication);
             }

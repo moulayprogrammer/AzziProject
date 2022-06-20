@@ -1,7 +1,8 @@
 package BddPackage;
 
+import Models.ComponentDeliveryArrival;
+import Models.ComponentStore;
 import Models.DeliveryArrival;
-import Models.Receipt;
 
 
 import java.sql.Date;
@@ -10,7 +11,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
+
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
 
     @Override
     public boolean insert(DeliveryArrival o) {
@@ -60,7 +64,20 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
 
     @Override
     public boolean delete(DeliveryArrival o) {
-        return false;
+        connectDatabase();
+        boolean del = false;
+        String query = "DELETE FROM وصل_توصيل_الدواء WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getId());
+
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return del;
     }
 
     @Override
@@ -197,15 +214,37 @@ public class DeliveryArrivalMedicationOperation extends BDD<DeliveryArrival>{
         return list.get(0);
     }
 
-    public boolean AddToArchive(DeliveryArrival deliveryArrival){
+    public boolean StoreDeliveryArrival(DeliveryArrival deliveryArrival){
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE وصل_توصيل_الدواء SET ارشيف = 1 WHERE المعرف = ?;";
+        String query = "SELECT * FROM توصيل_الدواء, وصل_توصيل_الدواء, مشتريات_الدواء WHERE وصل_توصيل_الدواء.المعرف = ? AND  معرف_الوصل = المعرف \n" +
+                "AND مشتريات_الدواء.معرف_الدواء = توصيل_الدواء.معرف_الدواء AND مشتريات_الدواء.معرف_الفاتورة = وصل_توصيل_الدواء.معرف_الفاتورة";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,deliveryArrival.getId());
-            int update = preparedStmt.executeUpdate();
-            if(update != -1) upd = true;
+            ResultSet resultSet = preparedStmt.executeQuery();
+            ArrayList<ComponentStore> componentStores = new ArrayList<>();
+            int totQte = 0;
+            double priceDelivery = 0;
+            while (resultSet.next()){
+                priceDelivery = resultSet.getDouble("السعر");
+                ComponentStore componentStore = new ComponentStore();//
+                componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_الوصل"));
+                componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
+                int qte = resultSet.getInt("الكمية_الموصلة");
+                totQte += qte;
+                componentStore.setQteStored(qte);
+                componentStore.setQteConsumed(0);
+                componentStores.add(componentStore);
+            }
+            double priceUnitDelivery = priceDelivery / totQte ;
+            for (int i = 0; i < componentStores.size(); i++) {
+                ComponentStore componentStore = componentStores.get(i);
+                componentStore.setPrice(componentStore.getPrice() + priceUnitDelivery);
+
+                upd = componentStoreMedicationOperation.insert(componentStore);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

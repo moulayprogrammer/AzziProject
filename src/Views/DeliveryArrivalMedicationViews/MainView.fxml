@@ -38,7 +38,7 @@
                </font>
             </Label>
             <Separator layoutX="100.0" layoutY="14.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="25.0" layoutY="63.0" onMousePressed="#ActionAddToArchive" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="25.0" layoutY="63.0" onMousePressed="#ActionAddToStore" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/select.jpg" />
                </image>
@@ -80,7 +80,7 @@
             </ImageView>
             <Separator layoutX="213.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
             <Separator layoutX="1031.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="243.0" AnchorPane.topAnchor="10.0" />
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="65.0" layoutY="61.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="65.0" layoutY="61.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../../Icons/delete.png" />
                </image>
@@ -142,6 +142,7 @@
                   <TableColumn fx:id="clDate" prefWidth="265.0" text="تاريخ التوصيل" />
                   <TableColumn fx:id="clFacture" prefWidth="309.0" text="معرف الفاتورة " />
                   <TableColumn fx:id="clPrice" prefWidth="275.0" text="سعر التوصيل" />
+                  <TableColumn fx:id="clValidation" prefWidth="130.0" text="تاكيد الوصل" />
               </columns>
                <BorderPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

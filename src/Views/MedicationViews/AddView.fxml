@@ -11,11 +11,22 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.AddController">
-   <content>
-      <AnchorPane prefHeight="493.0" prefWidth="550.0" style="-fx-background-color: #FFF;">
+<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.AddController">
+   <header>
+      <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
-            <HBox layoutX="14.0" layoutY="46.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0">
+            <Label layoutX="10.0" layoutY="12.0" text="إضافة دواء" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </header>
+   <content>
+      <AnchorPane prefHeight="400.0">
+         <children>
+            <HBox fillHeight="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                <children>
                   <VBox prefWidth="200.0" spacing="30.0">
                      <children>
@@ -38,49 +49,42 @@
                   </VBox>
                   <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="30.0">
                      <children>
-                        <TextField fx:id="tfName" prefHeight="26.0" prefWidth="268.0" />
+                        <TextField fx:id="tfName" prefHeight="26.0" prefWidth="270.0" />
                         <TextField fx:id="tfReference" prefHeight="26.0" prefWidth="268.0" />
                         <TextField fx:id="tfLimiteQte" prefHeight="26.0" prefWidth="268.0" />
                      </children>
                   </VBox>
                </children>
             </HBox>
+            <HBox alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <Button fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onAction="#ActionInsert" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textAlignment="CENTER" textFill="#2005a8">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/Save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#ActionAnnulledAdd" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.71" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
    </content>
-   <header>
-      <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
-         <children>
-            <Button fx:id="btnInsert" layoutX="650.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionInsert" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8" AnchorPane.rightAnchor="187.0">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/Save.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button layoutX="838.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionAnnulledAdd" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/delete.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label layoutX="26.0" layoutY="20.0" text="إضافة دواء">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-         </children>
-      </AnchorPane>
-   </header>
 </DialogPane>
