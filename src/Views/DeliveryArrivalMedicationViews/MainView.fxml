@@ -13,124 +13,182 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.MainController">
    <top>
-      <AnchorPane prefHeight="120.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
+      <HBox BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="22.0" fitWidth="27.0" layoutX="25.0" layoutY="22.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/add.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="67.0" layoutY="19.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/config.jpg" />
-               </image>
-               <viewport>
-                  <Rectangle2D />
-               </viewport>
-            </ImageView>
-            <Label layoutX="216.0" layoutY="32.0">
-               <font>
-                  <Font name="System Bold" size="11.0" />
-               </font>
-            </Label>
-            <Separator layoutX="100.0" layoutY="14.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="25.0" layoutY="63.0" onMousePressed="#ActionAddToStore" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/select.jpg" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="34.0" fitWidth="28.0" layoutX="170.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/excel.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="46.0" fitWidth="30.0" layoutX="120.0" layoutY="16.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/apercu.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="120.0" layoutY="58.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/print.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="30.0" fitWidth="28.0" layoutX="170.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/pdf.png" />
-               </image>
-            </ImageView>
-            <TextField fx:id="tfRecherche" layoutX="1040.0" layoutY="73.0" prefHeight="26.0" prefWidth="234.0" AnchorPane.rightAnchor="6.0">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </TextField>
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="1208.0" layoutY="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="52.0">
-               <image>
-                  <Image url="@../../Icons/recherche.png.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="1254.0" layoutY="23.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
-               <image>
-                  <Image url="@../../Icons/refresh.jpeg" />
-               </image>
-            </ImageView>
-            <Separator layoutX="213.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-            <Separator layoutX="1031.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="243.0" AnchorPane.topAnchor="10.0" />
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="65.0" layoutY="61.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/delete.png" />
-               </image>
-            </ImageView>
-            <Label layoutX="1042.0" layoutY="24.0" text="البحث" AnchorPane.rightAnchor="204.0">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="225.0" layoutY="14.0" text="التاريخ">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="225.0" layoutY="44.0" text="من">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="225.0" layoutY="74.0" text="الى">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <DatePicker fx:id="dpFirst" layoutX="255.0" layoutY="43.0" />
-            <DatePicker fx:id="dpSecond" layoutX="255.0" layoutY="73.0" />
-            <Separator layoutX="453.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" />
-            <Label layoutX="465.0" layoutY="14.0" text="الموصل">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <ImageView fitHeight="20.0" fitWidth="23.0" layoutX="376.0" layoutY="15.0" onMousePressed="#ActionSelectDate" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/recherche.png.png" />
-               </image>
-            </ImageView>
-            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="413.0" layoutY="15.0" onMousePressed="#ActionRefreshDate" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/refresh.jpeg" />
-               </image>
-            </ImageView>
-            <ComboBox fx:id="cbDelivery" layoutX="467.0" layoutY="44.0" onAction="#ActionSelectComboProvider" prefHeight="25.0" prefWidth="219.0" />
-            <ImageView fitHeight="19.0" fitWidth="19.0" layoutX="700.0" layoutY="47.0" onMousePressed="#ActionRefreshCombo" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../../Icons/refresh.jpeg" />
-               </image>
-            </ImageView>
+            <AnchorPane prefWidth="100.0" HBox.hgrow="NEVER">
+               <children>
+                  <ImageView fitHeight="22.0" fitWidth="27.0" layoutX="34.0" layoutY="26.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                     <image>
+                        <Image url="@../../Icons/add.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="85.0" layoutY="14.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="16.0">
+                     <image>
+                        <Image url="@../../Icons/config.jpg" />
+                     </image>
+                     <viewport>
+                        <Rectangle2D />
+                     </viewport>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="47.0" layoutY="71.0" onMousePressed="#ActionAddToStore" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                     <image>
+                        <Image url="@../../Icons/select.jpg" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="68.0" layoutY="66.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="67.0">
+                     <image>
+                        <Image url="@../../Icons/delete.png" />
+                     </image>
+                  </ImageView>
+                  <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="100.0" HBox.hgrow="NEVER">
+               <children>
+                  <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <ImageView fitHeight="46.0" fitWidth="30.0" layoutX="49.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+                     <image>
+                        <Image url="@../../Icons/apercu.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="30.0" fitWidth="28.0" layoutX="55.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="20.0">
+                     <image>
+                        <Image url="@../../Icons/pdf.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="33.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
+                     <image>
+                        <Image url="@../../Icons/print.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fitHeight="34.0" fitWidth="28.0" layoutX="86.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="70.0">
+                     <image>
+                        <Image url="@../../Icons/excel.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="120.0" prefWidth="320.0" HBox.hgrow="NEVER">
+               <children>
+                  <VBox prefHeight="120.0" prefWidth="300.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label text="التاريخ">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                              <ImageView fitHeight="20.0" fitWidth="23.0" onMousePressed="#ActionSelectDate" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/recherche.png.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="19.0" fitWidth="19.0" onMousePressed="#ActionRefreshDate" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/refresh.jpeg" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="30.0">
+                           <children>
+                              <Label prefWidth="50.0" text="من">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker fx:id="dpFirst" prefWidth="220.0" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="31.0" spacing="30.0">
+                           <children>
+                              <Label prefWidth="50.0" text="الى">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker fx:id="dpSecond" prefWidth="220.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Separator layoutX="312.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="312.0" AnchorPane.rightAnchor="-6.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefWidth="310.0" HBox.hgrow="NEVER">
+               <children>
+                  <VBox prefHeight="120.0" prefWidth="260.0" spacing="10.0" AnchorPane.topAnchor="10.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label text="الموصل">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                              <ImageView fitHeight="19.0" fitWidth="19.0" onMousePressed="#ActionRefreshCombo" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/refresh.jpeg" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <ComboBox fx:id="cbDelivery" onAction="#ActionSelectComboProvider" prefHeight="25.0" prefWidth="300.0" />
+                     </children>
+                  </VBox>
+                  <Separator layoutX="264.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #FFF;" HBox.hgrow="ALWAYS" />
+            <AnchorPane layoutX="1004.0" layoutY="10.0" prefHeight="120.0" prefWidth="294.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
+               <children>
+                  <VBox prefHeight="120.0" prefWidth="250.0">
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label text="البحث">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font name="System Bold" size="11.0" />
+                                 </font>
+                              </Label>
+                              <ImageView fitHeight="20.0" fitWidth="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/recherche.png.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="19.0" fitWidth="19.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/refresh.jpeg" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <TextField fx:id="tfRecherche1" prefHeight="26.0" prefWidth="234.0">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <Separator layoutX="273.0" layoutY="10.0" orientation="VERTICAL" prefHeight="98.0" prefWidth="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
          </children>
-      </AnchorPane>
+      </HBox>
    </top>
    <center>
       <BorderPane BorderPane.alignment="CENTER">
