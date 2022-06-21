@@ -17,7 +17,6 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import org.controlsfx.control.textfield.TextFields;
-import sun.dc.pr.PRError;
 
 import java.io.IOException;
 import java.net.URL;
@@ -53,7 +52,6 @@ public class MainController implements Initializable {
     private final DeliveryArrivalMedicationOperation deliveryArrivalMedicationOperation = new  DeliveryArrivalMedicationOperation();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
-
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
 
     private int selectedDelivery = 0;
@@ -159,27 +157,29 @@ public class MainController implements Initializable {
     @FXML
     private void ActionUpdate(){
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
-
         if (data != null){
-            try {
-                Receipt receipt = receiptMedicationOperation.get(Integer.parseInt(data.get(3).getValue()));
-                DeliveryArrival deliveryArrival = deliveryArrivalMedicationOperation.get(Integer.parseInt(data.get(0).getValue()));
+            if (data.get(5).getValue().equals("غير مأكد")) {
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/UpdateView.fxml"));
-                DialogPane temp = loader.load();
-                UpdateController controller = loader.getController();
-                controller.Init(receipt);
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
-                refresh();
+                try {
+                    Receipt receipt = receiptMedicationOperation.get(Integer.parseInt(data.get(3).getValue()));
+                    DeliveryArrival deliveryArrival = deliveryArrivalMedicationOperation.get(Integer.parseInt(data.get(0).getValue()));
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/UpdateView.fxml"));
+                    DialogPane temp = loader.load();
+                    UpdateController controller = loader.getController();
+                    controller.Init(receipt,deliveryArrival);
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setDialogPane(temp);
+                    dialog.resizableProperty().setValue(false);
+                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    closeButton.setVisible(false);
+                    dialog.showAndWait();
+                    refresh();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
@@ -420,7 +420,6 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-
             String query = " SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
                     " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
                     "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
@@ -429,6 +428,7 @@ public class MainController implements Initializable {
             preparedStmt.setDate(2,Date.valueOf(dateFirst));
             preparedStmt.setDate(3,Date.valueOf(dateSecond));
             ResultSet resultSet = preparedStmt.executeQuery();
+
             while (resultSet.next()){
 
                 List<StringProperty> data = new ArrayList<>();

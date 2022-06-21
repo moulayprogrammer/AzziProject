@@ -1,10 +1,7 @@
 package Controllers.DeliveryArrivalMedicationControllers;
 
 import BddPackage.*;
-import Models.ComponentDeliveryArrival;
-import Models.Delivery;
-import Models.DeliveryArrival;
-import Models.Receipt;
+import Models.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -46,21 +43,33 @@ public class UpdateController implements Initializable {
     @FXML
     TableView<List<StringProperty>> tablePurchases, tableDeliveryComponent;
     @FXML
-    TableColumn<List<StringProperty>,String> tcIdPurchases, tcNamePurchases, tcQteRested, tcQteFactored;
+    TableColumn<List<StringProperty>,String> tcIdPurchases, tcNamePurchases, tcQteRested, tcQteFactored, tcPrice;
     @FXML
-    TableColumn<List<StringProperty>,String> tcId,tcName,tcQteDelivery,tcQteFacture,tcQteRestedFact;
+    TableColumn<List<StringProperty>,String> tcId,tcName,tcQteDelivery,tcQteFacture, tcQteRestedFact, tcPriceUnite;
     @FXML
     Button btnInsert;
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
-    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
     private Receipt receiptSelected;
+    private DeliveryArrival deliveryArrivalSelected;
+
+    /*SELECT  توصيل_الدواء.معرف_الوصل, توصيل_الدواء.معرف_الدواء , توصيل_الدواء.الكمية_المفوترة, توصيل_الدواء.الكمية_الموصلة, الادوية.الاسم, مشتريات_الدواء.سعر_الوحدة, مشتريات_الدواء.الكمية
+, وصل_توصيل_الدواء.معرف_الفاتورة
+,
+( SELECT sum(توصيل_الدواء.الكمية_المفوترة) FROM وصل_توصيل_الدواء , توصيل_الدواء WHERE توصيل_الدواء.معرف_الوصل = وصل_توصيل_الدواء.المعرف
+AND توصيل_الدواء.معرف_الدواء = معرف_الدواء AND وصل_توصيل_الدواء.معرف_الفاتورة = معرف_الفاتورة) AS مجموع_الكمية_الموصلة
+
+
+FROM الادوية, توصيل_الدواء, وصل_توصيل_الدواء, فاتورة_شراء_الدواء, مشتريات_الدواء
+WHERE توصيل_الدواء.معرف_الوصل = ? AND الادوية.المعرف = توصيل_الدواء.معرف_الدواء AND وصل_توصيل_الدواء.المعرف = معرف_الوصل AND وصل_توصيل_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف
+AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف AND مشتريات_الدواء.معرف_الدواء =توصيل_الدواء.معرف_الدواء ;*/
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,12 +79,14 @@ public class UpdateController implements Initializable {
         tcNamePurchases.setCellValueFactory(data -> data.getValue().get(1));
         tcQteRested.setCellValueFactory(data -> data.getValue().get(2));
         tcQteFactored.setCellValueFactory(data -> data.getValue().get(3));
+        tcPrice.setCellValueFactory(data -> data.getValue().get(4));
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
-        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
         tcQteFacture.setCellValueFactory(data -> data.getValue().get(2));
+        tcQteDelivery.setCellValueFactory(data -> data.getValue().get(3));
         tcQteRestedFact.setCellValueFactory(data -> data.getValue().get(4));
+        tcPriceUnite.setCellValueFactory(data -> data.getValue().get(5));
 
         refreshComboDelivery();
 
@@ -112,10 +123,12 @@ public class UpdateController implements Initializable {
         });
     }
 
-    public void Init(Receipt receipt){
+    public void Init(Receipt receipt, DeliveryArrival deliveryArrival){
         this.receiptSelected = receipt;
+        this.deliveryArrivalSelected = deliveryArrival;
 
         refreshPurchases();
+        refreshComponent();
         setFactureNumber();
     }
 
@@ -128,6 +141,7 @@ public class UpdateController implements Initializable {
     private void refreshComboDelivery() {
         clearCombo();
         try {
+            DeliveryOperation deliveryOperation = new DeliveryOperation();
             ArrayList<Delivery> deliveries = deliveryOperation.getAll();
 
             deliveries.forEach(delivery -> {
@@ -135,6 +149,7 @@ public class UpdateController implements Initializable {
                 idDeliveryCombo.add(delivery.getId());
             });
             cbDelivery.setItems(comboDeliveryData);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -176,23 +191,17 @@ public class UpdateController implements Initializable {
                     int qteDelivered = resultSet.getInt("الكمية_المفوترة");
                     int qteRested = qteFacture - qteDelivered;
 
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
+                    data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                     if (qteRested > 0) {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
-                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(qteRested)));
-                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
-
-                        purchasesDataTable.add(data);
                     } else {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
-                        data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
                         data.add(new SimpleStringProperty(String.valueOf(0)));
-                        data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
-
-                        purchasesDataTable.add(data);
                     }
+                    data.add(new SimpleStringProperty(String.valueOf(qteFacture)));
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
+                    purchasesDataTable.add(data);
                 }
             }
 
@@ -203,7 +212,56 @@ public class UpdateController implements Initializable {
         }
 
         tablePurchases.setItems(purchasesDataTable);
+    }
 
+    private void refreshComponent(){
+
+        try {
+            dataTable.clear();
+            if (conn.isClosed()) conn = connectBD.connect();
+
+            String query = "SELECT  توصيل_الدواء.معرف_الوصل, توصيل_الدواء.معرف_الدواء , توصيل_الدواء.الكمية_المفوترة, توصيل_الدواء.الكمية_الموصلة, الادوية.الاسم, مشتريات_الدواء.سعر_الوحدة, مشتريات_الدواء.الكمية\n" +
+                    ", وصل_توصيل_الدواء.معرف_الفاتورة  FROM الادوية, توصيل_الدواء, وصل_توصيل_الدواء, فاتورة_شراء_الدواء, مشتريات_الدواء \n" +
+                    "WHERE توصيل_الدواء.معرف_الوصل = ? AND الادوية.المعرف = توصيل_الدواء.معرف_الدواء AND وصل_توصيل_الدواء.المعرف = معرف_الوصل AND وصل_توصيل_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف\n" +
+                    "AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف AND مشتريات_الدواء.معرف_الدواء =توصيل_الدواء.معرف_الدواء ;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,deliveryArrivalSelected.getId());
+            ResultSet resultSetComponent = preparedStmt.executeQuery();
+
+            while (resultSetComponent.next()) {
+
+                query = "SELECT sum(توصيل_الدواء.الكمية_المفوترة) AS مجموع_الكمية_الموصلة FROM وصل_توصيل_الدواء, توصيل_الدواء  \n" +
+                        "WHERE توصيل_الدواء.معرف_الدواء = ? AND وصل_توصيل_الدواء.معرف_الفاتورة = ? AND توصيل_الدواء.معرف_الوصل = وصل_توصيل_الدواء.المعرف;";
+
+                preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt(1, resultSetComponent.getInt("معرف_الدواء"));
+                preparedStmt.setInt(2, this.receiptSelected.getId());
+                ResultSet resultSet = preparedStmt.executeQuery();
+                if (resultSet.next()) {
+
+                    int qteFacture = resultSetComponent.getInt("الكمية");
+                    int qteDelivered = resultSet.getInt("مجموع_الكمية_الموصلة");
+                    int qteRested = qteFacture - qteDelivered;
+
+                    List<StringProperty> data = new ArrayList<>();
+
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("معرف_الدواء"))));
+                    data.add(new SimpleStringProperty(resultSetComponent.getString("الاسم")));
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("الكمية_المفوترة"))));
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getInt("الكمية_الموصلة"))));
+                    data.add(new SimpleStringProperty(String.valueOf(qteRested)));
+                    data.add(new SimpleStringProperty(String.valueOf(resultSetComponent.getDouble("سعر_الوحدة"))));
+                    dataTable.add(data);
+                }
+            }
+
+            conn.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        tableDeliveryComponent.setItems(dataTable);
     }
 
     @FXML
@@ -256,6 +314,7 @@ public class UpdateController implements Initializable {
                         data.add(2, new SimpleStringProperty(qteList.get(0)));
                         data.add(3, new SimpleStringProperty(qteList.get(1)));
                         data.add(4, new SimpleStringProperty(dataSelected.get(2).getValue()));
+                        data.add(5, new SimpleStringProperty(dataSelected.get(4).getValue()));
 
                         dataTable.add(data);
                     }
@@ -269,12 +328,12 @@ public class UpdateController implements Initializable {
 
     private int exist(List<StringProperty> dataSelected){
         AtomicInteger ex = new AtomicInteger(-1);
-            for (int i = 0 ; i < dataTable.size() ; i++) {
-                if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) ){
-                    ex.set(i);
-                    break;
-                }
+        for (int i = 0 ; i < dataTable.size() ; i++) {
+            if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) ){
+                ex.set(i);
+                break;
             }
+        }
         return ex.get();
     }
 
@@ -348,9 +407,10 @@ public class UpdateController implements Initializable {
             deliveryArrival.setDate(date);
             deliveryArrival.setPrice(paying);
 
+
             int ins = insert(deliveryArrival);
             if (ins != -1){
-                insertComponent(ins);
+                insertDeliveryComponent(ins);
                 ActionAnnulledAdd();
             }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
@@ -371,15 +431,57 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void insertComponent(int idDeliveryArrival) {
+    @FXML
+    private void ActionInsertAndStored(){
+        int selectedIndexDelivery = cbDelivery.getSelectionModel().getSelectedIndex();
+        LocalDate date = dpDate.getValue();
+        String price = tfPrice.getText().trim();
+
+        if (selectedIndexDelivery != -1 && date != null && !price.isEmpty() && dataTable.size() != 0 ){
+
+            int idDelivery = idDeliveryCombo.get(selectedIndexDelivery);
+            double paying = Double.parseDouble(price);
+
+            DeliveryArrival deliveryArrival = new DeliveryArrival();
+            deliveryArrival.setIdReceipt(this.receiptSelected.getId());
+            deliveryArrival.setIdDelivery(idDelivery);
+            deliveryArrival.setDate(date);
+            deliveryArrival.setPrice(paying);
+
+
+            int ins = insert(deliveryArrival);
+            if (ins != -1){
+                insertDeliveryComponent(ins);
+                insertStoreComponent(ins , paying);
+                ActionAnnulledAdd();
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("خطأ غير معروف");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
+    }
+
+    private void insertDeliveryComponent(int idDeliveryArrival) {
 
         for (int i = 0; i < dataTable.size(); i++) {
 
             List<StringProperty> stringProperties = dataTable.get(i);
 
             int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
-            int qteDel = Integer.parseInt(stringProperties.get(2).getValue());
-            int qteFact = Integer.parseInt(stringProperties.get(3).getValue());
+            int qteDel = Integer.parseInt(stringProperties.get(3).getValue());
+            int qteFact = Integer.parseInt(stringProperties.get(2).getValue());
 
             ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
             componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
@@ -388,6 +490,33 @@ public class UpdateController implements Initializable {
             componentDeliveryArrival.setQteReceipt(qteFact);
 
             insertComponentDeliveryArrivalMedication(componentDeliveryArrival);
+        }
+    }
+
+    private void insertStoreComponent(int idDeliveryArrival , double payingDelivery){
+
+        int qteTotal = 0;
+        for (int i = 0; i < dataTable.size() ; i++) {
+            qteTotal += Integer.parseInt(dataTable.get(i).get(3).getValue());
+        }
+        double priceDeliveredUnit =  payingDelivery / qteTotal;
+
+        for (int i = 0; i < dataTable.size(); i++) {
+
+            List<StringProperty> stringProperties = dataTable.get(i);
+
+            int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
+            double priceUnit = Double.parseDouble(stringProperties.get(5).getValue()) + priceDeliveredUnit;
+            int qte = Integer.parseInt(stringProperties.get(3).getValue());
+
+            ComponentStore componentStore = new ComponentStore();
+            componentStore.setIdComponent(idComponent);
+            componentStore.setIdDeliveryArrival(idDeliveryArrival);
+            componentStore.setPrice(priceUnit);
+            componentStore.setQteStored(qte);
+            componentStore.setQteConsumed(0);
+
+            insertComponentStoreMedication(componentStore);
         }
     }
 
@@ -406,6 +535,17 @@ public class UpdateController implements Initializable {
         boolean insert = false;
         try {
             insert = componentDeliveryArrivalMedicationOperation.insert(componentDeliveryArrival);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
+        }
+    }
+
+    private boolean insertComponentStoreMedication(ComponentStore componentStore){
+        boolean insert = false;
+        try {
+            insert = componentStoreMedicationOperation.insert(componentStore);
             return insert;
         }catch (Exception e){
             e.printStackTrace();

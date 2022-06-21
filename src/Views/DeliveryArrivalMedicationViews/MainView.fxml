@@ -21,7 +21,7 @@
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane prefWidth="100.0" HBox.hgrow="NEVER">
+            <AnchorPane prefWidth="100.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
                <children>
                   <ImageView fitHeight="22.0" fitWidth="27.0" layoutX="34.0" layoutY="26.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                      <image>
@@ -49,7 +49,7 @@
                   <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="100.0" HBox.hgrow="NEVER">
+            <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="100.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
                <children>
                   <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
                   <ImageView fitHeight="46.0" fitWidth="30.0" layoutX="49.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
@@ -74,18 +74,22 @@
                   </ImageView>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="120.0" prefWidth="320.0" HBox.hgrow="NEVER">
+            <AnchorPane prefHeight="120.0" prefWidth="320.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
                <children>
-                  <VBox prefHeight="120.0" prefWidth="300.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                  <VBox prefHeight="120.0" prefWidth="280.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
                               <Label text="التاريخ">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                              <Label layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
                               <ImageView fitHeight="20.0" fitWidth="23.0" onMousePressed="#ActionSelectDate" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/recherche.png.png" />
@@ -98,7 +102,7 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" spacing="30.0">
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
                            <children>
                               <Label prefWidth="50.0" text="من">
                                  <font>
@@ -108,7 +112,7 @@
                               <DatePicker fx:id="dpFirst" prefWidth="220.0" />
                            </children>
                         </HBox>
-                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="31.0" spacing="30.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="31.0" spacing="20.0">
                            <children>
                               <Label prefWidth="50.0" text="الى">
                                  <font>
@@ -120,12 +124,12 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Separator layoutX="312.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="312.0" AnchorPane.rightAnchor="-6.0" AnchorPane.topAnchor="10.0" />
+                  <Separator layoutX="312.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
-            <AnchorPane prefWidth="310.0" HBox.hgrow="NEVER">
+            <AnchorPane style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
                <children>
-                  <VBox prefHeight="120.0" prefWidth="260.0" spacing="10.0" AnchorPane.topAnchor="10.0">
+                  <VBox prefHeight="120.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <HBox>
                            <children>
@@ -142,18 +146,18 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <ComboBox fx:id="cbDelivery" onAction="#ActionSelectComboProvider" prefHeight="25.0" prefWidth="300.0" />
+                        <ComboBox fx:id="cbDelivery" onAction="#ActionSelectComboProvider" prefHeight="25.0" prefWidth="220.0" />
                      </children>
                   </VBox>
-                  <Separator layoutX="264.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="-10.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #FFF;" HBox.hgrow="ALWAYS" />
             <AnchorPane layoutX="1004.0" layoutY="10.0" prefHeight="120.0" prefWidth="294.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
                <children>
-                  <VBox prefHeight="120.0" prefWidth="250.0">
+                  <Separator orientation="VERTICAL" prefHeight="98.0" prefWidth="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <VBox layoutX="136.0" layoutY="5.0" prefHeight="120.0" prefWidth="250.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <HBox>
+                        <HBox spacing="15.0">
                            <children>
                               <Label text="البحث">
                                  <font>
@@ -177,14 +181,13 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <TextField fx:id="tfRecherche1" prefHeight="26.0" prefWidth="234.0">
+                        <TextField fx:id="tfRecherche" prefHeight="30.0">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </TextField>
                      </children>
                   </VBox>
-                  <Separator layoutX="273.0" layoutY="10.0" orientation="VERTICAL" prefHeight="98.0" prefWidth="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="10.0" />
                </children>
             </AnchorPane>
          </children>
