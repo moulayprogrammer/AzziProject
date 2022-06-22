@@ -23,6 +23,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,13 +48,14 @@ public class UpdateController implements Initializable {
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcQteDelivery,tcQteFacture, tcQteRestedFact, tcPriceUnite;
     @FXML
-    Button btnInsert;
+    Button btnUpdate;
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
     private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
     private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
     private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
+    private final DeliveryOperation deliveryOperation = new DeliveryOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
@@ -127,8 +129,12 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
         this.receiptSelected = receipt;
         this.deliveryArrivalSelected = deliveryArrival;
 
+        DecimalFormat df = new DecimalFormat("####0");
+        tfPrice.setText(df.format(deliveryArrival.getPrice()));
+
         refreshPurchases();
         refreshComponent();
+        setComboDelivery();
         setFactureNumber();
     }
 
@@ -138,10 +144,15 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
         lbFactureNbr.setText((nbr) + "/" + year );
     }
 
+    private void setComboDelivery(){
+        int id = deliveryArrivalSelected.getIdDelivery();
+        Delivery delivery = deliveryOperation.get(id);
+        cbDelivery.getSelectionModel().select(delivery.getName());
+    }
+
     private void refreshComboDelivery() {
         clearCombo();
         try {
-            DeliveryOperation deliveryOperation = new DeliveryOperation();
             ArrayList<Delivery> deliveries = deliveryOperation.getAll();
 
             deliveries.forEach(delivery -> {
@@ -241,7 +252,7 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
 
                     int qteFacture = resultSetComponent.getInt("الكمية");
                     int qteDelivered = resultSet.getInt("مجموع_الكمية_الموصلة");
-                    int qteRested = qteFacture - qteDelivered;
+                    int qteRested = qteFacture - qteDelivered + resultSetComponent.getInt("الكمية_المفوترة") ;
 
                     List<StringProperty> data = new ArrayList<>();
 
@@ -317,6 +328,7 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
                         data.add(5, new SimpleStringProperty(dataSelected.get(4).getValue()));
 
                         dataTable.add(data);
+                        insertDeliveryComponent(deliveryArrivalSelected.getId());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -366,6 +378,8 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
                     dataTable.get(compoSelectedIndex).get(3).setValue(qteList.get(1));
 
                     tableDeliveryComponent.setItems(dataTable);
+                    updateDeliveryComponent(deliveryArrivalSelected.getId(),compoSelectedIndex);
+                    refreshPurchases();
                 }
             }
         }catch (Exception e){
@@ -381,16 +395,17 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
             dataTable.remove(compoSelectedIndex);
             tableDeliveryComponent.setItems(dataTable);
 
+            deleteDeliveryComponent(deliveryArrivalSelected.getId(),compoSelectedIndex);
         }
     }
 
     @FXML
-    private void ActionAnnulledAdd(){
-        closeDialog(btnInsert);
+    private void ActionAnnulledUpdate(){
+        closeDialog(btnUpdate);
     }
 
     @FXML
-    void ActionInsert(ActionEvent event) {
+    void ActionUpdate(ActionEvent event) {
 
         int selectedIndexDelivery = cbDelivery.getSelectionModel().getSelectedIndex();
         LocalDate date = dpDate.getValue();
@@ -402,58 +417,14 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
             double paying = Double.parseDouble(price);
 
             DeliveryArrival deliveryArrival = new DeliveryArrival();
-            deliveryArrival.setIdReceipt(this.receiptSelected.getId());
             deliveryArrival.setIdDelivery(idDelivery);
             deliveryArrival.setDate(date);
             deliveryArrival.setPrice(paying);
 
 
-            int ins = insert(deliveryArrival);
-            if (ins != -1){
-                insertDeliveryComponent(ins);
-                ActionAnnulledAdd();
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("خطأ غير معروف");
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
-            }
-
-        }else {
-            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء ملأ جميع الحقول");
-            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setText("موافق");
-            alertWarning.showAndWait();
-        }
-    }
-
-    @FXML
-    private void ActionInsertAndStored(){
-        int selectedIndexDelivery = cbDelivery.getSelectionModel().getSelectedIndex();
-        LocalDate date = dpDate.getValue();
-        String price = tfPrice.getText().trim();
-
-        if (selectedIndexDelivery != -1 && date != null && !price.isEmpty() && dataTable.size() != 0 ){
-
-            int idDelivery = idDeliveryCombo.get(selectedIndexDelivery);
-            double paying = Double.parseDouble(price);
-
-            DeliveryArrival deliveryArrival = new DeliveryArrival();
-            deliveryArrival.setIdReceipt(this.receiptSelected.getId());
-            deliveryArrival.setIdDelivery(idDelivery);
-            deliveryArrival.setDate(date);
-            deliveryArrival.setPrice(paying);
-
-
-            int ins = insert(deliveryArrival);
-            if (ins != -1){
-                insertDeliveryComponent(ins);
-                insertStoreComponent(ins , paying);
-                ActionAnnulledAdd();
+            boolean upd = update(deliveryArrival);
+            if (upd){
+                ActionAnnulledUpdate();
             }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
@@ -475,59 +446,62 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
 
     private void insertDeliveryComponent(int idDeliveryArrival) {
 
-        for (int i = 0; i < dataTable.size(); i++) {
+        List<StringProperty> stringProperties = dataTable.get(dataTable.size() - 1);
 
-            List<StringProperty> stringProperties = dataTable.get(i);
+        int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
+        int qteDel = Integer.parseInt(stringProperties.get(3).getValue());
+        int qteFact = Integer.parseInt(stringProperties.get(2).getValue());
 
-            int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
-            int qteDel = Integer.parseInt(stringProperties.get(3).getValue());
-            int qteFact = Integer.parseInt(stringProperties.get(2).getValue());
+        ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
+        componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
+        componentDeliveryArrival.setIdComponent(idComponent);
+        componentDeliveryArrival.setQteReal(qteDel);
+        componentDeliveryArrival.setQteReceipt(qteFact);
 
-            ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
-            componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
-            componentDeliveryArrival.setIdComponent(idComponent);
-            componentDeliveryArrival.setQteReal(qteDel);
-            componentDeliveryArrival.setQteReceipt(qteFact);
+        insertComponentDeliveryArrivalMedication(componentDeliveryArrival);
 
-            insertComponentDeliveryArrivalMedication(componentDeliveryArrival);
-        }
     }
 
-    private void insertStoreComponent(int idDeliveryArrival , double payingDelivery){
+    private void updateDeliveryComponent(int idDeliveryArrival,int index) {
 
-        int qteTotal = 0;
-        for (int i = 0; i < dataTable.size() ; i++) {
-            qteTotal += Integer.parseInt(dataTable.get(i).get(3).getValue());
-        }
-        double priceDeliveredUnit =  payingDelivery / qteTotal;
+        List<StringProperty> stringProperties = dataTable.get(index);
 
-        for (int i = 0; i < dataTable.size(); i++) {
+        int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
+        int qteDel = Integer.parseInt(stringProperties.get(3).getValue());
+        int qteFact = Integer.parseInt(stringProperties.get(2).getValue());
 
-            List<StringProperty> stringProperties = dataTable.get(i);
+        ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
+        componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
+        componentDeliveryArrival.setIdComponent(idComponent);
+        componentDeliveryArrival.setQteReal(qteDel);
+        componentDeliveryArrival.setQteReceipt(qteFact);
 
-            int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
-            double priceUnit = Double.parseDouble(stringProperties.get(5).getValue()) + priceDeliveredUnit;
-            int qte = Integer.parseInt(stringProperties.get(3).getValue());
+        updateComponentDeliveryArrivalMedication(componentDeliveryArrival);
 
-            ComponentStore componentStore = new ComponentStore();
-            componentStore.setIdComponent(idComponent);
-            componentStore.setIdDeliveryArrival(idDeliveryArrival);
-            componentStore.setPrice(priceUnit);
-            componentStore.setQteStored(qte);
-            componentStore.setQteConsumed(0);
-
-            insertComponentStoreMedication(componentStore);
-        }
     }
 
-    private int insert(DeliveryArrival deliveryArrival) {
-        int insert = 0;
+    private void deleteDeliveryComponent(int idDeliveryArrival,int index) {
+
+        List<StringProperty> stringProperties = dataTable.get(index);
+
+        int idComponent = Integer.parseInt(stringProperties.get(0).getValue());
+
+        ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
+        componentDeliveryArrival.setIdDeliveryArrival(idDeliveryArrival);
+        componentDeliveryArrival.setIdComponent(idComponent);
+
+        deleteComponentDeliveryArrivalMedication(componentDeliveryArrival);
+
+    }
+
+    private boolean update(DeliveryArrival deliveryArrival) {
+        boolean update = false;
         try {
-            insert = operation.insertId(deliveryArrival);
-            return insert;
+            update = operation.update(deliveryArrival,deliveryArrivalSelected);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
-            return insert;
+            return update;
         }
     }
 
@@ -542,14 +516,25 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
         }
     }
 
-    private boolean insertComponentStoreMedication(ComponentStore componentStore){
-        boolean insert = false;
+    private boolean updateComponentDeliveryArrivalMedication(ComponentDeliveryArrival componentDeliveryArrival){
+        boolean update = false;
         try {
-            insert = componentStoreMedicationOperation.insert(componentStore);
-            return insert;
+            update = componentDeliveryArrivalMedicationOperation.update(componentDeliveryArrival,componentDeliveryArrival);
+            return update;
         }catch (Exception e){
             e.printStackTrace();
-            return insert;
+            return update;
+        }
+    }
+
+    private boolean deleteComponentDeliveryArrivalMedication(ComponentDeliveryArrival componentDeliveryArrival){
+        boolean delete = false;
+        try {
+            delete = componentDeliveryArrivalMedicationOperation.delete(componentDeliveryArrival);
+            return delete;
+        }catch (Exception e){
+            e.printStackTrace();
+            return delete;
         }
     }
 

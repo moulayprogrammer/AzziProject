@@ -86,6 +86,30 @@ public class DeliveryOperation extends BDD<Delivery> {
         return list;
     }
 
+    public Delivery get(int id) {
+        connectDatabase();
+        Delivery delivery = new Delivery();
+        String query = "SELECT * FROM الموصل WHERE ارشيف = 0 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                delivery.setId(resultSet.getInt("المعرف"));
+                delivery.setName(resultSet.getString("الاسم"));
+                delivery.setDriverLicence(resultSet.getString("رقم_رخصة_السياقة"));
+                delivery.setTrackNumber(resultSet.getString("ترقيم_الشاحنة"));
+                delivery.setTrackNumber2(resultSet.getString("ترقيم_الشاحنة_2"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return delivery;
+    }
+
     public boolean AddToArchive(Delivery delivery){
         connectDatabase();
         boolean upd = false;
