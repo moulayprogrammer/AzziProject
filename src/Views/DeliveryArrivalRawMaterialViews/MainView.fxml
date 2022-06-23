@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.MainController">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalRawMaterialControllers.MainController">
    <top>
       <HBox BorderPane.alignment="CENTER">
          <children>

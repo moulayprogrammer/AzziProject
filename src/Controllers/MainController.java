@@ -1,6 +1,5 @@
 package Controllers;
 
-import Models.Provider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -21,7 +20,7 @@ public class  MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         mainPane.setPadding(new Insets(0,10,5,10));
 
-        ShowDeliveryArrivalMedicationScreen();
+        ShowDeliveryArrivalRawMaterialScreen();
     }
 
     @FXML
@@ -132,6 +131,17 @@ public class  MainController implements Initializable {
     private void ShowDeliveryArrivalMedicationScreen(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowDeliveryArrivalRawMaterialScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/MainView.fxml"));
             BorderPane temp = loader.load();
             mainPane.setCenter(temp);
         } catch (IOException e) {

@@ -7,13 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
+public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
 
     @Override
     public boolean insert(ComponentStore o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO تخزين_الادوية ( معرف_الدواء, معرف_وصل_التوصيل , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?) ; ";
+        String query = "INSERT INTO تخزين_المواد_الخام ( معرف_المادة_الخام, معرف_وصل_التوصيل , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?) ; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdComponent());
@@ -34,7 +34,7 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public boolean update(ComponentStore o1, ComponentStore o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE تخزين_الادوية SET   سعر_الوحدة = ? , كمية_مخزنة = ? , كمية_مستهلكة = ? WHERE معرف_الدواء = ? AND معرف_وصل_التوصيل = ?";
+        String query = "UPDATE تخزين_المواد_الخام SET   سعر_الوحدة = ? , كمية_مخزنة = ? , كمية_مستهلكة = ? WHERE معرف_المادة_الخام = ? AND معرف_وصل_التوصيل = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDouble(1,o1.getPrice());
@@ -56,7 +56,7 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public boolean delete(ComponentStore o) {
         connectDatabase();
         boolean del = false;
-        String query = "DELETE FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = ? AND معرف_الدواء = ? ;";
+        String query = "DELETE FROM تخزين_المواد_الخام WHERE معرف_وصل_التوصيل = ? AND معرف_المادة_الخام = ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdDeliveryArrival());
@@ -80,14 +80,14 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public ArrayList<ComponentStore> getAll() {
         connectDatabase();
         ArrayList<ComponentStore> list = new ArrayList<>();
-        String query = "SELECT * FROM تخزين_الادوية ";
+        String query = "SELECT * FROM تخزين_المواد_الخام ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 
                 ComponentStore componentStore = new ComponentStore();
-                componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStore.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
                 componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
                 componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));

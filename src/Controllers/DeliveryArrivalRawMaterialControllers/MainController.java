@@ -1,4 +1,4 @@
-package Controllers.DeliveryArrivalMedicationControllers;
+package Controllers.DeliveryArrivalRawMaterialControllers;
 
 import BddPackage.*;
 import Models.Delivery;
@@ -48,11 +48,10 @@ public class MainController implements Initializable {
     private Connection conn;
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final DeliveryOperation deliveryOperation = new DeliveryOperation();
-    private final ReceiptMedicationOperation receiptMedicationOperation = new ReceiptMedicationOperation();
-    private final DeliveryArrivalMedicationOperation deliveryArrivalMedicationOperation = new  DeliveryArrivalMedicationOperation();
+    private final ReceiptRawMaterialOperation receiptRawMaterialOperation = new ReceiptRawMaterialOperation();
     private final ObservableList<String> comboDeliveryData = FXCollections.observableArrayList();
     private final List<Integer> idDeliveryCombo = new ArrayList<>();
-    private final DeliveryArrivalMedicationOperation operation = new DeliveryArrivalMedicationOperation();
+    private final DeliveryArrivalRawMaterialOperation operation = new DeliveryArrivalRawMaterialOperation();
 
     private int selectedDelivery = 0;
     private Receipt receipt;
@@ -113,7 +112,7 @@ public class MainController implements Initializable {
 
             if (this.receipt.getDate() != null) {
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/AddView.fxml"));
                 DialogPane temp = loader.load();
                 AddController controller = loader.getController();
                 controller.Init(this.receipt);
@@ -137,9 +136,9 @@ public class MainController implements Initializable {
         try {
             this.receipt = new Receipt();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/SelectedReceiptMedicationView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/SelectedReceiptMedicationView.fxml"));
             DialogPane temp = loader.load();
-            SelectedReceiptMedicationController controller = loader.getController();
+            SelectedReceiptRawMaterialController controller = loader.getController();
             controller.Init(this.receipt);
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -161,10 +160,10 @@ public class MainController implements Initializable {
             if (data.get(5).getValue().equals("غير مأكد")) {
 
                 try {
-                    Receipt receipt = receiptMedicationOperation.get(Integer.parseInt(data.get(3).getValue()));
-                    DeliveryArrival deliveryArrival = deliveryArrivalMedicationOperation.get(Integer.parseInt(data.get(0).getValue()));
+                    Receipt receipt = receiptRawMaterialOperation.get(Integer.parseInt(data.get(3).getValue()));
+                    DeliveryArrival deliveryArrival = operation.get(Integer.parseInt(data.get(0).getValue()));
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/UpdateView.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/UpdateView.fxml"));
                     DialogPane temp = loader.load();
                     UpdateController controller = loader.getController();
                     controller.Init(receipt,deliveryArrival);
@@ -287,7 +286,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار وصل لتأكيده");
+            alertWarning.setContentText("الرجاء اختيار وصل لحذفه");
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -299,9 +298,9 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
-                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
-                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_مواد_خام.المعرف, وصل_توصيل_مواد_خام.معرف_الفاتورة, وصل_توصيل_مواد_خام.معرف_الموصل, وصل_توصيل_مواد_خام.التاريخ, وصل_توصيل_مواد_خام.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_المواد_الخام WHERE معرف_وصل_التوصيل = وصل_توصيل_مواد_خام.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_مواد_خام , الموصل WHERE وصل_توصيل_مواد_خام.ارشيف = 0 AND وصل_توصيل_مواد_خام.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
@@ -352,9 +351,9 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
-                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
-                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_مواد_خام.المعرف, وصل_توصيل_مواد_خام.معرف_الفاتورة, وصل_توصيل_مواد_خام.معرف_الموصل, وصل_توصيل_مواد_خام.التاريخ, وصل_توصيل_مواد_خام.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_المواد_الخام WHERE معرف_وصل_التوصيل = وصل_توصيل_مواد_خام.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_مواد_خام , الموصل WHERE وصل_توصيل_مواد_خام.ارشيف = 0 AND وصل_توصيل_مواد_خام.معرف_الموصل = ? AND وصل_توصيل_مواد_خام.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,selectedDelivery);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -386,9 +385,9 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
-                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
-                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_مواد_خام.المعرف, وصل_توصيل_مواد_خام.معرف_الفاتورة, وصل_توصيل_مواد_خام.معرف_الموصل, وصل_توصيل_مواد_خام.التاريخ, وصل_توصيل_مواد_خام.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_المواد_الخام WHERE معرف_وصل_التوصيل = وصل_توصيل_مواد_خام.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_مواد_خام , الموصل WHERE وصل_توصيل_مواد_خام.ارشيف = 0 AND   التاريخ BETWEEN ? AND ?  AND وصل_توصيل_مواد_خام.معرف_الموصل = الموصل.المعرف ;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDate(1,Date.valueOf(dateFirst));
             preparedStmt.setDate(2,Date.valueOf(dateSecond));
@@ -420,9 +419,10 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = " SELECT وصل_توصيل_الدواء.المعرف, وصل_توصيل_الدواء.معرف_الفاتورة, وصل_توصيل_الدواء.معرف_الموصل, وصل_توصيل_الدواء.التاريخ, وصل_توصيل_الدواء.السعر, الموصل.الاسم\n" +
-                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_الادوية WHERE معرف_وصل_التوصيل = وصل_توصيل_الدواء.المعرف) AS التاكيد\n" +
-                    "FROM وصل_توصيل_الدواء , الموصل WHERE وصل_توصيل_الدواء.ارشيف = 0 AND وصل_توصيل_الدواء.معرف_الموصل = ? AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_الدواء.معرف_الموصل = الموصل.المعرف ;";
+            String query = "SELECT وصل_توصيل_مواد_خام.المعرف, وصل_توصيل_مواد_خام.معرف_الفاتورة, وصل_توصيل_مواد_خام.معرف_الموصل, وصل_توصيل_مواد_خام.التاريخ, وصل_توصيل_مواد_خام.السعر, الموصل.الاسم\n" +
+                    " , (SELECT معرف_وصل_التوصيل FROM تخزين_المواد_الخام WHERE معرف_وصل_التوصيل = وصل_توصيل_مواد_خام.المعرف) AS التاكيد\n" +
+                    "FROM وصل_توصيل_مواد_خام , الموصل WHERE وصل_توصيل_مواد_خام.ارشيف = 0 AND وصل_توصيل_مواد_خام.معرف_الموصل = ? AND  التاريخ BETWEEN ? AND ?  AND وصل_توصيل_مواد_خام.معرف_الموصل = الموصل.المعرف ;";
+
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,selectedDelivery);
             preparedStmt.setDate(2,Date.valueOf(dateFirst));
