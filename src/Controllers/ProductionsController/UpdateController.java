@@ -1,4 +1,4 @@
-package Controllers.ProductControllers;
+package Controllers.ProductionsController;
 
 import BddPackage.*;
 import Models.ComponentProduction;

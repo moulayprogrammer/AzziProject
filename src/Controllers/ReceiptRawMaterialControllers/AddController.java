@@ -50,7 +50,7 @@ public class AddController implements Initializable {
     private final ReceiptRawMaterialOperation operation = new ReceiptRawMaterialOperation();
     private final RawMaterialOperation rawMaterialOperation = new RawMaterialOperation();
     private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
+    private final ComponentProductionRawMaterialOperation componentMaterialOperation = new ComponentProductionRawMaterialOperation();
     private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();

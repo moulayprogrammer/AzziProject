@@ -48,7 +48,7 @@ public class AddController implements Initializable {
     private final ProductOperation operation = new ProductOperation();
     private final RawMaterialOperation materialOperation = new RawMaterialOperation();
     private final MedicationOperation medicationOperation = new MedicationOperation();
-    private final ComponentRawMaterialOperation componentMaterialOperation = new ComponentRawMaterialOperation();
+    private final ComponentProductionRawMaterialOperation componentMaterialOperation = new ComponentProductionRawMaterialOperation();
     private final ComponentProductionMedicationOperation componentMedicationOperation = new ComponentProductionMedicationOperation();
 
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();

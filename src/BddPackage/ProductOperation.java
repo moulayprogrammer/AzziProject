@@ -13,6 +13,7 @@ public class ProductOperation extends BDD<Product> {
 
     @Override
     public boolean insert(Product o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO المنتجات (الاسم,المرجع,اقل_كمية) VALUES (?,?,?)";
         try {
@@ -25,10 +26,12 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     public int insertId(Product o) {
+        connectDatabase();
         int ins = 0;
         String query = "INSERT INTO المنتجات (الاسم,المرجع,اقل_كمية) VALUES (?,?,?)";
         try {
@@ -41,11 +44,13 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override
     public boolean update(Product o1, Product o2) {
+        connectDatabase();
         boolean upd = false;
         String query = " UPDATE المنتجات SET الاسم = ? , المرجع = ? , اقل_كمية = ? WHERE المعرف = ? ; ";
         try {
@@ -59,6 +64,7 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -73,7 +79,8 @@ public class ProductOperation extends BDD<Product> {
     }
 
     @Override
-    public ArrayList<Product> getAll() {     
+    public ArrayList<Product> getAll() {
+        connectDatabase();
         ArrayList<Product> list = new ArrayList<>();
         String query = "SELECT * FROM المنتجات WHERE ارشيف = 0";
         try {
@@ -93,10 +100,35 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
+    public Product get(int id) {
+        connectDatabase();
+        Product product = new Product();
+        String query = "SELECT * FROM المنتجات WHERE ارشيف = 0 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            if (resultSet.next()){
+
+                product.setId(resultSet.getInt("المعرف"));
+                product.setName(resultSet.getString("الاسم"));
+                product.setReference(resultSet.getString("المرجع"));
+                product.setLimitQte(resultSet.getInt("اقل_كمية"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return product;
+    }
+
     public boolean AddToArchive(Product product){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE المنتجات SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
@@ -107,10 +139,12 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(Product product){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE المنتجات SET ارشيف = 0 WHERE المعرف = ?; ";
         try {
@@ -121,10 +155,12 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public ArrayList<Product> getAllArchive() {
+        connectDatabase();
         ArrayList<Product> list = new ArrayList<>();
         String query = "SELECT * FROM المنتجات WHERE ارشيف = 1";
         try {
@@ -144,6 +180,7 @@ public class ProductOperation extends BDD<Product> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

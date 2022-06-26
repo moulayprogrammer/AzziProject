@@ -69,7 +69,7 @@ public class ComponentProductionMedicationOperation extends BDD<ComponentProduct
     @Override
     public ArrayList<ComponentProduction> getAll() {
         ArrayList<ComponentProduction> list = new ArrayList<>();
-        String query = "SELECT * FROM خلطة_الادوية WHERE ارشيف = 0";
+        String query = "SELECT * FROM خلطة_الادوية";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -78,6 +78,28 @@ public class ComponentProductionMedicationOperation extends BDD<ComponentProduct
                 ComponentProduction component = new ComponentProduction();
                 component.setIdComponent(resultSet.getInt("معرف_المنتج"));
                 component.setIdProduct(resultSet.getInt("معرف_الدواء"));
+                component.setQte(resultSet.getInt("الكمية"));
+
+                list.add(component);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<ComponentProduction> getAllByProduct(int idProduct) {
+        ArrayList<ComponentProduction> list = new ArrayList<>();
+        String query = "SELECT * FROM خلطة_الادوية WHERE معرف_المنتج = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProduct);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentProduction component = new ComponentProduction();
+                component.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                component.setIdComponent(resultSet.getInt("معرف_الدواء"));
                 component.setQte(resultSet.getInt("الكمية"));
 
                 list.add(component);

@@ -14,30 +14,32 @@
               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="قوائم">
+          <Menu mnemonicParsing="false" text="المواد الخام">
             <items>
-                <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="قائمة المواد الخام" />
-                <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="قائمة الأدوية" />
-                <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="قائمة المنتجات" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="القائمة" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowReceiptRawMaterialScreen" text="الشراء" />
+                <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalRawMaterialScreen" text="التوصيل" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="المبيعات">
+            <Menu mnemonicParsing="false" text="الادوية">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="بيع جديد" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="تاريخ البيع" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="القائمة" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowReceiptMedicationScreen" text="الشراء" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalMedicationScreen" text="التوصيل" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="المشتريات">
+            <Menu mnemonicParsing="false" text="المنتجات">
                <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="شراء جديد" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="تاريخ الشراء" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="القائمة" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowProductionScreen" text="الانتاج" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="متابعة">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="الناقلين" />
+                  <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
+                  <MenuItem mnemonicParsing="false" text="التقارير" />
             </items>
           </Menu>
         </menus>

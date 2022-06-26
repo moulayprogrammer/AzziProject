@@ -3,10 +3,11 @@ package BddPackage;
 import Models.ComponentProduction;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
+public class ComponentProductionRawMaterialOperation extends BDD<ComponentProduction> {
 
     @Override
     public boolean insert(ComponentProduction o) {
@@ -68,5 +69,27 @@ public class ComponentRawMaterialOperation extends BDD<ComponentProduction> {
     @Override
     public ArrayList<ComponentProduction> getAll() {
         return null;
+    }
+
+    public ArrayList<ComponentProduction> getAllByProduct(int idProduct) {
+        ArrayList<ComponentProduction> list = new ArrayList<>();
+        String query = "SELECT * FROM خلطة_المواد_الخام WHERE معرف_المنتج = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProduct);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentProduction component = new ComponentProduction();
+                component.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
+                component.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                component.setQte(resultSet.getInt("الكمية"));
+
+                list.add(component);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }
