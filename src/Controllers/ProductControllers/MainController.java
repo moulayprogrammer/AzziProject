@@ -9,6 +9,7 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -51,6 +52,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
@@ -73,6 +77,9 @@ public class MainController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
                 dialog.showAndWait();
                 refresh();
 
@@ -135,6 +142,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();

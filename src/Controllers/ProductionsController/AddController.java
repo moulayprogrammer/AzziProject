@@ -68,7 +68,6 @@ public class AddController implements Initializable {
 
         refreshComboProduct();
 
-
 //        refreshComponent();
 
         cbProduct.setEditable(true);
@@ -111,7 +110,6 @@ public class AddController implements Initializable {
             componentProductionsMedication = componentMedicationOperation.getAllByProduct(productSelected.getId());
             componentProductionsMaterial = componentMaterialOperation.getAllByProduct(productSelected.getId());
 
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -120,11 +118,12 @@ public class AddController implements Initializable {
     @FXML
     private void countPrice(){
         try {
-            int qteProduct = Integer.parseInt(tfQte.getText().trim());
-            boolean check = checkQte(qteProduct);
-
-            System.out.println("ex = " + check);
-
+            if (productSelected.getName() != null) {
+                int qteProduct = Integer.parseInt(tfQte.getText().trim());
+                if (checkQte(qteProduct)){
+                    
+                }
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -171,7 +170,6 @@ public class AddController implements Initializable {
                     e.printStackTrace();
                 }
             }
-
         }catch (Exception e){
             e.printStackTrace();
         }
