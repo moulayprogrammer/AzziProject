@@ -1,9 +1,12 @@
 package Models;
 
+import java.time.LocalDate;
+
 public class ComponentStoreProduct {
 
     private int idComponent;
     private int idProduction;
+    private LocalDate dateStore;
     private double priceHt;
     private int qteStored;
     private int qteConsumed;
@@ -19,12 +22,29 @@ public class ComponentStoreProduct {
         this.qteConsumed = qteConsumed;
     }
 
+    public ComponentStoreProduct(int idComponent, int idProduction, LocalDate dateStore, double priceHt, int qteStored, int qteConsumed) {
+        this.idComponent = idComponent;
+        this.idProduction = idProduction;
+        this.dateStore = dateStore;
+        this.priceHt = priceHt;
+        this.qteStored = qteStored;
+        this.qteConsumed = qteConsumed;
+    }
+
     public int getIdComponent() {
         return idComponent;
     }
 
     public void setIdComponent(int idComponent) {
         this.idComponent = idComponent;
+    }
+
+    public LocalDate getDateStore() {
+        return dateStore;
+    }
+
+    public void setDateStore(LocalDate dateStore) {
+        this.dateStore = dateStore;
     }
 
     public int getIdProduction() {

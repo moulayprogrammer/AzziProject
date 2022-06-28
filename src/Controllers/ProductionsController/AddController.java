@@ -2,12 +2,9 @@ package Controllers.ProductionsController;
 
 import BddPackage.*;
 import Models.*;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,13 +17,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Predicate;
 
 public class AddController implements Initializable {
 
@@ -46,21 +39,17 @@ public class AddController implements Initializable {
 
     private final ProductionOperation operation = new ProductionOperation();
     private final ProductOperation productOperation = new ProductOperation();
-    private final ComponentProductionMedicationOperation componentProductionMedicationOperation = new ComponentProductionMedicationOperation();
-    private final ComponentProductionRawMaterialOperation componentProductionMedicationOperation1 = new ComponentProductionRawMaterialOperation();
-
-    private final RawMaterialOperation materialOperation = new RawMaterialOperation();
-    private final MedicationOperation medicationOperation = new MedicationOperation();
     private final ComponentProductionRawMaterialOperation componentMaterialOperation = new ComponentProductionRawMaterialOperation();
     private final ComponentProductionMedicationOperation componentMedicationOperation = new ComponentProductionMedicationOperation();
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
+    private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
 
-    private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ObservableList<String> dataComboProduct = FXCollections.observableArrayList();
     private final ArrayList<Integer> listIdProduct = new ArrayList<>();
-    private final ArrayList<ArrayList<ComponentStore>> componentStores = new ArrayList<>();
-    ArrayList<ComponentProduction> componentProductionsMedication = new ArrayList<>();
-    ArrayList<ComponentProduction> componentProductionsMaterial = new ArrayList<>();
+    private ArrayList<ComponentProduction> componentProductionsMedication = new ArrayList<>();
+    private ArrayList<ComponentProduction> componentProductionsMaterial = new ArrayList<>();
     private Product productSelected;
+    private double priceProduction;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -109,7 +98,6 @@ public class AddController implements Initializable {
         try {
             componentProductionsMedication = componentMedicationOperation.getAllByProduct(productSelected.getId());
             componentProductionsMaterial = componentMaterialOperation.getAllByProduct(productSelected.getId());
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -119,9 +107,31 @@ public class AddController implements Initializable {
     private void countPrice(){
         try {
             if (productSelected.getName() != null) {
-                int qteProduct = Integer.parseInt(tfQte.getText().trim());
-                if (checkQte(qteProduct)){
-                    
+                int qteProduction = Integer.parseInt(tfQte.getText().trim());
+                if (checkQte(qteProduction)){
+                    priceProduction = 0;
+                    for (int i = 0; i < componentProductionsMedication.size(); i++) {
+                        ComponentProduction production = componentProductionsMedication.get(i);
+                        ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
+
+                        for (int j = 0; j < CSM.size(); j++) {
+                            if ((CSM.get(j).getQteStored() - CSM.get(j).getQteConsumed()) >= (production.getQte() * qteProduction)){
+                                priceProduction = production.getQte() * qteProduction * CSM.get(j).getPrice();
+                                CSM.get(j).setQteConsumed(production.getQte() * qteProduction);
+                                updateQteStored(CSM.get(j));
+                                break;
+                            }else {
+
+                            }
+                        }
+                    }
+                }else {
+                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                    alertWarning.setHeaderText("الكمية كبيرة ");
+                    alertWarning.setContentText("كمية المواد الاولية المتوفرة لا تكفي لانتاج هذه الكمية");
+                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertWarning.showAndWait();
                 }
             }
         }catch (Exception e){
@@ -176,53 +186,10 @@ public class AddController implements Initializable {
         return ex;
     }
 
-    private void refreshComponent(){
-        ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
-
-        try {
-            ArrayList<Medication> medications = medicationOperation.getAll();
-
-            medications.forEach(medication -> {
-                List<StringProperty> data = new ArrayList<>();
-                data.add(new SimpleStringProperty("med"));
-                data.add( new SimpleStringProperty(String.valueOf(medication.getId())));
-                data.add( new SimpleStringProperty(medication.getName()));
-                data.add(new SimpleStringProperty(medication.getReference()));
-                componentDataTable.add(data);
-            });
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        try {
-            ArrayList<RawMaterial> rawMaterials =  materialOperation.getAll();
-
-            rawMaterials.forEach(rawMaterial -> {
-                List<StringProperty> data = new ArrayList<>();
-                data.add(0, new SimpleStringProperty("raw"));
-                data.add(1, new SimpleStringProperty(String.valueOf(rawMaterial.getId())));
-                data.add(2, new SimpleStringProperty(rawMaterial.getName()));
-                data.add(3, new SimpleStringProperty(rawMaterial.getReference()));
-                componentDataTable.add(data);
-            });
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-//        rawMedTable.setItems(componentDataTable);
+    private void updateQteStored(ComponentStore store){
 
     }
 
-
-    @FXML
-    private void ActionDeleteFromComposition(){
-        /*int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
-        if (compoSelectedIndex != -1){
-            dataTable.remove(compoSelectedIndex);
-            tableComposition.setItems(dataTable);
-        }*/
-    }
     @FXML
     private void ActionAnnulledAdd(){
         closeDialog(btnInsert);
@@ -267,7 +234,7 @@ public class AddController implements Initializable {
 
     private void insertComponent(ObservableList<List<StringProperty>> dataTable , int idProduct) {
 
-        dataTable.forEach(stringProperties -> {
+        /*dataTable.forEach(stringProperties -> {
             String type =  stringProperties.get(0).getValue();
             int id = Integer.parseInt(stringProperties.get(1).getValue());
             int qte = Integer.parseInt(stringProperties.get(4).getValue());
@@ -285,7 +252,7 @@ public class AddController implements Initializable {
                     insertComponentRawMaterial(componentProduction);
                     break;
             }
-        });
+        });*/
     }
 
     private int insert(Product product) {
@@ -310,7 +277,7 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentRawMaterial(ComponentProduction componentProduction){
+    private boolean updateComponentStore(ComponentProduction componentProduction){
         boolean insert = false;
         try {
             insert = componentMaterialOperation.insert(componentProduction);
