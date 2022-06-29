@@ -10,6 +10,7 @@ public class ProductionOperation extends BDD<Production> {
 
     @Override
     public boolean insert(Production o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO الانتاج (معرف_المنتج,التاريخ,الكمية_المنتجة,التكلفة) VALUES (?,?,?,?);";
         try {
@@ -23,10 +24,12 @@ public class ProductionOperation extends BDD<Production> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     public int insertId(Production o) {
+        connectDatabase();
         int ins = 0;
         String query = "INSERT INTO الانتاج (معرف_المنتج,التاريخ,الكمية_المنتجة,التكلفة) VALUES (?,?,?,?);";
         try {
@@ -40,12 +43,14 @@ public class ProductionOperation extends BDD<Production> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
 
     @Override
     public boolean update(Production o1, Production o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE الانتاج SET التاريخ = ?, الكمية_المنتجة = ?, التكلفة= ? WHERE المعرف = ?;";
         try {
@@ -59,11 +64,13 @@ public class ProductionOperation extends BDD<Production> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     @Override
     public boolean delete(Production o) {
+        connectDatabase();
         boolean del = false;
         String query = "DELETE FROM الانتاج WHERE المعرف = ?;";
         try {
@@ -74,6 +81,7 @@ public class ProductionOperation extends BDD<Production> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return del;
     }
 
@@ -85,6 +93,7 @@ public class ProductionOperation extends BDD<Production> {
     @Override
     public ArrayList<Production> getAll() {
         ArrayList<Production> list = new ArrayList<>();
+        connectDatabase();
         String query = "SELECT * FROM الانتاج";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -104,6 +113,7 @@ public class ProductionOperation extends BDD<Production> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

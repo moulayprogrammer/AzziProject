@@ -2,7 +2,6 @@ package Controllers.ProductionsController;
 
 import BddPackage.*;
 import Models.*;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,8 +16,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class AddController implements Initializable {
@@ -39,15 +39,22 @@ public class AddController implements Initializable {
 
     private final ProductionOperation operation = new ProductionOperation();
     private final ProductOperation productOperation = new ProductOperation();
-    private final ComponentProductionRawMaterialOperation componentMaterialOperation = new ComponentProductionRawMaterialOperation();
-    private final ComponentProductionMedicationOperation componentMedicationOperation = new ComponentProductionMedicationOperation();
+    private final ComponentProductionRawMaterialOperation componentProductionRawMaterialOperation = new ComponentProductionRawMaterialOperation();
+    private final ComponentProductionMedicationOperation componentProductionMedicationOperation = new ComponentProductionMedicationOperation();
     private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
     private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
+    private final ComponentStoreProductTempMedicationOperation componentStoreProductTempMedicationOperation = new ComponentStoreProductTempMedicationOperation();
+    private final ComponentStoreProductTempMaterialOperation componentStoreProductTempMaterialOperation = new ComponentStoreProductTempMaterialOperation();
 
     private final ObservableList<String> dataComboProduct = FXCollections.observableArrayList();
     private final ArrayList<Integer> listIdProduct = new ArrayList<>();
     private ArrayList<ComponentProduction> componentProductionsMedication = new ArrayList<>();
     private ArrayList<ComponentProduction> componentProductionsMaterial = new ArrayList<>();
+    private final ArrayList<ComponentStoreProductTemp> componentStoreMedicationTemp = new ArrayList<>();
+    private final ArrayList<ComponentStoreProductTemp> componentStoreMaterialTemp = new ArrayList<>();
+    private final ArrayList<ComponentStore> componentStoreMedication = new ArrayList<>();
+    private final ArrayList<ComponentStore> componentStoreMaterial = new ArrayList<>();
+
     private Product productSelected;
     private double priceProduction;
 
@@ -96,8 +103,8 @@ public class AddController implements Initializable {
 
     private void getComponentProduction(){
         try {
-            componentProductionsMedication = componentMedicationOperation.getAllByProduct(productSelected.getId());
-            componentProductionsMaterial = componentMaterialOperation.getAllByProduct(productSelected.getId());
+            componentProductionsMedication = componentProductionMedicationOperation.getAllByProduct(productSelected.getId());
+            componentProductionsMaterial = componentProductionRawMaterialOperation.getAllByProduct(productSelected.getId());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -106,25 +113,89 @@ public class AddController implements Initializable {
     @FXML
     private void countPrice(){
         try {
-            if (productSelected.getName() != null) {
-                int qteProduction = Integer.parseInt(tfQte.getText().trim());
+            String stQte = tfQte.getText().trim();
+            if (productSelected.getName() != null && !stQte.isEmpty()) {
+                int qteProduction = Integer.parseInt(stQte);
                 if (checkQte(qteProduction)){
                     priceProduction = 0;
+                    componentStoreMaterialTemp.clear();
+                    componentStoreMedicationTemp.clear();
+                    componentStoreMedication.clear();
+                    componentStoreMaterial.clear();
+
                     for (int i = 0; i < componentProductionsMedication.size(); i++) {
                         ComponentProduction production = componentProductionsMedication.get(i);
                         ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
 
+                        int qteNeed = production.getQte() * qteProduction;
                         for (int j = 0; j < CSM.size(); j++) {
-                            if ((CSM.get(j).getQteStored() - CSM.get(j).getQteConsumed()) >= (production.getQte() * qteProduction)){
-                                priceProduction = production.getQte() * qteProduction * CSM.get(j).getPrice();
-                                CSM.get(j).setQteConsumed(production.getQte() * qteProduction);
-                                updateQteStored(CSM.get(j));
+
+                            int qteStored = CSM.get(j).getQteStored();
+                            int qteConsumed = CSM.get(j).getQteConsumed();
+                            double price = CSM.get(j).getPrice();
+
+                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
+                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+
+                            if ((qteStored - qteConsumed) >= qteNeed){
+
+                                priceProduction +=  qteNeed * price;
+                                componentStoreProductTemp.setQte(qteNeed);
+                                componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
+                                componentStoreMedication.add(CSM.get(j));
                                 break;
+
                             }else {
 
+                                int qteRest = qteStored - qteConsumed;
+                                qteNeed -= qteRest;
+                                priceProduction += qteRest * price;
+                                componentStoreProductTemp.setQte(qteRest);
+                                componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
+                                componentStoreMedication.add(CSM.get(j));
                             }
                         }
                     }
+                    for (int i = 0; i < componentProductionsMaterial.size(); i++) {
+                        ComponentProduction production = componentProductionsMaterial.get(i);
+                        ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
+
+                        int qteNeed = production.getQte() * qteProduction;
+                        for (int j = 0; j < CSM.size(); j++) {
+
+                            int qteStored = CSM.get(j).getQteStored();
+                            int qteConsumed = CSM.get(j).getQteConsumed();
+                            double price = CSM.get(j).getPrice();
+
+                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
+                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+
+                            if ((qteStored - qteConsumed) >= qteNeed){
+
+                                priceProduction +=  qteNeed * price;
+                                componentStoreProductTemp.setQte(qteNeed);
+                                componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
+                                componentStoreMaterial.add(CSM.get(j));
+                                break;
+
+                            }else {
+
+                                int qteRest = qteStored - qteConsumed;
+                                qteNeed -= qteRest;
+                                priceProduction += qteRest * price;
+                                componentStoreProductTemp.setQte(qteRest);
+                                componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
+                                componentStoreMaterial.add(CSM.get(j));
+                            }
+                        }
+                    }
+                    tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", priceProduction));
                 }else {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("الكمية كبيرة ");
@@ -133,6 +204,13 @@ public class AddController implements Initializable {
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
                 }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("الرجاء ملأ جميع الخانات و اختيار المنتج لحساب سعر الانتاج");
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -142,6 +220,7 @@ public class AddController implements Initializable {
     private boolean checkQte(int qte){
         boolean ex = true;
         try {
+            if (conn.isClosed()) conn = connectBD.connect();
             for (int i = 0; i < componentProductionsMedication.size(); i++) {
                 ComponentProduction componentProduction = componentProductionsMedication.get(i);
                 try {
@@ -180,15 +259,14 @@ public class AddController implements Initializable {
                     e.printStackTrace();
                 }
             }
+            conn.close();
         }catch (Exception e){
             e.printStackTrace();
         }
         return ex;
     }
 
-    private void updateQteStored(ComponentStore store){
 
-    }
 
     @FXML
     private void ActionAnnulledAdd(){
@@ -198,23 +276,24 @@ public class AddController implements Initializable {
     @FXML
     void ActionInsert(ActionEvent event) {
 
-        /*String name = tfName.getText().trim();
-        String reference = tfReference.getText().trim();
-        String limitQte = tfLimiteQte.getText().trim();
+        LocalDate date = dpDate.getValue();
+        String stQte = tfQte.getText().trim();
+        String stPrice = tfPrice.getText().trim();
+        int indexPr = cbProduct.getSelectionModel().getSelectedIndex();
 
-        if (!name.isEmpty() && !reference.isEmpty() && !limitQte.isEmpty() && dataTable.size() != 0){
+        if (date != null && !stQte.isEmpty() && !stPrice.isEmpty() && indexPr != -1){
 
-            Product product = new Product();
-            product.setName(name);
-            product.setReference(reference);
-            product.setLimitQte(Integer.parseInt(limitQte));
+            Production production = new Production();
+            production.setDate(date);
+            production.setIdProduct(listIdProduct.get(indexPr));
+            production.setQteProduct(Integer.parseInt(stQte));
+            production.setPrice(priceProduction);
 
-            int ins = insert(product);
+            int ins = insert(production);
             if (ins != -1 ) {
-                insertComponent(dataTable, ins);
+                insertComponent( ins);
                 ActionAnnulledAdd();
-            }
-            else {
+            }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
@@ -229,36 +308,33 @@ public class AddController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
-    private void insertComponent(ObservableList<List<StringProperty>> dataTable , int idProduct) {
+    private void insertComponent(int idProduction) {
 
-        /*dataTable.forEach(stringProperties -> {
-            String type =  stringProperties.get(0).getValue();
-            int id = Integer.parseInt(stringProperties.get(1).getValue());
-            int qte = Integer.parseInt(stringProperties.get(4).getValue());
+        for (int i = 0; i < componentStoreMedicationTemp.size(); i++) {
+            ComponentStoreProductTemp componentStoreProductTemp = componentStoreMedicationTemp.get(i);
 
-            ComponentProduction componentProduction = new ComponentProduction();
-            componentProduction.setIdComponent(id);
-            componentProduction.setIdProduct(idProduct);
-            componentProduction.setQte(qte);
+            componentStoreProductTemp.setIdProduction(idProduction);
+            insertComponentStoreTempMedication(componentStoreProductTemp);
+            updateQteComponentStoreMedication(componentStoreMedication.get(i));
 
-            switch (type){
-                case "med":
-                    insertComponentMedication(componentProduction);
-                    break;
-                case "raw":
-                    insertComponentRawMaterial(componentProduction);
-                    break;
-            }
-        });*/
+        }
+
+        for (int i = 0; i < componentStoreMaterialTemp.size(); i++) {
+            ComponentStoreProductTemp componentStoreProductTemp = componentStoreMaterialTemp.get(i);
+
+            componentStoreProductTemp.setIdProduction(idProduction);
+            insertComponentStoreTempMaterial(componentStoreProductTemp);
+            updateQteComponentStoreMaterial(componentStoreMaterial.get(i));
+        }
     }
 
-    private int insert(Product product) {
+    private int insert(Production production)  {
         int insert = 0;
         try {
-//            insert = operation.insertId(product);
+            insert = operation.insertId(production);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -266,10 +342,10 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentMedication(ComponentProduction componentProduction){
+    private boolean insertComponentStoreTempMedication(ComponentStoreProductTemp storeProductTemp){
         boolean insert = false;
         try {
-            insert = componentMedicationOperation.insert(componentProduction);
+            insert = componentStoreProductTempMedicationOperation.insert(storeProductTemp);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -277,14 +353,36 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean updateComponentStore(ComponentProduction componentProduction){
+    private boolean insertComponentStoreTempMaterial(ComponentStoreProductTemp storeProductTemp){
         boolean insert = false;
         try {
-            insert = componentMaterialOperation.insert(componentProduction);
+            insert = componentStoreProductTempMaterialOperation.insert(storeProductTemp);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
             return insert;
+        }
+    }
+
+    private boolean updateQteComponentStoreMedication(ComponentStore store){
+        boolean update = false;
+        try {
+            update = componentStoreMedicationOperation.updateQte(store);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return update;
+        }
+    }
+
+    private boolean updateQteComponentStoreMaterial( ComponentStore store){
+        boolean update = false;
+        try {
+            update = componentStoreMaterialOperation.updateQte(store);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return update;
         }
     }
 

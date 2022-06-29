@@ -41,10 +41,29 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDouble(1,o1.getPrice());
-            preparedStmt.setInt(2,o2.getQteStored());
-            preparedStmt.setInt(3,o2.getQteConsumed());
+            preparedStmt.setInt(2,o1.getQteStored());
+            preparedStmt.setInt(3,o1.getQteConsumed());
             preparedStmt.setInt(4,o2.getIdComponent());
             preparedStmt.setInt(5,o2.getIdDeliveryArrival());
+
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return upd;
+    }
+
+    public boolean updateQte(ComponentStore o) {
+        connectDatabase();
+        boolean upd = false;
+        String query = "UPDATE تخزين_الادوية SET كمية_مستهلكة = ? WHERE معرف_الدواء = ? AND معرف_وصل_التوصيل = ?";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getQteConsumed());
+            preparedStmt.setInt(2,o.getIdComponent());
+            preparedStmt.setInt(3,o.getIdDeliveryArrival());
 
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
