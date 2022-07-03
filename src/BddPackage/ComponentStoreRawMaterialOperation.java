@@ -15,7 +15,7 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
     public boolean insert(ComponentStore o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO تخزين_المواد_الخام ( معرف_المادة_الخام, معرف_وصل_التوصيل , تاريخ_التخزين , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?) ; ";
+        String query = "INSERT INTO تخزين_المواد_الخام ( معرف_المادة_الخام, معرف_وصل_التوصيل , تاريخ_التخزين , سعر_الوحدة, كمية_مخزنة, كمية_مستهلكة ) VALUES (?,?,?,?,?,?) ; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdComponent());
