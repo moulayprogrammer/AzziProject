@@ -98,13 +98,11 @@
             <TableView fx:id="table" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="clId" prefWidth="84.0" text="المعرف" />
-                <TableColumn fx:id="clName" prefWidth="206.0" text="الاسم" />
-                  <TableColumn fx:id="clAddress" prefWidth="201.0" text="العنوان" />
-                  <TableColumn fx:id="clActivity" prefWidth="183.0" text="النشاط" />
-                  <TableColumn fx:id="clNationalNbr" prefWidth="194.0" text="الرقم الوطني" />
-                  <TableColumn fx:id="clTransaction" prefWidth="200.0" text="التعاملات" />
-                  <TableColumn fx:id="clPaying" prefWidth="200.0" text="المدفوعات" />
-                  <TableColumn fx:id="clDebt" prefWidth="200.0" text="الديون" />
+                <TableColumn fx:id="clName" prefWidth="250.0" text="الاسم" />
+                  <TableColumn fx:id="clAddress" prefWidth="250.0" text="العنوان" />
+                  <TableColumn fx:id="clTransaction" prefWidth="230.0" text="التعاملات" />
+                  <TableColumn fx:id="clPaying" prefWidth="230.0" text="المدفوعات" />
+                  <TableColumn fx:id="clDebt" prefWidth="230.0" text="الديون" />
               </columns>
             </TableView>
          </center>

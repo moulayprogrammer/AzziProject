@@ -26,7 +26,7 @@ public class ArchiveController implements Initializable {
     @FXML
     TableView<Provider> table;
     @FXML
-    TableColumn<Client,String> clName,clAddress,clActivity,clNationalNbr;
+    TableColumn<Client,String> clName,clAddress;
     @FXML
     TableColumn<Client,Integer> clId;
 
@@ -40,8 +40,6 @@ public class ArchiveController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
-        clActivity.setCellValueFactory(new PropertyValueFactory<>("activity"));
-        clNationalNbr.setCellValueFactory(new PropertyValueFactory<>("nationalNumber"));
 
         refresh();
     }
@@ -118,11 +116,7 @@ public class ArchiveController implements Initializable {
                 return true;
             } else if (provider.getName().contains(txtRecherche)) {
                 return true;
-            }else if (provider.getAddress().contains(txtRecherche)) {
-                return true;
-            }else if (provider.getActivity().contains(txtRecherche)) {
-                return true;
-            } else return  (provider.getNationalNumber().contains(txtRecherche)) ;
+            }else return  (provider.getAddress().contains(txtRecherche)) ;
         });
 
         SortedList<Provider> sortedList = new SortedList<>(filteredData);

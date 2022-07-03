@@ -9,8 +9,11 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -22,15 +25,13 @@ import java.util.function.Predicate;
 public class MainController implements Initializable {
 
     @FXML
-    AnchorPane MainPanel;
-    @FXML
     TextField tfRecherche;
     @FXML
     TableView<RawMaterial> table;
     @FXML
     TableColumn<RawMaterial,String> clName,clReference;
     @FXML
-    TableColumn<RawMaterial,Integer> clId,clLimiteQte;
+    TableColumn<RawMaterial,Integer> clId,clLimiteQte,clQte;
 
 
     private final ObservableList<RawMaterial> dataTable = FXCollections.observableArrayList();
@@ -38,10 +39,12 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
         clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clQte.setCellValueFactory(new PropertyValueFactory<>("qte"));
 
         refresh();
     }
@@ -54,6 +57,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
@@ -76,6 +82,9 @@ public class MainController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
                 dialog.showAndWait();
                 refresh();
 
@@ -97,33 +106,44 @@ public class MainController implements Initializable {
         RawMaterial rawMaterial = table.getSelectionModel().getSelectedItem();
 
         if (rawMaterial != null){
-            try {
+            if (rawMaterial.getQte() == 0) {
+                try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة المادة الخام" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الارشفة");
+                    alertConfirmation.setContentText("هل انت متاكد من ارشفة المادة الخام");
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.AddToArchive(rawMaterial);
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا يمكن الارشفة ");
+                alertInformation.setContentText("لا تستطيع ارشفة المادة الحالية لانها متبقية في المخزن");
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(rawMaterial);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار مادة خام لارشفتها");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -139,6 +159,9 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();

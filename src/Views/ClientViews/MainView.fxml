@@ -96,8 +96,10 @@
             <TableView fx:id="table" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
-                <TableColumn fx:id="clName" prefWidth="525.0" text="الاسم" />
-                  <TableColumn fx:id="clAddress" prefWidth="577.0" text="العنوان" />
+                <TableColumn fx:id="clName" prefWidth="280.0" text="الاسم" />
+                  <TableColumn fx:id="clAddress" prefWidth="280.0" text="العنوان" />
+                  <TableColumn fx:id="clActivity" prefWidth="280.0" text="النشاط" />
+                  <TableColumn fx:id="clNationalNumber" prefWidth="280.0" text="الرقم الوطني" />
               </columns>
             </TableView>
          </center>

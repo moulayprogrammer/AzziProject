@@ -5,6 +5,8 @@ public class Client {
     private int id;
     private String name;
     private String address;
+    private String activity;
+    private String nationalNumber;
 
     public Client() {
     }
@@ -13,6 +15,14 @@ public class Client {
         this.id = id;
         this.name = name;
         this.address = address;
+    }
+
+    public Client(int id, String name, String address, String activity, String nationalNumber) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.activity = activity;
+        this.nationalNumber = nationalNumber;
     }
 
     public int getId() {
@@ -37,5 +47,21 @@ public class Client {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public String getNationalNumber() {
+        return nationalNumber;
+    }
+
+    public void setNationalNumber(String nationalNumber) {
+        this.nationalNumber = nationalNumber;
     }
 }

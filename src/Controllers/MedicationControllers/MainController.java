@@ -94,7 +94,8 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
-            alertWarning.setContentText("الرجاء اختيار مادة من اجل التعديل");
+            alertWarning.setContentText("الرجاء اختيار دواء من اجل التعديل");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -105,35 +106,46 @@ public class MainController implements Initializable {
     private void ActionAddToArchive(){
         Medication medication = table.getSelectionModel().getSelectedItem();
 
-        if (medication != null){
-            try {
+        if (medication != null ){
+            if (medication.getQte() == 0) {
+                try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الدواء" );
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الارشفة");
+                    alertConfirmation.setContentText("هل انت متاكد من ارشفة الدواء");
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.AddToArchive(medication);
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا تستطيع الارشفة ");
+                alertInformation.setContentText("لا تستطيع ارشفة الدواء الحالي لانه متبقي في المخزن");
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(medication);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار دواء لارشفته");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -149,8 +161,8 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
             closeButton.setVisible(false);
             dialog.showAndWait();
 

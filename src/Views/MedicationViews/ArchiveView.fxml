@@ -14,9 +14,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.ArchiveController">
+<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="599.0" prefWidth="600.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.ArchiveController">
    <header>
-      <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
+      <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
             <Label layoutX="14.0" layoutY="19.0" text="الغاء ارشفة الأدوية" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <font>
@@ -27,13 +27,13 @@
       </AnchorPane>
    </header>
    <content>
-      <AnchorPane prefHeight="550.0" prefWidth="1000.0">
+      <AnchorPane maxHeight="550.0" maxWidth="600.0" minHeight="550.0" minWidth="600.0" prefHeight="550.0" prefWidth="600.0">
          <children>
-            <VBox spacing="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox maxHeight="500.0" maxWidth="600.0" minHeight="500.0" minWidth="600.0" prefHeight="500.0" prefWidth="600.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox spacing="20.0">
                      <children>
-                           <TextField fx:id="tfRecherche" prefHeight="30.0" prefWidth="564.0">
+                           <TextField fx:id="tfRecherche" prefHeight="30.0" HBox.hgrow="ALWAYS">
                                <font>
                                    <Font name="System Bold" size="13.0" />
                                </font>
@@ -50,19 +50,19 @@
                            </ImageView>
                      </children>
                   </HBox>
-                   <TableView fx:id="table" maxHeight="420.0" maxWidth="1.7976931348623157E308" minHeight="420.0" prefHeight="420.0" BorderPane.alignment="CENTER">
+                   <TableView fx:id="table" maxHeight="430.0" maxWidth="580.0" minHeight="430.0" minWidth="580.0" prefHeight="430.0" prefWidth="580.0" BorderPane.alignment="CENTER">
                        <columns>
                            <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" visible="false" />
-                           <TableColumn fx:id="clName" prefWidth="449.0" text="الاسم" />
-                           <TableColumn fx:id="clReference" minWidth="0.0" prefWidth="274.0" text="المرجع" />
-                           <TableColumn fx:id="clLimiteQte" prefWidth="250.0" text=" اقل كمية بالكلغ" />
+                           <TableColumn fx:id="clName" prefWidth="200.0" text="الاسم" />
+                           <TableColumn fx:id="clReference" minWidth="0.0" prefWidth="190.0" text="المرجع" />
+                           <TableColumn fx:id="clLimiteQte" prefWidth="190.0" text=" اقل كمية بالكلغ" />
                        </columns>
                    </TableView>
                </children>
             </VBox>
             <HBox spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="الغاء الارشفة" textFill="#2005a8">
+                  <Button fx:id="btnInsert" defaultButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="الغاء الارشفة" textFill="#2005a8">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
@@ -74,7 +74,7 @@
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button cancelButton="true" mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="الغاء" textFill="#dd0000">
+                  <Button cancelButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="الغاء" textFill="#dd0000">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

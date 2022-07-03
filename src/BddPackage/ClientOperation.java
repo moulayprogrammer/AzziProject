@@ -14,11 +14,13 @@ public class ClientOperation extends BDD<Client> {
     @Override
     public boolean insert(Client o) {
         boolean ins = false;
-        String query = "INSERT INTO زبون (الاسم, العنوان) VALUES (?,?)";
+        String query = "INSERT INTO زبون (الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getAddress());
+            preparedStmt.setString(3,o.getActivity());
+            preparedStmt.setString(4,o.getNationalNumber());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -30,12 +32,14 @@ public class ClientOperation extends BDD<Client> {
     @Override //
     public boolean update(Client o1, Client o2) {
         boolean upd = false;
-        String query = "UPDATE زبون SET الاسم = ?, العنوان = ? WHERE المعرف = ?;";
+        String query = "UPDATE زبون SET الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
             preparedStmt.setString(2,o1.getAddress());
-            preparedStmt.setInt(3,o2.getId());
+            preparedStmt.setString(3,o1.getActivity());
+            preparedStmt.setString(4,o1.getNationalNumber());
+            preparedStmt.setInt(5,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -67,6 +71,8 @@ public class ClientOperation extends BDD<Client> {
                 client.setId(resultSet.getInt("المعرف"));
                 client.setName(resultSet.getString("الاسم"));
                 client.setAddress(resultSet.getString("العنوان"));
+                client.setActivity(resultSet.getString("النشاط"));
+                client.setNationalNumber(resultSet.getString("الرقم_الوطني"));
 
                 list.add(client);
             }
@@ -116,6 +122,9 @@ public class ClientOperation extends BDD<Client> {
                 client.setId(resultSet.getInt("المعرف"));
                 client.setName(resultSet.getString("الاسم"));
                 client.setAddress(resultSet.getString("العنوان"));
+                client.setActivity(resultSet.getString("النشاط"));
+                client.setNationalNumber(resultSet.getString("الرقم_الوطني"));
+
 
                 list.add(client);
             }

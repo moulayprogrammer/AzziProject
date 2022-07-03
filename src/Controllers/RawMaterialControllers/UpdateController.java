@@ -4,6 +4,7 @@ import BddPackage.RawMaterialOperation;
 import Models.RawMaterial;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.NodeOrientation;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -55,18 +56,20 @@ public class UpdateController implements Initializable {
             if (upd) closeDialog(btnUpdate);
             else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("Attention ");
-                alertWarning.setContentText("un erreur inconnue");
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("d'accord");
+                okButton.setText("موافق");
                 alertWarning.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("Attention ");
-            alertWarning.setContentText("Veuillez remplir les champs vides");
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء ملأ جميع الخانات");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setText("d'accord");
+            okButton.setText("موافق" );
             alertWarning.showAndWait();
         }
     }

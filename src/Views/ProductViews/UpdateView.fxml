@@ -106,7 +106,7 @@
    <header>
       <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
          <children>
-            <Button fx:id="btnUpdate" layoutX="650.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionUpdate" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8" AnchorPane.rightAnchor="187.0">
+            <Button fx:id="btnUpdate" defaultButton="true" layoutX="642.0" layoutY="17.0" mnemonicParsing="false" onAction="#ActionUpdate" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8" AnchorPane.rightAnchor="195.0">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>
@@ -118,7 +118,7 @@
                   </ImageView>
                </graphic>
             </Button>
-            <Button layoutX="838.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionAnnulledUpdate" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
+            <Button cancelButton="true" layoutX="838.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionAnnulledUpdate" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
                <font>
                   <Font name="System Bold" size="15.0" />
                </font>

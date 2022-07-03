@@ -116,4 +116,28 @@ public class ProductionOperation extends BDD<Production> {
         closeDatabase();
         return list;
     }
+
+    public Production get(int id) {
+        connectDatabase();
+        Production production = new Production();
+        String query = "SELECT * FROM الانتاج WHERE المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                production.setId(resultSet.getInt("المعرف"));
+                production.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                production.setDate(resultSet.getDate("التاريخ").toLocalDate());
+                production.setQteProduct(resultSet.getInt("الكمية_المنتجة"));
+                production.setPrice(resultSet.getDouble("التكلفة"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return production;
+    }
 }

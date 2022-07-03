@@ -57,7 +57,9 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
     @Override
     public ArrayList<RawMaterial> getAll() {
         ArrayList<RawMaterial> list = new ArrayList<>();
-        String query = "SELECT * FROM `المواد_الخام` WHERE `ارشيف` = 0";
+        String query = "SELECT *,(SELECT SUM(تخزين_المواد_الخام.كمية_مخزنة) FROM تخزين_المواد_الخام WHERE تخزين_المواد_الخام.معرف_المادة_الخام = المواد_الخام.المعرف) AS الكمية_المخزنة\n" +
+                "      ,(SELECT SUM(تخزين_المواد_الخام.كمية_مستهلكة) FROM تخزين_المواد_الخام WHERE تخزين_المواد_الخام.معرف_المادة_الخام = المواد_الخام.المعرف) AS الكمية_المستهلكة\n" +
+                "       FROM  المواد_الخام  WHERE ارشيف = 0;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -68,6 +70,7 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
                 rawMaterial.setName(resultSet.getString("الاسم"));
                 rawMaterial.setReference(resultSet.getString("المرجع"));
                 rawMaterial.setLimitQte(resultSet.getInt("اقل كمية"));
+                rawMaterial.setQte(resultSet.getInt("الكمية_المخزنة") - resultSet.getInt("الكمية_المستهلكة"));
 
                 list.add(rawMaterial);
             }

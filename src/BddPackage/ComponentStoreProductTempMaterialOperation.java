@@ -12,7 +12,7 @@ public class ComponentStoreProductTempMaterialOperation extends BDD<ComponentSto
     public boolean insert(ComponentStoreProductTemp o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO  تخزين_مواد_خام_مؤقت_للانتاج (معرف_المادة_الخام, معرف_وصل_التوصيل, معرف_الانتاج, الكمية) VALUES (?,?,?,?);";
+            String query = "INSERT INTO  تخزين_مواد_خام_مؤقت_للانتاج (معرف_المادة_الخام, معرف_وصل_التوصيل, معرف_الانتاج, الكمية) VALUES (?,?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdComponent());

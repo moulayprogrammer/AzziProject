@@ -32,7 +32,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId,clName,clAddress,clActivity,clNationalNbr,clTransaction,clPaying,clDebt;
+    TableColumn<List<StringProperty>,String> clId,clName,clAddress,clTransaction,clPaying,clDebt;
 
 
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
@@ -48,11 +48,9 @@ public class MainController implements Initializable {
         clId.setCellValueFactory(data -> data.getValue().get(0));
         clName.setCellValueFactory(data -> data.getValue().get(1));
         clAddress.setCellValueFactory(data -> data.getValue().get(2));
-        clActivity.setCellValueFactory(data -> data.getValue().get(3));
-        clNationalNbr.setCellValueFactory(data -> data.getValue().get(4));
-        clTransaction.setCellValueFactory(data -> data.getValue().get(5));
-        clPaying.setCellValueFactory(data -> data.getValue().get(6));
-        clDebt.setCellValueFactory(data -> data.getValue().get(7));
+        clTransaction.setCellValueFactory(data -> data.getValue().get(3));
+        clPaying.setCellValueFactory(data -> data.getValue().get(4));
+        clDebt.setCellValueFactory(data -> data.getValue().get(5));
 
         refresh();
     }
@@ -178,7 +176,7 @@ public class MainController implements Initializable {
         if (data != null){
             try {
                 Provider provider = operation.get(Integer.parseInt(data.get(0).getValue()));
-                if (!Objects.equals(data.get(7).getValue(), "0,00")){
+                if (!Objects.equals(data.get(5).getValue(), "0,00")){
                     TextInputDialog dialog = new TextInputDialog();
 
                     dialog.setTitle("التسديد");
@@ -345,11 +343,9 @@ public class MainController implements Initializable {
                 data.add(0, new SimpleStringProperty(String.valueOf(provider.getId())));
                 data.add(1, new SimpleStringProperty(provider.getName()));
                 data.add(2, new SimpleStringProperty(provider.getAddress()));
-                data.add(3, new SimpleStringProperty(provider.getActivity()));
-                data.add(4, new SimpleStringProperty(provider.getNationalNumber()));
-                data.add(5, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", trans.get())));
-                data.add(6, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pay.get())));
-                data.add(7, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", debt)));
+                data.add(3, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", trans.get())));
+                data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pay.get())));
+                data.add(5, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", debt)));
 
                 dataTable.add(data);
             });

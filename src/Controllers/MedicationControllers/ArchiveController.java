@@ -51,7 +51,7 @@ public class ArchiveController implements Initializable {
             try {
 
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
+                alertConfirmation.setHeaderText("تاكيد إلغاء الارشفة");
                 alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الدواء" );
                 alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
@@ -76,6 +76,7 @@ public class ArchiveController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار دواء لالغاء أرشفته");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();

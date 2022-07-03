@@ -40,9 +40,11 @@
                    </AnchorPane>
                    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                        <columns>
-                           <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" visible="false" />
-                           <TableColumn fx:id="clName" prefWidth="449.0" text="الاسم" />
-                           <TableColumn fx:id="clAddress" minWidth="0.0" prefWidth="525.0" text="العنوان" />
+                           <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
+                           <TableColumn fx:id="clName" prefWidth="280.0" text="الاسم" />
+                           <TableColumn fx:id="clAddress" prefWidth="280.0" text="العنوان" />
+                           <TableColumn fx:id="clActivity" prefWidth="280.0" text="النشاط" />
+                           <TableColumn fx:id="clNationalNumber" prefWidth="280.0" text="الرقم الوطني" />
                        </columns>
                    </TableView>
                </children>

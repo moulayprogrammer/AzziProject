@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ProductionsController.AddController">
+<DialogPane expanded="true" minHeight="450.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ProductionsController.AddController">
    <header>
       <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
@@ -26,7 +26,7 @@
       </AnchorPane>
    </header>
    <content>
-      <AnchorPane prefHeight="400.0">
+      <AnchorPane minHeight="400.0" minWidth="450.0" prefHeight="400.0" prefWidth="450.0">
          <children>
             <HBox fillHeight="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                <children>
@@ -37,7 +37,7 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" text="المرجع">
+                        <Label prefHeight="25.0" text="التاريخ">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -58,7 +58,7 @@
                      <children>
                         <HBox spacing="5.0">
                            <children>
-                              <ComboBox fx:id="cbProduct" onAction="#comboSelect" prefHeight="26.0" prefWidth="240.0" />
+                              <ComboBox fx:id="cbProduct" onAction="#comboSelect" prefHeight="26.0" prefWidth="200.0" />
                               <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/recherche.png.png" />
@@ -66,11 +66,11 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <DatePicker fx:id="dpDate" prefHeight="26.0" prefWidth="270.0" />
-                        <TextField fx:id="tfQte" prefHeight="26.0" prefWidth="268.0" />
+                        <DatePicker fx:id="dpDate" prefHeight="26.0" prefWidth="200.0" />
+                        <TextField fx:id="tfQte" prefHeight="26.0" prefWidth="200.0" />
                         <HBox spacing="5.0">
                            <children>
-                              <TextField fx:id="tfPrice" disable="true" prefHeight="26.0" prefWidth="268.0" />
+                              <TextField fx:id="tfPrice" disable="true" prefHeight="26.0" prefWidth="200.0" />
                               <ImageView fitHeight="24.0" fitWidth="25.0" onMouseClicked="#countPrice" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/calculator.png" />

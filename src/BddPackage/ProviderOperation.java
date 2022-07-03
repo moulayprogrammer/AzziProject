@@ -1,6 +1,5 @@
 package BddPackage;
 
-import Models.Client;
 import Models.Provider;
 
 import java.sql.PreparedStatement;
@@ -14,13 +13,11 @@ public class ProviderOperation extends BDD<Provider> {
     public boolean insert(Provider o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO المورد (الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?)";
+        String query = "INSERT INTO المورد (الاسم, العنوان) VALUES (?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o.getName());
             preparedStmt.setString(2,o.getAddress());
-            preparedStmt.setString(3,o.getActivity());
-            preparedStmt.setString(4,o.getNationalNumber());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -34,14 +31,12 @@ public class ProviderOperation extends BDD<Provider> {
     public boolean update(Provider o1, Provider o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE المورد SET الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
+        String query = "UPDATE المورد SET الاسم = ?, العنوان = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setString(1,o1.getName());
             preparedStmt.setString(2,o1.getAddress());
-            preparedStmt.setString(3,o1.getActivity());
-            preparedStmt.setString(4,o1.getNationalNumber());
-            preparedStmt.setInt(5,o2.getId());
+            preparedStmt.setInt(3,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -75,8 +70,6 @@ public class ProviderOperation extends BDD<Provider> {
                 provider.setId(resultSet.getInt("المعرف"));
                 provider.setName(resultSet.getString("الاسم"));
                 provider.setAddress(resultSet.getString("العنوان"));
-                provider.setActivity(resultSet.getString("النشاط"));
-                provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
 
                 list.add(provider);
             }
@@ -100,8 +93,6 @@ public class ProviderOperation extends BDD<Provider> {
                 provider.setId(resultSet.getInt("المعرف"));
                 provider.setName(resultSet.getString("الاسم"));
                 provider.setAddress(resultSet.getString("العنوان"));
-                provider.setActivity(resultSet.getString("النشاط"));
-                provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
 
             }
         } catch (SQLException e) {
@@ -156,8 +147,6 @@ public class ProviderOperation extends BDD<Provider> {
                 provider.setId(resultSet.getInt("المعرف"));
                 provider.setName(resultSet.getString("الاسم"));
                 provider.setAddress(resultSet.getString("العنوان"));
-                provider.setActivity(resultSet.getString("النشاط"));
-                provider.setNationalNumber(resultSet.getString("الرقم_الوطني"));
 
                 list.add(provider);
             }

@@ -21,8 +21,6 @@ public class AddController implements Initializable {
     @FXML
     Button btnInsert;
 
-
-
     private final RawMaterialOperation operation = new RawMaterialOperation();
 
     @Override

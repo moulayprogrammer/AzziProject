@@ -107,7 +107,7 @@ public class ProductOperation extends BDD<Product> {
     public Product get(int id) {
         connectDatabase();
         Product product = new Product();
-        String query = "SELECT * FROM المنتجات WHERE ارشيف = 0 AND المعرف = ?;";
+        String query = "SELECT * FROM المنتجات WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);

@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
 public class UpdateController implements Initializable {
 
     @FXML
-    TextField tfName,tfAddress,tfActivity,tfNationalNbr;
+    TextField tfName,tfAddress;
     @FXML
     Button btnUpdate;
 
@@ -34,8 +34,6 @@ public class UpdateController implements Initializable {
 
         tfName.setText(upd.getName());
         tfAddress.setText(upd.getAddress());
-        tfActivity.setText(upd.getActivity());
-        tfNationalNbr.setText(upd.getNationalNumber());
 
         this.providerUpdate = upd;
     }
@@ -45,8 +43,6 @@ public class UpdateController implements Initializable {
 
         String name = tfName.getText().trim();
         String address = tfAddress.getText().trim();
-        String activity = tfActivity.getText().trim();
-        String nationalNbr = tfNationalNbr.getText().trim();
 
 
         if (!name.isEmpty() && !address.isEmpty()){
@@ -54,10 +50,6 @@ public class UpdateController implements Initializable {
             Provider provider = new Provider();
             provider.setName(name);
             provider.setAddress(address);
-            provider.setActivity(activity);
-            provider.setNationalNumber(nationalNbr);
-
-
 
             boolean upd = update(provider);
             if (upd) closeDialog(btnUpdate);

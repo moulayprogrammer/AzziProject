@@ -11,71 +11,75 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.RawMaterialControllers.UpdateController">
+<DialogPane expanded="true" maxHeight="450.0" maxWidth="450.0" minHeight="450.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.RawMaterialControllers.UpdateController">
    <content>
-      <AnchorPane prefHeight="493.0" prefWidth="550.0" style="-fx-background-color: #FFF;">
+      <AnchorPane prefHeight="400.0" prefWidth="400.0" style="-fx-background-color: #FFF;">
          <children>
-            <HBox layoutX="14.0" layoutY="46.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="30.0">
+            <HBox layoutX="14.0" layoutY="46.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <VBox prefWidth="200.0" spacing="30.0">
+                  <VBox prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Label prefHeight="25.0" text="الإسم">
+                        <Label prefHeight="30.0" text="الإسم">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" text="المرجع">
+                        <Label prefHeight="30.0" text="المرجع">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" text="أقل كمية">
+                        <Label prefHeight="30.0" text="أقل كمية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
                      </children>
                   </VBox>
-                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="30.0">
+                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <TextField fx:id="tfName" prefHeight="26.0" prefWidth="268.0" />
-                        <TextField fx:id="tfReference" prefHeight="26.0" prefWidth="268.0" />
-                        <TextField fx:id="tfLimiteQte" prefHeight="26.0" prefWidth="268.0" />
+                        <TextField fx:id="tfName" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfReference" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfLimiteQte" prefHeight="30.0" prefWidth="200.0" />
                      </children>
                   </VBox>
+               </children>
+            </HBox>
+            <HBox layoutX="136.0" layoutY="251.0" spacing="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0">
+               <children>
+                  <Button fx:id="btnInsert" defaultButton="true" minHeight="35.0" minWidth="130.0" mnemonicParsing="false" onAction="#ActionUpdateSave" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/Save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="btnUpdate" cancelButton="true" minHeight="35.0" minWidth="130.0" mnemonicParsing="false" onAction="#ActionAnnullerUpd" prefHeight="35.0" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
             </HBox>
          </children>
       </AnchorPane>
    </content>
    <header>
-      <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
+      <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
-            <Button fx:id="btnInsert" layoutX="650.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionUpdateSave" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textFill="#2005a8" AnchorPane.rightAnchor="187.0">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/Save.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button fx:id="btnUpdate" layoutX="838.0" layoutY="14.0" mnemonicParsing="false" onAction="#ActionAnnullerUpd" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/delete.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label layoutX="26.0" layoutY="20.0" text="تعديل مادة خام">
+            <Label layoutX="26.0" layoutY="20.0" text="تعديل مادة خام" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

@@ -17,9 +17,9 @@
    <content>
       <BorderPane>
          <center>
-            <VBox prefHeight="400.0" prefWidth="600.0">
+            <VBox minHeight="400.0" minWidth="1000.0" prefHeight="400.0" prefWidth="1000.0" spacing="30.0">
                <children>
-                   <AnchorPane prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: #FFF;">
+                   <AnchorPane prefHeight="50.0" prefWidth="1000.0" style="-fx-background-color: #FFF;">
                        <children>
                            <ImageView fitHeight="26.0" fitWidth="29.0" layoutX="640.0" layoutY="11.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
                                <image>
@@ -40,11 +40,9 @@
                    </AnchorPane>
                    <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
                        <columns>
-                           <TableColumn fx:id="clId" prefWidth="115.0" text="المعرف"  visible="false"/>
+                           <TableColumn fx:id="clId" prefWidth="115.0" text="المعرف" visible="false" />
                            <TableColumn fx:id="clName" prefWidth="300.0" text="الاسم" />
                            <TableColumn fx:id="clAddress" prefWidth="300.0" text="العنوان" />
-                           <TableColumn fx:id="clActivity" prefWidth="285.0" text="النشاط" />
-                           <TableColumn fx:id="clNationalNbr" prefWidth="285.0" text="الرقم الوطني" />
                        </columns>
                    </TableView>
                </children>
