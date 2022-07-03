@@ -117,94 +117,100 @@ public class UpdateController implements Initializable {
             String stQte = tfQte.getText().trim();
             if (productSelected.getName() != null && !stQte.isEmpty()) {
                 int qteProduction = Integer.parseInt(stQte);
-                if (checkQte(qteProduction)){
-                    priceProduction = 0;
-                    componentStoreMaterialTemp.clear();
-                    componentStoreMedicationTemp.clear();
-                    componentStoreMedication.clear();
-                    componentStoreMaterial.clear();
+                int oldQte = productionSelected.getQteProduct();
+                System.out.println("old = " + oldQte );
+                System.out.println("qte = " + qteProduction );
+                if (qteProduction > oldQte) {
+                    if (checkQte(qteProduction - oldQte)) {
+                        priceProduction = 0;
+                        componentStoreMaterialTemp.clear();
+                        componentStoreMedicationTemp.clear();
+                        componentStoreMedication.clear();
+                        componentStoreMaterial.clear();
 
-                    for (int i = 0; i < componentProductionsMedication.size(); i++) {
-                        ComponentProduction production = componentProductionsMedication.get(i);
-                        ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
+                        for (int i = 0; i < componentProductionsMedication.size(); i++) {
+                            ComponentProduction production = componentProductionsMedication.get(i);
+                            ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
 
-                        int qteNeed = production.getQte() * qteProduction;
-                        for (int j = 0; j < CSM.size(); j++) {
+                            int qteNeed = production.getQte() * (qteProduction - oldQte);
+                            for (int j = 0; j < CSM.size(); j++) {
 
-                            int qteStored = CSM.get(j).getQteStored();
-                            int qteConsumed = CSM.get(j).getQteConsumed();
-                            double price = CSM.get(j).getPrice();
+                                int qteStored = CSM.get(j).getQteStored();
+                                int qteConsumed = CSM.get(j).getQteConsumed();
+                                double price = CSM.get(j).getPrice();
 
-                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                                ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                                componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
+                                componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
 
-                            if ((qteStored - qteConsumed) >= qteNeed){
+                                if ((qteStored - qteConsumed) >= qteNeed) {
 
-                                priceProduction +=  qteNeed * price;
-                                componentStoreProductTemp.setQte(qteNeed);
-                                componentStoreMedicationTemp.add(componentStoreProductTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
-                                componentStoreMedication.add(CSM.get(j));
-                                break;
+                                    priceProduction += qteNeed * price;
+                                    componentStoreProductTemp.setQte(qteNeed);
+                                    componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                    CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
+                                    componentStoreMedication.add(CSM.get(j));
+                                    break;
 
-                            }else {
+                                } else {
 
-                                int qteRest = qteStored - qteConsumed;
-                                qteNeed -= qteRest;
-                                priceProduction += qteRest * price;
-                                componentStoreProductTemp.setQte(qteRest);
-                                componentStoreMedicationTemp.add(componentStoreProductTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
-                                componentStoreMedication.add(CSM.get(j));
+                                    int qteRest = qteStored - qteConsumed;
+                                    qteNeed -= qteRest;
+                                    priceProduction += qteRest * price;
+                                    componentStoreProductTemp.setQte(qteRest);
+                                    componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                    CSM.get(j).setQteConsumed(qteConsumed + qteRest);
+                                    componentStoreMedication.add(CSM.get(j));
+                                }
                             }
                         }
-                    }
-                    for (int i = 0; i < componentProductionsMaterial.size(); i++) {
-                        ComponentProduction production = componentProductionsMaterial.get(i);
-                        ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
+                        for (int i = 0; i < componentProductionsMaterial.size(); i++) {
+                            ComponentProduction production = componentProductionsMaterial.get(i);
+                            ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
 
-                        int qteNeed = production.getQte() * qteProduction;
-                        for (int j = 0; j < CSM.size(); j++) {
+                            int qteNeed = production.getQte() * (qteProduction - oldQte);
+                            for (int j = 0; j < CSM.size(); j++) {
 
-                            int qteStored = CSM.get(j).getQteStored();
-                            int qteConsumed = CSM.get(j).getQteConsumed();
-                            double price = CSM.get(j).getPrice();
+                                int qteStored = CSM.get(j).getQteStored();
+                                int qteConsumed = CSM.get(j).getQteConsumed();
+                                double price = CSM.get(j).getPrice();
 
-                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                                ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                                componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
+                                componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
 
-                            if ((qteStored - qteConsumed) >= qteNeed){
+                                if ((qteStored - qteConsumed) >= qteNeed) {
 
-                                priceProduction +=  qteNeed * price;
-                                componentStoreProductTemp.setQte(qteNeed);
-                                componentStoreMaterialTemp.add(componentStoreProductTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
-                                componentStoreMaterial.add(CSM.get(j));
-                                break;
+                                    priceProduction += qteNeed * price;
+                                    componentStoreProductTemp.setQte(qteNeed);
+                                    componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                    CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
+                                    componentStoreMaterial.add(CSM.get(j));
+                                    break;
 
-                            }else {
+                                } else {
 
-                                int qteRest = qteStored - qteConsumed;
-                                qteNeed -= qteRest;
-                                priceProduction += qteRest * price;
-                                componentStoreProductTemp.setQte(qteRest);
-                                componentStoreMaterialTemp.add(componentStoreProductTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
-                                componentStoreMaterial.add(CSM.get(j));
+                                    int qteRest = qteStored - qteConsumed;
+                                    qteNeed -= qteRest;
+                                    priceProduction += qteRest * price;
+                                    componentStoreProductTemp.setQte(qteRest);
+                                    componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                    CSM.get(j).setQteConsumed(qteConsumed + qteRest);
+                                    componentStoreMaterial.add(CSM.get(j));
+                                }
                             }
                         }
+
+                        tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", productionSelected.getPrice() + priceProduction) );
+                    } else {
+                        Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                        alertWarning.setHeaderText("الكمية كبيرة ");
+                        alertWarning.setContentText("كمية المواد الاولية المتوفرة لا تكفي لانتاج هذه الكمية");
+                        alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                        Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                        okButton.setText("موافق");
+                        alertWarning.showAndWait();
                     }
-                    tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", priceProduction));
-                }else {
-                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                    alertWarning.setHeaderText("الكمية كبيرة ");
-                    alertWarning.setContentText("كمية المواد الاولية المتوفرة لا تكفي لانتاج هذه الكمية");
-                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                    okButton.setText("موافق");
-                    alertWarning.showAndWait();
                 }
             }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
