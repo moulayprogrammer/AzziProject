@@ -232,7 +232,7 @@ public class AddController implements Initializable {
                     if (resultSet.next()){
                         qteComponent = resultSet.getInt("كمية");
                     }
-                    if (qteComponent < qte) {
+                    if (qteComponent < (qte * componentProduction.getQte())) {
                         ex = false;
                         break;
                     }
@@ -251,7 +251,7 @@ public class AddController implements Initializable {
                     if (resultSet.next()){
                         qteComponent = resultSet.getInt("كمية");
                     }
-                    if (qteComponent < qte) {
+                    if (qteComponent < (qte * componentProduction.getQte())) {
                         ex = false;
                         break;
                     }
