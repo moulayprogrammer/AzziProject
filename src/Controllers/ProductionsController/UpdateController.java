@@ -4,7 +4,6 @@ import BddPackage.*;
 import Models.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
@@ -22,7 +21,6 @@ import java.util.ResourceBundle;
 
 public class UpdateController implements Initializable {
 
-
     @FXML
     TextField tfQte,tfPrice,tfQteMaterial,tfQteNew,tfPriceNew;
     @FXML
@@ -30,31 +28,21 @@ public class UpdateController implements Initializable {
     @FXML
     Button btnInsert;
 
-
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
     private final ProductionOperation operation = new ProductionOperation();
     private final ProductOperation productOperation = new ProductOperation();
-    private final ComponentProductionRawMaterialOperation componentProductionRawMaterialOperation = new ComponentProductionRawMaterialOperation();
-    private final ComponentProductionMedicationOperation componentProductionMedicationOperation = new ComponentProductionMedicationOperation();
-    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
     private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
-    private final ComponentStoreProductTempMedicationOperation componentStoreProductTempMedicationOperation = new ComponentStoreProductTempMedicationOperation();
     private final ComponentStoreProductTempMaterialOperation componentStoreProductTempMaterialOperation = new ComponentStoreProductTempMaterialOperation();
 
     private final ObservableList<String> dataComboProduct = FXCollections.observableArrayList();
     private final ObservableList<String> dataComboMaterial = FXCollections.observableArrayList();
     private final ArrayList<Integer> listIdProduct = new ArrayList<>();
     private final ArrayList<Integer> listIdMaterial = new ArrayList<>();
-    private ArrayList<ComponentProduction> componentProductionsMedication = new ArrayList<>();
-    private ArrayList<ComponentProduction> componentProductionsMaterial = new ArrayList<>();
-    private final ArrayList<ComponentStoreProductTemp> componentStoreMedicationTemp = new ArrayList<>();
     private final ArrayList<ComponentStoreProductTemp> componentStoreMaterialTemp = new ArrayList<>();
-    private final ArrayList<ComponentStore> componentStoreMedication = new ArrayList<>();
     private final ArrayList<ComponentStore> componentStoreMaterial = new ArrayList<>();
 
-    private Product productSelected;
     private Production productionSelected;
     private double priceProduction;
 
@@ -84,7 +72,6 @@ public class UpdateController implements Initializable {
         tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", productionSelected.getPrice() ));
 
         this.priceProduction = productionSelected.getPrice();
-        this.productSelected = productOperation.get(productionSelected.getId());
 
         refreshComboMaterial();
 //        getComponentProduction();
@@ -129,15 +116,6 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void getComponentProduction(){
-        try {
-            componentProductionsMedication = componentProductionMedicationOperation.getAllByProduct(productSelected.getId());
-            componentProductionsMaterial = componentProductionRawMaterialOperation.getAllByProduct(productSelected.getId());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
     @FXML
     private void countPrice(){
         try {
@@ -156,23 +134,23 @@ public class UpdateController implements Initializable {
                     ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(listIdMaterial.get(indexMat));
                     int qteNeed = qte;
 
-                    for (int j = 0; j < CSM.size(); j++) {
+                    for (ComponentStore componentStore : CSM) {
 
-                        int qteStored = CSM.get(j).getQteStored();
-                        int qteConsumed = CSM.get(j).getQteConsumed();
-                        double price = CSM.get(j).getPrice();
+                        int qteStored = componentStore.getQteStored();
+                        int qteConsumed = componentStore.getQteConsumed();
+                        double price = componentStore.getPrice();
 
                         ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                        componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
-                        componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                        componentStoreProductTemp.setIdComponent(componentStore.getIdComponent());
+                        componentStoreProductTemp.setIdDeliveryArrival(componentStore.getIdDeliveryArrival());
 
                         if ((qteStored - qteConsumed) >= qteNeed) {
 
                             priceProduction += qteNeed * price;
                             componentStoreProductTemp.setQte(qteNeed);
                             componentStoreMaterialTemp.add(componentStoreProductTemp);
-                            CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
-                            componentStoreMaterial.add(CSM.get(j));
+                            componentStore.setQteConsumed(qteConsumed + qteNeed);
+                            componentStoreMaterial.add(componentStore);
                             break;
 
                         } else {
@@ -182,8 +160,8 @@ public class UpdateController implements Initializable {
                             priceProduction += qteRest * price;
                             componentStoreProductTemp.setQte(qteRest);
                             componentStoreMaterialTemp.add(componentStoreProductTemp);
-                            CSM.get(j).setQteConsumed(qteConsumed + qteRest);
-                            componentStoreMaterial.add(CSM.get(j));
+                            componentStore.setQteConsumed(qteConsumed + qteRest);
+                            componentStoreMaterial.add(componentStore);
                         }
                     }
 
@@ -247,8 +225,7 @@ public class UpdateController implements Initializable {
     }
 
     @FXML
-    void ActionUpdate(ActionEvent event) {
-
+    void ActionUpdate() {
 
         String stQte = tfQteNew.getText().trim();
         String stPrice = tfPriceNew.getText().trim();
@@ -305,47 +282,21 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean insertComponentStoreTempMedication(ComponentStoreProductTemp storeProductTemp){
-        boolean insert = false;
-        try {
-            insert = componentStoreProductTempMedicationOperation.insert(storeProductTemp);
-            return insert;
-        }catch (Exception e){
-            e.printStackTrace();
-            return insert;
-        }
-    }
-
-    private boolean insertComponentStoreTempMaterial(ComponentStoreProductTemp storeProductTemp){
+    private void insertComponentStoreTempMaterial(ComponentStoreProductTemp storeProductTemp){
         boolean insert = false;
         try {
             insert = componentStoreProductTempMaterialOperation.insert(storeProductTemp);
-            return insert;
         }catch (Exception e){
             e.printStackTrace();
-            return insert;
         }
     }
 
-    private boolean updateQteComponentStoreMedication(ComponentStore store){
-        boolean update = false;
-        try {
-            update = componentStoreMedicationOperation.updateQte(store);
-            return update;
-        }catch (Exception e){
-            e.printStackTrace();
-            return update;
-        }
-    }
-
-    private boolean updateQteComponentStoreMaterial( ComponentStore store){
+    private void updateQteComponentStoreMaterial(ComponentStore store){
         boolean update = false;
         try {
             update = componentStoreMaterialOperation.updateQte(store);
-            return update;
         }catch (Exception e){
             e.printStackTrace();
-            return update;
         }
     }
 

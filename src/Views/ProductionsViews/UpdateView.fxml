@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" minHeight="450.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ProductionsController.UpdateController">
+<DialogPane expanded="true" minHeight="500.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ProductionsController.UpdateController">
    <header>
       <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
@@ -25,43 +25,43 @@
       </AnchorPane>
    </header>
    <content>
-      <AnchorPane minHeight="400.0" minWidth="450.0" prefHeight="400.0" prefWidth="450.0">
+      <AnchorPane minHeight="450.0" minWidth="450.0" prefHeight="450.0" prefWidth="450.0">
          <children>
             <HBox fillHeight="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                <children>
                   <VBox prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Label prefHeight="25.0" text="الإسم">
+                        <Label minHeight="30.0" prefHeight="30.0" text="الإسم">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="25.0" text="كمية الانتاج">
+                        <Label minHeight="30.0" prefHeight="30.0" text="كمية الانتاج">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="120.0" prefHeight="25.0" text="تكلفة الانتاج">
+                        <Label layoutX="10.0" layoutY="120.0" minHeight="30.0" prefHeight="30.0" text="تكلفة الانتاج">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="120.0" prefHeight="25.0" text="المادة المضافة">
+                        <Label layoutX="10.0" layoutY="120.0" minHeight="30.0" prefHeight="30.0" text="المادة المضافة">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="175.0" prefHeight="25.0" text="كمية المادة المضافة">
+                        <Label layoutX="10.0" layoutY="175.0" minHeight="30.0" prefHeight="30.0" text="كمية المادة المضافة">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="230.0" prefHeight="25.0" text="كمية الانتاج الجديدة">
+                        <Label layoutX="10.0" layoutY="230.0" minHeight="30.0" prefHeight="30.0" text="كمية الانتاج الجديدة">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="190.0" prefHeight="25.0" text="تكلفة الانتاج الكلية">
+                        <Label layoutX="10.0" layoutY="190.0" minHeight="30.0" prefHeight="30.0" text="تكلفة الانتاج الكلية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -70,7 +70,7 @@
                   </VBox>
                   <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ComboBox fx:id="cbProduct" prefHeight="26.0" prefWidth="240.0" />
+                        <ComboBox fx:id="cbProduct" disable="true" prefHeight="26.0" prefWidth="240.0" />
                         <TextField fx:id="tfQte" disable="true" prefHeight="26.0" prefWidth="268.0" />
                         <TextField fx:id="tfPrice" disable="true" prefHeight="26.0" prefWidth="268.0" />
                         <ComboBox fx:id="cbMaterial" prefHeight="26.0" prefWidth="240.0" />
