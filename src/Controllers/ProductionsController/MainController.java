@@ -1,8 +1,6 @@
 package Controllers.ProductionsController;
 
-import BddPackage.ConnectBD;
-import BddPackage.ProductOperation;
-import BddPackage.ProductionOperation;
+import BddPackage.*;
 import Models.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -41,6 +39,11 @@ public class MainController implements Initializable {
 
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ProductionOperation operation = new ProductionOperation();
+
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
+    private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
+    private final ArrayList<ComponentStore> componentStoreMedication = new ArrayList<>();
+    private final ArrayList<ComponentStore> componentStoreMaterial = new ArrayList<>();
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
@@ -154,18 +157,134 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionDeleteFromArchive(){
-        /*try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/ArchiveView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.showAndWait();
+        List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
-            refresh();
-        } catch (IOException e) {
+        if (dataSelected != null){
+            try {
+                Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
+
+                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                alertConfirmation.setHeaderText("تاكيد الحذف");
+                alertConfirmation.setContentText("هل انت متاكد من حذف هذا الانتاج" );
+                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+
+                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                cancel.setText("الغاء");
+
+                alertConfirmation.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.CANCEL) {
+                        alertConfirmation.close();
+                    } else if (response == ButtonType.OK) {
+
+                        // update store medication comsomation
+                        try {
+                            if (conn.isClosed()) conn = connectBD.connect();
+                            componentStoreMedication.clear();
+
+                            String query = "SELECT تخزين_الادوية.معرف_الدواء, تخزين_الادوية.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_الادوية_مؤقت_للانتاج, تخزين_الادوية" +
+                                    " WHERE معرف_الانتاج = ? AND تخزين_الادوية.معرف_الدواء = تخزين_الادوية_مؤقت_للانتاج.معرف_الدواء AND  تخزين_الادوية.معرف_وصل_التوصيل = تخزين_الادوية.معرف_وصل_التوصيل" ;
+                            PreparedStatement preparedStmt = conn.prepareStatement(query);
+                            preparedStmt.setInt(1,production.getId());
+                            ResultSet resultSet = preparedStmt.executeQuery();
+                            while (resultSet.next()){
+
+                                ComponentStore componentStore = new ComponentStore();
+                                componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة")-resultSet.getInt("الكمية"));
+
+                                componentStoreMedication.add(componentStore);
+//                                updateQteComponentStoreMedication(componentStore);
+
+                            }
+                            conn.close();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        // update store material comsomation
+                        try {
+                            if (conn.isClosed()) conn = connectBD.connect();
+                            componentStoreMaterial.clear();
+
+                            String query = "SELECT  تخزين_المواد_الخام.معرف_المادة_الخام, تخزين_المواد_الخام.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_مواد_خام_مؤقت_للانتاج, تخزين_المواد_الخام\n" +
+                                    "WHERE تخزين_المواد_الخام.معرف_المادة_الخام = تخزين_مواد_خام_مؤقت_للانتاج.معرف_المادة_الخام AND  تخزين_المواد_الخام.معرف_وصل_التوصيل = تخزين_مواد_خام_مؤقت_للانتاج.معرف_وصل_التوصيل\n" +
+                                    "AND معرف_الانتاج = ?;";
+                            PreparedStatement preparedStmt = conn.prepareStatement(query);
+                            preparedStmt.setInt(1,production.getId());
+                            ResultSet resultSet = preparedStmt.executeQuery();
+                            while (resultSet.next()){
+
+                                ComponentStore componentStore = new ComponentStore();
+                                componentStore.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
+                                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة")-resultSet.getInt("الكمية"));
+
+                                componentStoreMaterial.add(componentStore);
+//                                updateQteComponentStoreMaterial(componentStore);
+
+                            }
+                            conn.close();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            updateComponent();
+                            operation.delete(production);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                        refresh();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير");
+            alertWarning.setContentText("الرجاء اختيار إنتاج من اجل الحذف");
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
+    }
+
+    private void updateComponent() {
+
+        for (ComponentStore componentStore : componentStoreMedication) {
+            updateQteComponentStoreMedication(componentStore);
+        }
+        for (ComponentStore componentStore : componentStoreMaterial) {
+            updateQteComponentStoreMaterial(componentStore);
+        }
+    }
+
+    private boolean updateQteComponentStoreMedication(ComponentStore store){
+        boolean update = false;
+        try {
+            update = componentStoreMedicationOperation.updateQte(store);
+            return update;
+        }catch (Exception e){
             e.printStackTrace();
-        }*/
+            return update;
+        }
+    }
+
+    private boolean updateQteComponentStoreMaterial( ComponentStore store){
+        boolean update = false;
+        try {
+            update = componentStoreMaterialOperation.updateQte(store);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return update;
+        }
     }
 
     private void refresh(){

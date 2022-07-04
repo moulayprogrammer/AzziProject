@@ -1,9 +1,11 @@
 package BddPackage;
 
+import Models.ComponentStore;
 import Models.ComponentStoreProductTemp;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -49,4 +51,32 @@ public class ComponentStoreProductTempMedicationOperation extends BDD<ComponentS
     public ArrayList<ComponentStoreProductTemp> getAll() {
         return null;
     }
+
+    public ArrayList<ComponentStoreProductTemp> getAllByProduction(int idProduction) {
+        connectDatabase();
+        ArrayList<ComponentStoreProductTemp> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_الادوية_مؤقت_للانتاج WHERE معرف_الانتاج = ?";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProduction);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+
+                componentStoreProductTemp.setId(resultSet.getInt("المعرف"));
+                componentStoreProductTemp.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStoreProductTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                componentStoreProductTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                componentStoreProductTemp.setQte(resultSet.getInt("الكمية"));
+
+                list.add(componentStoreProductTemp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
+    }
+
 }

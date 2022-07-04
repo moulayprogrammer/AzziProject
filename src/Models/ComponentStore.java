@@ -31,6 +31,12 @@ public class ComponentStore {
         this.qteConsumed = qteConsumed;
     }
 
+    public ComponentStore(int idComponent, int idDeliveryArrival, int qteConsumed) {
+        this.idComponent = idComponent;
+        this.idDeliveryArrival = idDeliveryArrival;
+        this.qteConsumed = qteConsumed;
+    }
+
     public int getIdComponent() {
         return idComponent;
     }

@@ -71,8 +71,29 @@ public class ProductionOperation extends BDD<Production> {
     public boolean delete(Production o) {
         connectDatabase();
         boolean del = false;
-        String query = "DELETE FROM الانتاج WHERE المعرف = ?;";
+
         try {
+            String query = "DELETE FROM الانتاج WHERE المعرف = ?;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getId());
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String query = "DELETE FROM تخزين_مواد_خام_مؤقت_للانتاج WHERE معرف_الانتاج = ?;";
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getId());
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            String query = "DELETE FROM تخزين_الادوية_مؤقت_للانتاج WHERE معرف_الانتاج = ?;";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getId());
             int delete = preparedStmt.executeUpdate();
