@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -30,14 +29,9 @@
          <children>
             <HBox fillHeight="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
                <children>
-                  <VBox prefWidth="200.0" spacing="30.0">
+                  <VBox prefWidth="200.0" spacing="20.0">
                      <children>
                         <Label prefHeight="25.0" text="الإسم">
-                           <font>
-                              <Font name="System Bold" size="14.0" />
-                           </font>
-                        </Label>
-                        <Label prefHeight="25.0" text="التاريخ">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -52,25 +46,39 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
+                        <Label layoutX="10.0" layoutY="120.0" prefHeight="25.0" text="المادة المضافة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="175.0" prefHeight="25.0" text="كمية المادة المضافة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="230.0" prefHeight="25.0" text="كمية الانتاج الجديدة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="190.0" prefHeight="25.0" text="تكلفة الانتاج الكلية">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
                      </children>
                   </VBox>
-                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="30.0">
+                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <HBox disable="true" spacing="5.0">
+                        <ComboBox fx:id="cbProduct" prefHeight="26.0" prefWidth="240.0" />
+                        <TextField fx:id="tfQte" disable="true" prefHeight="26.0" prefWidth="268.0" />
+                        <TextField fx:id="tfPrice" disable="true" prefHeight="26.0" prefWidth="268.0" />
+                        <ComboBox fx:id="cbMaterial" prefHeight="26.0" prefWidth="240.0" />
+                        <TextField fx:id="tfQteMaterial" layoutX="10.0" layoutY="178.0" prefHeight="26.0" prefWidth="268.0" />
+                        <TextField fx:id="tfQteNew" layoutX="10.0" layoutY="234.0" prefHeight="26.0" prefWidth="268.0" />
+                        <HBox spacing="10.0">
                            <children>
-                              <ComboBox fx:id="cbProduct" prefHeight="26.0" prefWidth="240.0" />
-                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/recherche.png.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </HBox>
-                        <DatePicker fx:id="dpDate" prefHeight="26.0" prefWidth="270.0" />
-                        <TextField fx:id="tfQte" prefHeight="26.0" prefWidth="268.0" />
-                        <HBox spacing="5.0">
-                           <children>
-                              <TextField fx:id="tfPrice" disable="true" prefHeight="26.0" prefWidth="268.0" />
+                              <TextField fx:id="tfPriceNew" disable="true" prefHeight="26.0" prefWidth="268.0" />
                               <ImageView fitHeight="24.0" fitWidth="25.0" onMouseClicked="#countPrice" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/calculator.png" />
@@ -84,7 +92,7 @@
             </HBox>
             <HBox alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onAction="#ActionInsert" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textAlignment="CENTER" textFill="#2005a8">
+                  <Button fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onAction="#ActionUpdate" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="حفظ" textAlignment="CENTER" textFill="#2005a8">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

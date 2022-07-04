@@ -52,13 +52,12 @@ public class ProductionOperation extends BDD<Production> {
     public boolean update(Production o1, Production o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE الانتاج SET التاريخ = ?, الكمية_المنتجة = ?, التكلفة= ? WHERE المعرف = ?;";
+        String query = "UPDATE الانتاج SET الكمية_المنتجة = ?, التكلفة= ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setDate(1,Date.valueOf(o1.getDate()));
-            preparedStmt.setInt(2,o1.getQteProduct());
-            preparedStmt.setDouble(3,o1.getPrice());
-            preparedStmt.setInt(4,o2.getId());
+            preparedStmt.setInt(1,o1.getQteProduct());
+            preparedStmt.setDouble(2,o1.getPrice());
+            preparedStmt.setInt(3,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
