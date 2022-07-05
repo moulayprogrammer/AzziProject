@@ -95,6 +95,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار مادة خام من اجل التعديل");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -135,6 +136,7 @@ public class MainController implements Initializable {
                 Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                 alertInformation.setHeaderText("لا يمكن الارشفة ");
                 alertInformation.setContentText("لا تستطيع ارشفة المادة الحالية لانها متبقية في المخزن");
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertInformation.showAndWait();

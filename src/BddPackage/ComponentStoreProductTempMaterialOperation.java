@@ -39,9 +39,9 @@ public class ComponentStoreProductTempMaterialOperation extends BDD<ComponentSto
         connectDatabase();
         boolean del = false;
         try {
-            String query = "DELETE FROM تخزين_مواد_خام_مؤقت_للانتاج WHERE معرف_المادة_الخام = ? AND معرف_وصل_التوصيل = ?";
+            String query = "DELETE FROM تخزين_مواد_خام_مؤقت_للانتاج WHERE معرف_الانتاج = ?";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o.getId());
+            preparedStmt.setInt(1,o.getIdProduction());
             int delete = preparedStmt.executeUpdate();
             if(delete != -1) del = true;
         } catch (SQLException e) {

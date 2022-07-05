@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
@@ -202,6 +203,9 @@ public class AddController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
             dialog.showAndWait();
 
             refreshComboProvider();
@@ -254,6 +258,7 @@ public class AddController implements Initializable {
                     Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                     alertInformation.setHeaderText("المبلغ المتبقي ");
                     alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
+                    alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
                     alertInformation.showAndWait();
@@ -335,46 +340,6 @@ public class AddController implements Initializable {
         return ex.get();
     }
 
-   /* @FXML
-    private void ActionAddToComposition(){
-        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
-        if (dataSelected != null) {
-            int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    TextInputDialog dialog = new TextInputDialog();
-
-                    dialog.setTitle("الكمية");
-                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل الكمية ");
-                    dialog.setContentText("الكمية :");
-
-                    Optional<String> result = dialog.showAndWait();
-
-                    result.ifPresent(qte -> {
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                        data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                        data.add(2, new SimpleStringProperty(dataSelected.get(2).getValue()));
-                        data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
-                        data.add(4, new SimpleStringProperty(qte));
-
-                        dataTable.add(data);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            tablePurchases.setItems(dataTable);
-        }
-    }*/
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
@@ -489,6 +454,7 @@ public class AddController implements Initializable {
                             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                             alertWarning.setHeaderText("تحذير ");
                             alertWarning.setContentText("خطأ غير معروف");
+                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                             okButton.setText("موافق");
                             alertWarning.showAndWait();
@@ -497,6 +463,7 @@ public class AddController implements Initializable {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
                         alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
                         alertWarning.showAndWait();
@@ -505,6 +472,7 @@ public class AddController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
@@ -513,6 +481,7 @@ public class AddController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();

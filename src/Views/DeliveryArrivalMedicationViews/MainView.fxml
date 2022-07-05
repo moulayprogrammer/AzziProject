@@ -11,72 +11,81 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.MainController">
+   <center>
+      <BorderPane BorderPane.alignment="CENTER">
+         <center>
+            <TableView fx:id="table" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+              <columns>
+                <TableColumn fx:id="clId" text="المعرف" visible="false" />
+                <TableColumn fx:id="clDelivery" prefWidth="286.0" text="الموصل" />
+                  <TableColumn fx:id="clDate" prefWidth="265.0" text="تاريخ التوصيل" />
+                  <TableColumn fx:id="clFacture" prefWidth="309.0" text="معرف الفاتورة " />
+                  <TableColumn fx:id="clPrice" prefWidth="275.0" text="سعر التوصيل" />
+                  <TableColumn fx:id="clValidation" prefWidth="130.0" text="تاكيد الوصل" />
+              </columns>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
+            </TableView>
+         </center>
+      </BorderPane>
+   </center>
    <top>
-      <HBox BorderPane.alignment="CENTER">
+      <VBox style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane prefWidth="100.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
+            <Label fx:id="lbName" alignment="CENTER" contentDisplay="CENTER" maxHeight="45.0" maxWidth="1.7976931348623157E308" minHeight="45.0" opacity="0.8" prefHeight="45.0" style="-fx-border-color: GRAY; -fx-border-radius: 5;" text="قائمة المنتجات" textAlignment="CENTER" VBox.vgrow="ALWAYS">
+               <font>
+                  <Font name="System Bold" size="30.0" />
+               </font>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <HBox alignment="CENTER_LEFT" maxHeight="120.0" minHeight="120.0" prefHeight="120.0" spacing="20.0">
                <children>
-                  <ImageView fitHeight="22.0" fitWidth="27.0" layoutX="34.0" layoutY="26.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
-                     <image>
-                        <Image url="@../../Icons/add.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="85.0" layoutY="14.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="16.0">
-                     <image>
-                        <Image url="@../../Icons/config.jpg" />
-                     </image>
-                     <viewport>
-                        <Rectangle2D />
-                     </viewport>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="47.0" layoutY="71.0" onMousePressed="#ActionAddToStore" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
-                     <image>
-                        <Image url="@../../Icons/select.jpg" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="68.0" layoutY="66.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="50.0" AnchorPane.topAnchor="67.0">
-                     <image>
-                        <Image url="@../../Icons/delete.png" />
-                     </image>
-                  </ImageView>
-                  <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="10.0" layoutY="10.0" prefWidth="100.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
-               <children>
-                  <Separator layoutX="96.0" layoutY="33.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <ImageView fitHeight="46.0" fitWidth="30.0" layoutX="49.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
-                     <image>
-                        <Image url="@../../Icons/apercu.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="30.0" fitWidth="28.0" layoutX="55.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="20.0">
-                     <image>
-                        <Image url="@../../Icons/pdf.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="31.0" fitWidth="40.0" layoutX="33.0" layoutY="64.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
-                     <image>
-                        <Image url="@../../Icons/print.png" />
-                     </image>
-                  </ImageView>
-                  <ImageView fitHeight="34.0" fitWidth="28.0" layoutX="86.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="55.0" AnchorPane.topAnchor="70.0">
-                     <image>
-                        <Image url="@../../Icons/excel.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="120.0" prefWidth="320.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
-               <children>
-                  <VBox prefHeight="120.0" prefWidth="280.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="10.0">
+                  <VBox alignment="CENTER" spacing="20.0" HBox.hgrow="NEVER">
+                     <children>
+                        <HBox spacing="25.0">
+                           <children>
+                              <ImageView fitHeight="22.0" fitWidth="27.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/add.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/config.jpg" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox spacing="20.0">
+                           <children>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/delete.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionAddToStore" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/select.jpg" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Separator maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
+                  <VBox alignment="CENTER" prefHeight="120.0" prefWidth="280.0" spacing="10.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
                            <children>
@@ -124,12 +133,8 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Separator layoutX="312.0" layoutY="10.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="4.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-               </children>
-            </AnchorPane>
-            <AnchorPane style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
-               <children>
-                  <VBox prefHeight="120.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="10.0">
+                  <Separator layoutX="103.0" layoutY="20.0" maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
+                  <VBox alignment="CENTER" prefHeight="120.0" spacing="10.0">
                      <children>
                         <HBox>
                            <children>
@@ -149,24 +154,16 @@
                         <ComboBox fx:id="cbDelivery" onAction="#ActionSelectComboDelivery" prefHeight="25.0" prefWidth="220.0" />
                      </children>
                   </VBox>
-               </children>
-            </AnchorPane>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" style="-fx-background-color: #FFF;" HBox.hgrow="ALWAYS" />
-            <AnchorPane layoutX="1004.0" layoutY="10.0" prefHeight="120.0" prefWidth="294.0" style="-fx-background-color: #FFF;" HBox.hgrow="NEVER">
-               <children>
-                  <Separator orientation="VERTICAL" prefHeight="98.0" prefWidth="0.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <VBox layoutX="136.0" layoutY="5.0" prefHeight="120.0" prefWidth="250.0" spacing="10.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <Separator layoutX="428.0" layoutY="20.0" maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
+                  <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                  <Separator layoutX="103.0" layoutY="20.0" maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
+                  <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" spacing="20.0">
                      <children>
-                        <HBox spacing="15.0">
+                        <HBox spacing="25.0">
                            <children>
-                              <Label text="البحث">
+                              <Label maxWidth="1.7976931348623157E308" text="البحث" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
-                                 </font>
-                              </Label>
-                              <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
-                                 <font>
-                                    <Font name="System Bold" size="11.0" />
                                  </font>
                               </Label>
                               <ImageView fitHeight="20.0" fitWidth="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
@@ -181,35 +178,23 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <TextField fx:id="tfRecherche" prefHeight="30.0">
-                           <font>
-                              <Font name="System Bold" size="12.0" />
-                           </font>
-                        </TextField>
+                        <HBox spacing="20.0">
+                           <children>
+                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
-            </AnchorPane>
+            </HBox>
          </children>
-      </HBox>
+         <padding>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
    </top>
-   <center>
-      <BorderPane BorderPane.alignment="CENTER">
-         <center>
-            <TableView fx:id="table" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
-              <columns>
-                <TableColumn fx:id="clId" text="المعرف" visible="false" />
-                <TableColumn fx:id="clDelivery" prefWidth="286.0" text="الموصل" />
-                  <TableColumn fx:id="clDate" prefWidth="265.0" text="تاريخ التوصيل" />
-                  <TableColumn fx:id="clFacture" prefWidth="309.0" text="معرف الفاتورة " />
-                  <TableColumn fx:id="clPrice" prefWidth="275.0" text="سعر التوصيل" />
-                  <TableColumn fx:id="clValidation" prefWidth="130.0" text="تاكيد الوصل" />
-              </columns>
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
-            </TableView>
-         </center>
-      </BorderPane>
-   </center>
 </BorderPane>

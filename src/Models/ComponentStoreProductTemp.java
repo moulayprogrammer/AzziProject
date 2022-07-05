@@ -11,6 +11,10 @@ public class ComponentStoreProductTemp {
     public ComponentStoreProductTemp() {
     }
 
+    public ComponentStoreProductTemp(int idProduction) {
+        this.idProduction = idProduction;
+    }
+
     public ComponentStoreProductTemp(int id, int idComponent, int idDeliveryArrival, int qte) {
         this.id = id;
         this.idComponent = idComponent;

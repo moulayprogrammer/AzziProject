@@ -14,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -25,17 +24,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class MainController implements Initializable {
 
     @FXML
+    Label lbName;
+    @FXML
     TextField tfRecherche;
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId,clProduct,clDate,clQte,clPrice;
+    TableColumn<List<StringProperty>,String> clId,clProduct,clDate,clQte,clPrice,clConfirmation;
 
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ProductionOperation operation = new ProductionOperation();
@@ -50,6 +50,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        lbName.setText("جدول الانتاج ");
 
         conn = connectBD.connect();
 
@@ -58,6 +59,7 @@ public class MainController implements Initializable {
         clDate.setCellValueFactory(data -> data.getValue().get(2));
         clQte.setCellValueFactory(data -> data.getValue().get(3));
         clPrice.setCellValueFactory(data -> data.getValue().get(4));
+        clConfirmation.setCellValueFactory(data -> data.getValue().get(5));
 
         refresh();
     }
@@ -87,30 +89,41 @@ public class MainController implements Initializable {
         List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
         if (dataSelected != null){
-            try {
-                Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
+            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+                try {
+                    Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductionsViews/UpdateView.fxml"));
-                DialogPane temp = loader.load();
-                UpdateController controller = loader.getController();
-                controller.Init(production);
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductionsViews/UpdateView.fxml"));
+                    DialogPane temp = loader.load();
+                    UpdateController controller = loader.getController();
+                    controller.Init(production);
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setDialogPane(temp);
+                    dialog.resizableProperty().setValue(false);
+                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    closeButton.setVisible(false);
+                    dialog.showAndWait();
 
-                refresh();
+                    refresh();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا يمكن التعديل");
+                alertInformation.setContentText("تم تـأكبد الانتاج بالفعل فلا يمكن تعديله" );
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار منتج من اجل التعديل");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -118,137 +131,156 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionAddToArchive(){
-        /*Product product = table.getSelectionModel().getSelectedItem();
-
-        if (product != null){
-            try {
-
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة المنتج" );
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(product);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else {
-            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار منتج لارشفته");
-            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setText("موافق");
-            alertWarning.showAndWait();
-        }*/
-    }
-
-    @FXML
-    private void ActionDeleteFromArchive(){
+    private void ActionConfirm(){
         List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
         if (dataSelected != null){
-            try {
-                Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
+            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+                try {
+                    Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الحذف");
-                alertConfirmation.setContentText("هل انت متاكد من حذف هذا الانتاج" );
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductionsViews/ConfirmationView.fxml"));
+                    DialogPane temp = loader.load();
+                    ConfirmationController controller = loader.getController();
+                    controller.Init(production);
+                    Dialog<ButtonType> dialog = new Dialog<>();
+                    dialog.setDialogPane(temp);
+                    dialog.resizableProperty().setValue(false);
+                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    closeButton.setVisible(false);
+                    dialog.showAndWait();
+
+                    refresh();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("التاكيد");
+                alertInformation.setContentText("تم تـأكبد الانتاج بالفعل" );
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
+                alertInformation.showAndWait();
+            }
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير");
+            alertWarning.setContentText("الرجاء اختيار إنتاج من اجل التأكيد");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
+    }
 
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
+    @FXML
+    private void ActionDelete(){
+        List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
+        if (dataSelected != null){
+            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+                try {
+                    Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
-                        // update store medication comsomation
-                        try {
-                            if (conn.isClosed()) conn = connectBD.connect();
-                            componentStoreMedication.clear();
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الحذف");
+                    alertConfirmation.setContentText("هل انت متاكد من حذف هذا الانتاج");
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
 
-                            String query = "SELECT تخزين_الادوية.معرف_الدواء, تخزين_الادوية.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_الادوية_مؤقت_للانتاج, تخزين_الادوية" +
-                                    " WHERE معرف_الانتاج = ? AND تخزين_الادوية.معرف_الدواء = تخزين_الادوية_مؤقت_للانتاج.معرف_الدواء AND  تخزين_الادوية.معرف_وصل_التوصيل = تخزين_الادوية.معرف_وصل_التوصيل" ;
-                            PreparedStatement preparedStmt = conn.prepareStatement(query);
-                            preparedStmt.setInt(1,production.getId());
-                            ResultSet resultSet = preparedStmt.executeQuery();
-                            while (resultSet.next()){
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
 
-                                ComponentStore componentStore = new ComponentStore();
-                                componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
-                                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
-                                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة")-resultSet.getInt("الكمية"));
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
 
-                                componentStoreMedication.add(componentStore);
+                            // update store medication comsomation
+                            try {
+                                if (conn.isClosed()) conn = connectBD.connect();
+                                componentStoreMedication.clear();
+
+                                String query = "SELECT تخزين_الادوية.معرف_الدواء, تخزين_الادوية.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_الادوية_مؤقت_للانتاج, تخزين_الادوية" +
+                                        " WHERE معرف_الانتاج = ? AND تخزين_الادوية.معرف_الدواء = تخزين_الادوية_مؤقت_للانتاج.معرف_الدواء AND  تخزين_الادوية.معرف_وصل_التوصيل = تخزين_الادوية.معرف_وصل_التوصيل";
+                                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                                preparedStmt.setInt(1, production.getId());
+                                ResultSet resultSet = preparedStmt.executeQuery();
+                                while (resultSet.next()) {
+
+                                    ComponentStore componentStore = new ComponentStore();
+                                    componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                                    componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                                    componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة") - resultSet.getInt("الكمية"));
+
+                                    componentStoreMedication.add(componentStore);
 //                                updateQteComponentStoreMedication(componentStore);
 
+                                }
+                                conn.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            conn.close();
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
 
-                        // update store material comsomation
-                        try {
-                            if (conn.isClosed()) conn = connectBD.connect();
-                            componentStoreMaterial.clear();
+                            // update store material comsomation
+                            try {
+                                if (conn.isClosed()) conn = connectBD.connect();
+                                componentStoreMaterial.clear();
 
-                            String query = "SELECT  تخزين_المواد_الخام.معرف_المادة_الخام, تخزين_المواد_الخام.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_مواد_خام_مؤقت_للانتاج, تخزين_المواد_الخام\n" +
-                                    "WHERE تخزين_المواد_الخام.معرف_المادة_الخام = تخزين_مواد_خام_مؤقت_للانتاج.معرف_المادة_الخام AND  تخزين_المواد_الخام.معرف_وصل_التوصيل = تخزين_مواد_خام_مؤقت_للانتاج.معرف_وصل_التوصيل\n" +
-                                    "AND معرف_الانتاج = ?;";
-                            PreparedStatement preparedStmt = conn.prepareStatement(query);
-                            preparedStmt.setInt(1,production.getId());
-                            ResultSet resultSet = preparedStmt.executeQuery();
-                            while (resultSet.next()){
+                                String query = "SELECT  تخزين_المواد_الخام.معرف_المادة_الخام, تخزين_المواد_الخام.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_مواد_خام_مؤقت_للانتاج, تخزين_المواد_الخام\n" +
+                                        "WHERE تخزين_المواد_الخام.معرف_المادة_الخام = تخزين_مواد_خام_مؤقت_للانتاج.معرف_المادة_الخام AND  تخزين_المواد_الخام.معرف_وصل_التوصيل = تخزين_مواد_خام_مؤقت_للانتاج.معرف_وصل_التوصيل\n" +
+                                        "AND معرف_الانتاج = ?;";
+                                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                                preparedStmt.setInt(1, production.getId());
+                                ResultSet resultSet = preparedStmt.executeQuery();
+                                while (resultSet.next()) {
 
-                                ComponentStore componentStore = new ComponentStore();
-                                componentStore.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
-                                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
-                                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة")-resultSet.getInt("الكمية"));
+                                    ComponentStore componentStore = new ComponentStore();
+                                    componentStore.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
+                                    componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                                    componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة") - resultSet.getInt("الكمية"));
 
-                                componentStoreMaterial.add(componentStore);
+                                    componentStoreMaterial.add(componentStore);
 //                                updateQteComponentStoreMaterial(componentStore);
 
+                                }
+                                conn.close();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            conn.close();
-                        }catch (Exception e){
-                            e.printStackTrace();
+
+                            try {
+                                updateComponent();
+                                operation.delete(production);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            refresh();
                         }
+                    });
 
-                        try {
-                            updateComponent();
-                            operation.delete(production);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا يمكن الحذف");
+                alertInformation.setContentText("تم تـأكبد الانتاج بالفعل فلا يمكن حذفه" );
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار إنتاج من اجل الحذف");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -292,7 +324,8 @@ public class MainController implements Initializable {
             if (conn.isClosed()) conn = connectBD.connect();
             dataTable.clear();
 
-            String query = "SELECT الانتاج.المعرف, المنتجات.الاسم, الانتاج.التاريخ, الانتاج.الكمية_المنتجة, الانتاج.التكلفة FROM المنتجات, الانتاج WHERE المنتجات.المعرف = الانتاج.معرف_المنتج";
+            String query = "SELECT الانتاج.المعرف, المنتجات.الاسم, الانتاج.التاريخ, الانتاج.الكمية_المنتجة, الانتاج.التكلفة, \n" +
+                    "(SELECT معرف_الانتاج FROM تخزين_منتج WHERE معرف_الانتاج = الانتاج.المعرف ) AS التاكيد FROM المنتجات, الانتاج WHERE المنتجات.المعرف = الانتاج.معرف_المنتج";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()) {
@@ -303,6 +336,8 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getDate("التاريخ").toLocalDate())));//2
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية_المنتجة"))));//3
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", resultSet.getDouble("التكلفة") )));//4
+                if (resultSet.getInt("التاكيد") != 0) data.add( new SimpleStringProperty("ماكد"));//5
+                else data.add( new SimpleStringProperty("غير ماكد"));//5
 
                 dataTable.add(data);
             }

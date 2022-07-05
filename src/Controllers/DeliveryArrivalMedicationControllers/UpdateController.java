@@ -62,17 +62,6 @@ public class UpdateController implements Initializable {
     private Receipt receiptSelected;
     private DeliveryArrival deliveryArrivalSelected;
 
-    /*SELECT  توصيل_الدواء.معرف_الوصل, توصيل_الدواء.معرف_الدواء , توصيل_الدواء.الكمية_المفوترة, توصيل_الدواء.الكمية_الموصلة, الادوية.الاسم, مشتريات_الدواء.سعر_الوحدة, مشتريات_الدواء.الكمية
-, وصل_توصيل_الدواء.معرف_الفاتورة
-,
-( SELECT sum(توصيل_الدواء.الكمية_المفوترة) FROM وصل_توصيل_الدواء , توصيل_الدواء WHERE توصيل_الدواء.معرف_الوصل = وصل_توصيل_الدواء.المعرف
-AND توصيل_الدواء.معرف_الدواء = معرف_الدواء AND وصل_توصيل_الدواء.معرف_الفاتورة = معرف_الفاتورة) AS مجموع_الكمية_الموصلة
-
-
-FROM الادوية, توصيل_الدواء, وصل_توصيل_الدواء, فاتورة_شراء_الدواء, مشتريات_الدواء
-WHERE توصيل_الدواء.معرف_الوصل = ? AND الادوية.المعرف = توصيل_الدواء.معرف_الدواء AND وصل_توصيل_الدواء.المعرف = معرف_الوصل AND وصل_توصيل_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف
-AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شراء_الدواء.المعرف AND مشتريات_الدواء.معرف_الدواء =توصيل_الدواء.معرف_الدواء ;*/
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
@@ -429,6 +418,7 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -438,6 +428,7 @@ AND مشتريات_الدواء.معرف_الفاتورة = فاتورة_شرا�
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
