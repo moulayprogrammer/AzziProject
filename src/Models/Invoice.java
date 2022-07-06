@@ -5,6 +5,7 @@ import java.time.LocalDate;
 public class Invoice {
 
     private int id;
+    private int number;
     private int idClient;
     private LocalDate date;
     private double paying;
@@ -19,12 +20,28 @@ public class Invoice {
         this.paying = paying;
     }
 
+    public Invoice(int id, int number, int idClient, LocalDate date, double paying) {
+        this.id = id;
+        this.number = number;
+        this.idClient = idClient;
+        this.date = date;
+        this.paying = paying;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public int getIdClient() {

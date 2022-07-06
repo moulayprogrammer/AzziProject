@@ -82,6 +82,28 @@ public class ClientOperation extends BDD<Client> {
         return list;
     }
 
+    public Client get(int idClient) {
+        Client client = new Client();
+        String query = "SELECT * FROM  زبون WHERE ارشيف = 0 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idClient);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            if (resultSet.next()){
+
+                client.setId(resultSet.getInt("المعرف"));
+                client.setName(resultSet.getString("الاسم"));
+                client.setAddress(resultSet.getString("العنوان"));
+                client.setActivity(resultSet.getString("النشاط"));
+                client.setNationalNumber(resultSet.getString("الرقم_الوطني"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return client;
+    }
+
     public boolean AddToArchive(Client client){
         boolean upd = false;
         String query = "UPDATE زبون SET ارشيف = 1 WHERE المعرف = ?; ";
