@@ -160,5 +160,16 @@ public class  MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void ShowInvoiceScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     
 }

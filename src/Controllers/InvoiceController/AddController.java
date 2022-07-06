@@ -20,7 +20,6 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -46,8 +45,6 @@ public class AddController implements Initializable {
     @FXML
     Button btnInsert;
 
-    private final ConnectBD connectBD = new ConnectBD();
-    private Connection conn;
     private final InvoiceOperation operation = new InvoiceOperation();
     private final ProductOperation productOperation = new ProductOperation();
     private final ClientOperation clientOperation = new ClientOperation();
@@ -61,7 +58,6 @@ public class AddController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        conn = connectBD.connect();
 
         tcIdProd.setCellValueFactory(data -> data.getValue().get(0));
         tcNameProd.setCellValueFactory(data -> data.getValue().get(1));
@@ -118,7 +114,7 @@ public class AddController implements Initializable {
 
     private void setClientTransaction(int idClient) {
         try {
-            double debt = 0.0;
+            double debt;
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
             // Medication
@@ -128,10 +124,10 @@ public class AddController implements Initializable {
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentInvoices.forEach(componentInvoice -> {
                     double pr = componentInvoice.getPrice() * componentInvoice.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
+                    sumR.updateAndGet(v -> v + pr);
                 });
-                pay.updateAndGet(v -> (double) (v + invoice.getPaying()));
-                trans.updateAndGet(v -> (double) (v + sumR.get()));
+                pay.updateAndGet(v -> v + invoice.getPaying());
+                trans.updateAndGet(v -> v + sumR.get());
             });
 
             debt = trans.get() - pay.get();
@@ -229,25 +225,24 @@ public class AddController implements Initializable {
                 double pr = Double.parseDouble(price);
 
                 ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
-                for (int i = 0; i < invoices.size(); i++) {
-                    Invoice invoice = invoices.get(i);
+                for (Invoice invoice : invoices) {
                     ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                     componentInvoices.forEach(componentInvoice -> {
                         double pre = componentInvoice.getPrice() * componentInvoice.getQte();
-                        sumR.updateAndGet(v -> (double) (v + pre));
+                        sumR.updateAndGet(v -> v + pre);
                     });
                     double debt = sumR.get() - invoice.getPaying();
-                    if (debt > 0){
-                        if (pr <= debt){
+                    if (debt > 0) {
+                        if (pr <= debt) {
                             double newPaying = pr + invoice.getPaying();
                             pr = 0;
-                            PayDebtInvoice(invoice.getId(),newPaying);
+                            PayDebtInvoice(invoice.getId(), newPaying);
                             break;
-                        }else {
+                        } else {
                             double newPaying = debt + invoice.getPaying();
                             pr = pr - debt;
-                            PayDebtInvoice(invoice.getId(),newPaying);
+                            PayDebtInvoice(invoice.getId(), newPaying);
                         }
                     }
                 }
@@ -296,11 +291,14 @@ public class AddController implements Initializable {
                 }
             }else {
                 try {
+                    String query = "";
+
+
                     TextInputDialog dialog = new TextInputDialog();
 
                     dialog.setTitle("السعر");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل سعر الشراء ");
+                    dialog.setHeaderText("ادخل سعر البيع ");
                     dialog.setContentText("السعر :");
 
                     Optional<String> result = dialog.showAndWait();
@@ -503,7 +501,7 @@ public class AddController implements Initializable {
             componentInvoice.setQte(qte);
             componentInvoice.setPrice(this.priceList.get(i));
 
-            insertComponentProduct(componentInvoice);
+            insertComponentInvoice(componentInvoice);
         }
     }
 
@@ -518,7 +516,7 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentProduct(ComponentInvoice componentInvoice){
+    private boolean insertComponentInvoice(ComponentInvoice componentInvoice){
         boolean insert = false;
         try {
             insert = componentInvoiceOperation.insert(componentInvoice);
