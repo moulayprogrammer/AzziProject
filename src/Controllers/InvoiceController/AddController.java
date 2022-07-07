@@ -291,8 +291,6 @@ public class AddController implements Initializable {
                 }
             }else {
                 try {
-                    String query = "";
-
 
                     TextInputDialog dialog = new TextInputDialog();
 
