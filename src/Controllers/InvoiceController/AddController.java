@@ -280,17 +280,30 @@ public class AddController implements Initializable {
         List<StringProperty> dataSelected = tableProduct.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(3).getValue()) + 1 ;
-                    double pr = priceList.get(ex);
-                    dataTable.get(ex).get(3).setValue(String.valueOf(val));
-                    dataTable.get(ex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (val * pr)));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+            if ( ex == -1 ){
+               try {
+                   Product product = productOperation.get(Integer.parseInt(tableProduct.getSelectionModel().getSelectedItem().get(0).getValue()));
+
+                   FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddSaleView.fxml"));
+                   DialogPane temp = loader.load();
+                   AddSaleController controller = loader.getController();
+                   controller.Init(product);
+                   Dialog<ButtonType> dialog = new Dialog<>();
+                   dialog.setDialogPane(temp);
+                   dialog.resizableProperty().setValue(false);
+                   dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                   Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                   closeButton.setVisible(false);
+                   dialog.showAndWait();
+
+
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
             }else {
                 try {
+
+
 
                     TextInputDialog dialog = new TextInputDialog();
 
