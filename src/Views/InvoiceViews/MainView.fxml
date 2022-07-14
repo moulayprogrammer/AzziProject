@@ -181,7 +181,7 @@
                      <children>
                         <HBox spacing="20.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="المورد" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" text="الزبون" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>

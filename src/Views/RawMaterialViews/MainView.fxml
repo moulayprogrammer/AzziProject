@@ -64,14 +64,14 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/deleteArchive.png" />
-                                 </image>
-                              </ImageView>
                               <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionAddToArchive" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/addArchive.png" />
+                                 </image>
+                              </ImageView>
+                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/deleteArchive.png" />
                                  </image>
                               </ImageView>
                            </children>
