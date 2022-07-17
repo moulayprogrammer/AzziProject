@@ -35,7 +35,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId,clProduct,clDate,clQte,clPrice,clConfirmation;
+    TableColumn<List<StringProperty>,String> clId,clProduct,clDate,clPriceUnit,clQte,clPrice,clConfirmation;
 
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final ProductionOperation operation = new ProductionOperation();
@@ -57,9 +57,10 @@ public class MainController implements Initializable {
         clId.setCellValueFactory(data -> data.getValue().get(0));
         clProduct.setCellValueFactory(data -> data.getValue().get(1));
         clDate.setCellValueFactory(data -> data.getValue().get(2));
-        clQte.setCellValueFactory(data -> data.getValue().get(3));
-        clPrice.setCellValueFactory(data -> data.getValue().get(4));
-        clConfirmation.setCellValueFactory(data -> data.getValue().get(5));
+        clPriceUnit.setCellValueFactory(data -> data.getValue().get(3));
+        clQte.setCellValueFactory(data -> data.getValue().get(4));
+        clPrice.setCellValueFactory(data -> data.getValue().get(5));
+        clConfirmation.setCellValueFactory(data -> data.getValue().get(6));
 
         refresh();
     }
@@ -89,7 +90,7 @@ public class MainController implements Initializable {
         List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
         if (dataSelected != null){
-            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+            if (dataSelected.get(6).getValue().equals("غير ماكد")) {
                 try {
                     Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
@@ -135,7 +136,7 @@ public class MainController implements Initializable {
         List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
         if (dataSelected != null){
-            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+            if (dataSelected.get(6).getValue().equals("غير ماكد")) {
                 try {
                     Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
@@ -181,7 +182,7 @@ public class MainController implements Initializable {
         List<StringProperty> dataSelected = table.getSelectionModel().getSelectedItem();
 
         if (dataSelected != null){
-            if (dataSelected.get(5).getValue().equals("غير ماكد")) {
+            if (dataSelected.get(6).getValue().equals("غير ماكد")) {
                 try {
                     Production production = operation.get(Integer.parseInt(dataSelected.get(0).getValue()));
 
@@ -334,10 +335,12 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));//0
                 data.add( new SimpleStringProperty(resultSet.getString("الاسم")));//1
                 data.add( new SimpleStringProperty(String.valueOf(resultSet.getDate("التاريخ").toLocalDate())));//2
-                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية_المنتجة"))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", resultSet.getDouble("التكلفة") )));//4
-                if (resultSet.getInt("التاكيد") != 0) data.add( new SimpleStringProperty("ماكد"));//5
-                else data.add( new SimpleStringProperty("غير ماكد"));//5
+                double cost = resultSet.getDouble("التكلفة");
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", cost )));//3
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية_المنتجة"))));//4
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", cost * resultSet.getInt("الكمية_المنتجة") )));//5
+                if (resultSet.getInt("التاكيد") != 0) data.add( new SimpleStringProperty("ماكد"));//6
+                else data.add( new SimpleStringProperty("غير ماكد"));//6
 
                 dataTable.add(data);
             }
@@ -377,7 +380,7 @@ public class MainController implements Initializable {
                 return true;
             } else if (stringProperties.get(4).toString().contains(txtRecherche)) {
                 return true;
-            }  else return stringProperties.get(4).toString().contains(txtRecherche);
+            }  else return stringProperties.get(6).toString().contains(txtRecherche);
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);

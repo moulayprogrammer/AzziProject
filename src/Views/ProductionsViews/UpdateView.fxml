@@ -36,12 +36,12 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label minHeight="30.0" prefHeight="30.0" text="كمية الانتاج">
+                        <Label minHeight="30.0" prefHeight="30.0" text=" كمية الانتاج الكلية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="120.0" minHeight="30.0" prefHeight="30.0" text="تكلفة الانتاج">
+                        <Label layoutX="10.0" layoutY="120.0" minHeight="30.0" prefHeight="30.0" text="تكلفة الانتاج الكلية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

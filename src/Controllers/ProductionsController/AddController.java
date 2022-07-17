@@ -290,7 +290,7 @@ public class AddController implements Initializable {
             production.setDate(date);
             production.setIdProduct(listIdProduct.get(indexPr));
             production.setQteProduct(Integer.parseInt(stQte));
-            production.setPrice(priceProduction);
+            production.setPrice(priceProduction / Integer.parseInt(stQte) );
 
             int ins = insert(production);
             if (ins != -1 ) {

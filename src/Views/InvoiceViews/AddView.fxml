@@ -32,6 +32,7 @@
                           <columns>
                               <TableColumn fx:id="tcIdProd" prefWidth="54.0" text="المعرف" visible="false" />
                               <TableColumn fx:id="tcNameProd" prefWidth="100.0" text="الاسم" />
+                              <TableColumn fx:id="tcQteProd" prefWidth="100.0" text="الكمية" />
                               <TableColumn fx:id="tcReferenceProd" prefWidth="100.0" text="المرجع" />
                           </columns>
                         </TableView>

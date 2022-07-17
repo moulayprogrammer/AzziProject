@@ -42,7 +42,7 @@ public class ConfirmationController implements Initializable {
 
         tfProduct.setText(productOperation.get(productionSelected.getIdProduct()).getName());
         tfQte.setText(String.valueOf(productionSelected.getQteProduct()));
-        tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", (productionSelected.getPrice() / productionSelected.getQteProduct()) ));
+        tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", productionSelected.getPrice() ));
         dpDateStore.setValue(LocalDate.now());
     }
 

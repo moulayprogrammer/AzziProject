@@ -21,9 +21,10 @@
             <TableView fx:id="table" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" visible="false" />
-                <TableColumn fx:id="clProduct" prefWidth="355.0" text="المنتج" />
-                  <TableColumn fx:id="clDate" prefWidth="251.0" text="التاريخ" />
-                  <TableColumn fx:id="clQte" prefWidth="200.0" text="الكمية المنتجة" />
+                <TableColumn fx:id="clProduct" prefWidth="230.0" text="المنتج" />
+                  <TableColumn fx:id="clDate" prefWidth="200.0" text="التاريخ" />
+                  <TableColumn fx:id="clPriceUnit" prefWidth="250.0" text="تكلفة الوحدة" />
+                  <TableColumn fx:id="clQte" prefWidth="140.0" text="الكمية المنتجة" />
                   <TableColumn fx:id="clPrice" prefWidth="250.0" text="التكلفة الاجمالية" />
                   <TableColumn fx:id="clConfirmation" prefWidth="200.0" text="التاكيد" />
               </columns>

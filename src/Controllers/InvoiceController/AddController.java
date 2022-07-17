@@ -39,7 +39,7 @@ public class AddController implements Initializable {
     @FXML
     TableView<List<StringProperty>> tableProduct, tablePurchases;
     @FXML
-    TableColumn<List<StringProperty>,String> tcIdProd, tcNameProd, tcReferenceProd;
+    TableColumn<List<StringProperty>,String> tcIdProd, tcNameProd, tcQteProd, tcReferenceProd;
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
@@ -61,7 +61,8 @@ public class AddController implements Initializable {
 
         tcIdProd.setCellValueFactory(data -> data.getValue().get(0));
         tcNameProd.setCellValueFactory(data -> data.getValue().get(1));
-        tcReferenceProd.setCellValueFactory(data -> data.getValue().get(2));
+        tcQteProd.setCellValueFactory(data -> data.getValue().get(2));
+        tcReferenceProd.setCellValueFactory(data -> data.getValue().get(3));
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
@@ -176,6 +177,7 @@ public class AddController implements Initializable {
                 List<StringProperty> data = new ArrayList<>();
                 data.add( new SimpleStringProperty(String.valueOf(product.getId())));
                 data.add( new SimpleStringProperty(product.getName()));
+                data.add( new SimpleStringProperty(String.valueOf(product.getQte())));
                 data.add(new SimpleStringProperty(product.getReference()));
                 componentDataTable.add(data);
             });

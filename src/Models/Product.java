@@ -6,6 +6,7 @@ public class Product {
     private String name;
     private String reference;
     private int limitQte;
+    private int qte;
 
     public Product() {
     }
@@ -15,6 +16,14 @@ public class Product {
         this.name = name;
         this.reference = reference;
         this.limitQte = limitQte;
+    }
+
+    public Product(int id, String name, String reference, int limitQte, int qte) {
+        this.id = id;
+        this.name = name;
+        this.reference = reference;
+        this.limitQte = limitQte;
+        this.qte = qte;
     }
 
     public int getId() {
@@ -47,5 +56,13 @@ public class Product {
 
     public void setLimitQte(int limitQte) {
         this.limitQte = limitQte;
+    }
+
+    public int getQte() {
+        return qte;
+    }
+
+    public void setQte(int qte) {
+        this.qte = qte;
     }
 }

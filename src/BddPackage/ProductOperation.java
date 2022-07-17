@@ -82,7 +82,9 @@ public class ProductOperation extends BDD<Product> {
     public ArrayList<Product> getAll() {
         connectDatabase();
         ArrayList<Product> list = new ArrayList<>();
-        String query = "SELECT * FROM المنتجات WHERE ارشيف = 0";
+        String query = "SELECT المنتجات.المعرف, المنتجات.الاسم, المنتجات.المرجع, المنتجات.اقل_كمية, \n" +
+                "(SELECT sum(تخزين_منتج.كمية_مخزنة - تخزين_منتج.كمية_مستهلكة ) FROM تخزين_منتج WHERE تخزين_منتج.معرف_المنتج = المعرف AND كمية_مخزنة - كمية_مستهلكة > 0 ) AS الكمية \n" +
+                "FROM المنتجات WHERE ارشيف = 0";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -94,6 +96,7 @@ public class ProductOperation extends BDD<Product> {
                 product.setName(resultSet.getString("الاسم"));
                 product.setReference(resultSet.getString("المرجع"));
                 product.setLimitQte(resultSet.getInt("اقل_كمية"));
+                product.setQte(resultSet.getInt("الكمية"));
 
                 list.add(product);
             }
@@ -107,7 +110,9 @@ public class ProductOperation extends BDD<Product> {
     public Product get(int id) {
         connectDatabase();
         Product product = new Product();
-        String query = "SELECT * FROM المنتجات WHERE المعرف = ?;";
+        String query = "SELECT المنتجات.المعرف, المنتجات.الاسم, المنتجات.المرجع, المنتجات.اقل_كمية, \n" +
+                "(SELECT sum(تخزين_منتج.كمية_مخزنة - تخزين_منتج.كمية_مستهلكة ) FROM تخزين_منتج WHERE تخزين_منتج.معرف_المنتج = المعرف AND كمية_مخزنة - كمية_مستهلكة > 0 ) AS الكمية \n" +
+                "FROM المنتجات WHERE  ارشيف = 0  AND المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);
@@ -118,6 +123,7 @@ public class ProductOperation extends BDD<Product> {
                 product.setName(resultSet.getString("الاسم"));
                 product.setReference(resultSet.getString("المرجع"));
                 product.setLimitQte(resultSet.getInt("اقل_كمية"));
+                product.setQte(resultSet.getInt("الكمية"));
 
             }
         } catch (SQLException e) {
@@ -162,7 +168,9 @@ public class ProductOperation extends BDD<Product> {
     public ArrayList<Product> getAllArchive() {
         connectDatabase();
         ArrayList<Product> list = new ArrayList<>();
-        String query = "SELECT * FROM المنتجات WHERE ارشيف = 1";
+        String query = "SELECT المنتجات.المعرف, المنتجات.الاسم, المنتجات.المرجع, المنتجات.اقل_كمية, \n" +
+                "(SELECT sum(تخزين_منتج.كمية_مخزنة - تخزين_منتج.كمية_مستهلكة ) FROM تخزين_منتج WHERE تخزين_منتج.معرف_المنتج = المعرف AND كمية_مخزنة - كمية_مستهلكة > 0 ) AS الكمية \n" +
+                "FROM المنتجات WHERE ارشيف = 1";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -174,6 +182,7 @@ public class ProductOperation extends BDD<Product> {
                 product.setName(resultSet.getString("الاسم"));
                 product.setReference(resultSet.getString("المرجع"));
                 product.setLimitQte(resultSet.getInt("اقل_كمية"));
+                product.setQte(resultSet.getInt("الكمية"));
 
                 list.add(product);
             }

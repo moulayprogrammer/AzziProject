@@ -69,9 +69,9 @@ public class UpdateController implements Initializable {
 
         cbProduct.getSelectionModel().select(listIdProduct.indexOf(productionSelected.getIdProduct()));
         tfQte.setText(String.valueOf(productionSelected.getQteProduct()));
-        tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", productionSelected.getPrice() ));
+        tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", productionSelected.getPrice() * productionSelected.getQteProduct() ));
 
-        this.priceProduction = productionSelected.getPrice();
+//        this.priceProduction = productionSelected.getPrice() * productionSelected.getQteProduct();
 
         refreshComboMaterial();
 //        getComponentProduction();
@@ -102,7 +102,7 @@ public class UpdateController implements Initializable {
 
             String query = "SELECT خلطة_المواد_الخام.معرف_المادة_الخام, المواد_الخام.الاسم  FROM خلطة_المواد_الخام, المواد_الخام  WHERE معرف_المنتج = ? AND معرف_المادة_الخام = المعرف";
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1, productionSelected.getId());
+            preparedStmt.setInt(1, this.productionSelected.getIdProduct());
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
                 dataComboMaterial.add(resultSet.getString("الاسم"));
@@ -165,7 +165,7 @@ public class UpdateController implements Initializable {
                         }
                     }
 
-                    priceProduction += productionSelected.getPrice();
+                    priceProduction += productionSelected.getPrice() * productionSelected.getQteProduct() ;
 
                     tfPriceNew.setText(String.format(Locale.FRANCE, "%,.2f", priceProduction));
                 }else {
@@ -234,8 +234,9 @@ public class UpdateController implements Initializable {
 
             Production production = new Production();
 
-            production.setQteProduct(Integer.parseInt(stQte));
-            production.setPrice(priceProduction);
+            int qte =  Integer.parseInt(stQte);
+            production.setQteProduct(qte);
+            production.setPrice(priceProduction / qte);
 
             boolean update = update(production);
             if (update) {
