@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -102,6 +104,7 @@ public class AddController implements Initializable {
                 refreshComponent();
             }
         });
+
     }
 
     @FXML
@@ -276,7 +279,13 @@ public class AddController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void tableProductClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionAddToCompositionDefault();
+        }
+    }
     @FXML
     private void ActionAddToCompositionDefault(){
         List<StringProperty> dataSelected = tableProduct.getSelectionModel().getSelectedItem();
@@ -602,4 +611,6 @@ public class AddController implements Initializable {
         sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
         tablePurchases.setItems(sortedList);
     }
+
+
 }

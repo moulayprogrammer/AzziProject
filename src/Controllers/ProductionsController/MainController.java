@@ -207,7 +207,7 @@ public class MainController implements Initializable {
                                 componentStoreMedication.clear();
 
                                 String query = "SELECT تخزين_الادوية.معرف_الدواء, تخزين_الادوية.معرف_وصل_التوصيل, الكمية, كمية_مستهلكة FROM  تخزين_الادوية_مؤقت_للانتاج, تخزين_الادوية" +
-                                        " WHERE معرف_الانتاج = ? AND تخزين_الادوية.معرف_الدواء = تخزين_الادوية_مؤقت_للانتاج.معرف_الدواء AND  تخزين_الادوية.معرف_وصل_التوصيل = تخزين_الادوية.معرف_وصل_التوصيل";
+                                        " WHERE معرف_الانتاج = ? AND تخزين_الادوية.معرف_الدواء = تخزين_الادوية_مؤقت_للانتاج.معرف_الدواء AND  تخزين_الادوية.معرف_وصل_التوصيل = تخزين_الادوية_مؤقت_للانتاج.معرف_وصل_التوصيل";
                                 PreparedStatement preparedStmt = conn.prepareStatement(query);
                                 preparedStmt.setInt(1, production.getId());
                                 ResultSet resultSet = preparedStmt.executeQuery();

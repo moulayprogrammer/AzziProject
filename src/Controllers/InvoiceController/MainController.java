@@ -112,14 +112,13 @@ public class MainController implements Initializable {
             DialogPane temp = loader.load();
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
+            dialog.resizableProperty().setValue(true);
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
             dialog.showAndWait();
 
             refresh();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
