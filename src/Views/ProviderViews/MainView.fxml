@@ -81,7 +81,14 @@
                      </children>
                   </VBox>
                   <Separator maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
-                  <Button mnemonicParsing="false" onAction="#ActionPayDebt" prefHeight="73.0" prefWidth="70.0" text="دفع الديون" wrapText="true" />
+                  <Button mnemonicParsing="false" onAction="#ActionPayDebt" styleClass=".default" wrapText="true">
+                     <graphic>
+                        <ImageView fitHeight="47.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/bills.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
                   <Separator layoutX="103.0" layoutY="20.0" maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
                   <Label maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                   <Separator layoutX="103.0" layoutY="20.0" maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
