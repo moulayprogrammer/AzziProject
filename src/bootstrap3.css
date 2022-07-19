@@ -3,6 +3,11 @@
     src: url('ae_Graph.ttf');
 }
 
+@font-face {
+    font-family: stv_bold_0;
+    src: url('stv_bold_0.ttf');
+}
+
 .root {
 	-fx-body-color : #F5F5F5;
 	-fx-outer-border : #cecece;

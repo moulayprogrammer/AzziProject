@@ -35,27 +35,27 @@
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="60.0" prefHeight="30.0" text="تكلفة الانتاج" visible="false">
+                        <Label prefHeight="30.0" text="تكلفة الانتاج الوحدة">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="30.0" text="تكلفة الانتاج">
+                        <Label prefHeight="30.0" text="تكلفة الانتاج الكلية">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label prefHeight="30.0" text="سعر البيع المقترح الاجمالي">
+                        <Label layoutX="10.0" layoutY="110.0" prefHeight="30.0" text="سعر بيع الوحدة">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="110.0" prefHeight="30.0" text="سعر البيع">
+                        <Label layoutX="10.0" layoutY="210.0" prefHeight="30.0" text="سعر البيع الاجمالي">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label layoutX="10.0" layoutY="160.0" prefHeight="30.0" text="صافي الربح">
+                        <Label layoutX="10.0" layoutY="160.0" prefHeight="30.0" text="صافي الربح الاجمالي">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
@@ -65,15 +65,11 @@
                   <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0">
                      <children>
                         <TextField fx:id="tfQte" prefHeight="30.0" prefWidth="200.0" />
-                        <Button maxWidth="1.7976931348623157E308" minHeight="30.0" onAction="#ActionCount" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-color: #FFF; -fx-border-color: #00a44f; -fx-border-radius: 5; -fx-border-style: solid;" text="حساب" textFill="#00a44f" VBox.vgrow="ALWAYS">
-                           <font>
-                              <Font name="Arial Bold" size="16.0" />
-                           </font>
-                        </Button>
+                        <TextField fx:id="tfPriceProductionUnit" disable="true" prefHeight="30.0" prefWidth="200.0" />
                         <TextField fx:id="tfPriceProduction" disable="true" prefHeight="30.0" prefWidth="200.0" />
-                        <TextField fx:id="tfPriceSale" disable="true" prefHeight="30.0" prefWidth="200.0" />
-                        <TextField fx:id="tfPriceGlobal" layoutX="10.0" layoutY="110.0" prefHeight="30.0" prefWidth="200.0" />
-                        <TextField fx:id="tfNetProfit" disable="true" layoutX="10.0" layoutY="160.0" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPriceUnit" layoutX="10.0" layoutY="110.0" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPrice" disable="true" layoutX="10.0" layoutY="160.0" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfNetProfit" disable="true" layoutX="10.0" layoutY="260.0" prefHeight="30.0" prefWidth="200.0" />
                      </children>
                   </VBox>
                </children>
