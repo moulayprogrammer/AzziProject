@@ -1,13 +1,15 @@
+@font-face {
+    font-family: ae_Graph;
+    src: url('ae_Graph.ttf');
+}
+
 .root {
 	-fx-body-color : #F5F5F5;
 	-fx-outer-border : #cecece;
     -fx-font-family: 'ae_Graph' ;
 }
 
-@font-face {
-    font-family: ae_Graph;
-    src: url('ae_Graph.ttf');
-}
+
 .button:focused, .toggle-button:focused,
 .split-menu-button:focused, .menu-button:focused,
 .number-button:focused,
