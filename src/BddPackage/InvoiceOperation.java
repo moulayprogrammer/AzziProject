@@ -20,11 +20,11 @@ public class InvoiceOperation extends BDD<Invoice> {
     public int insertId(Invoice invoice) {
         connectDatabase();
         int ins = 0;
-        String query = "INSERT INTO فاتورة_بيع (رقم_الفاتورة, معرف_الزبون, تاريخ_البيع, الدفع) VALUES (?,?,?);";
+        String query = "INSERT INTO فاتورة_بيع (رقم_الفاتورة, معرف_الزبون, تاريخ_البيع, الدفع) VALUES (?,?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,invoice.getIdClient());
-            preparedStmt.setInt(2,invoice.getNumber());
+            preparedStmt.setInt(1,invoice.getNumber());
+            preparedStmt.setInt(2,invoice.getIdClient());
             preparedStmt.setDate(3, Date.valueOf(invoice.getDate()));
             preparedStmt.setDouble(4,invoice.getPaying());
             int insert = preparedStmt.executeUpdate();

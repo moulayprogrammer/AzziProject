@@ -39,7 +39,8 @@ public class AddController implements Initializable {
     @FXML
     TextField tfRechercheProduct,tfRecherche;
     @FXML
-    TableView<List<StringProperty>> tableProduct, tablePurchases;
+    TableView<List<StringProperty>> tableProduct, tableSales;
+
     @FXML
     TableColumn<List<StringProperty>,String> tcIdProd, tcNameProd, tcQteProd, tcReferenceProd;
     @FXML
@@ -72,7 +73,7 @@ public class AddController implements Initializable {
         tcQte.setCellValueFactory(data -> data.getValue().get(3));
         tcPriceTotal.setCellValueFactory(data -> data.getValue().get(4));
 
-        refreshComponent();
+        refreshProduct();
         refreshComboClient();
         setFactureNumber();
 
@@ -101,7 +102,7 @@ public class AddController implements Initializable {
                 sortedList.comparatorProperty().bind(tableProduct.comparatorProperty());
                 tableProduct.setItems(sortedList);
             }else {
-                refreshComponent();
+                refreshProduct();
             }
         });
 
@@ -170,11 +171,11 @@ public class AddController implements Initializable {
         lbTransaction.setText("");
     }
 
-    private void refreshComponent(){
+    private void refreshProduct(){
         ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
 
         try {
-            ArrayList<Product> products = productOperation.getAll();
+            ArrayList<Product> products = productOperation.getAllWithQteNotNull();
 
             products.forEach(product -> {
                 List<StringProperty> data = new ArrayList<>();
@@ -207,6 +208,7 @@ public class AddController implements Initializable {
             dialog.showAndWait();
 
             refreshComboClient();
+            cbClient.getSelectionModel().select(comboClientData.size() - 1);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -283,22 +285,23 @@ public class AddController implements Initializable {
     private void tableProductClick(MouseEvent mouseEvent) {
         if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
-            ActionAddToCompositionDefault();
+            ActionAddSales();
         }
     }
     @FXML
-    private void ActionAddToCompositionDefault(){
+    private void ActionAddSales(){
         List<StringProperty> dataSelected = tableProduct.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
             if ( ex == -1 ){
                try {
                    Product product = productOperation.get(Integer.parseInt(tableProduct.getSelectionModel().getSelectedItem().get(0).getValue()));
+                   ComponentInvoice componentInvoice = new ComponentInvoice();
 
                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddSaleView.fxml"));
                    DialogPane temp = loader.load();
                    AddSaleController controller = loader.getController();
-                   controller.Init(product);
+                   controller.Init(product,componentInvoice);
                    Dialog<ButtonType> dialog = new Dialog<>();
                    dialog.setDialogPane(temp);
                    dialog.resizableProperty().setValue(false);
@@ -307,41 +310,24 @@ public class AddController implements Initializable {
                    closeButton.setVisible(false);
                    dialog.showAndWait();
 
+                   if (componentInvoice.getPrice() != 0) {
+
+                       List<StringProperty> data = new ArrayList<>();
+                       data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
+                       data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
+                       data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
+                       data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
+                       data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
+
+                       priceList.add(componentInvoice.getPrice());
+                       dataTable.add(data);
+                   }
 
                }catch (Exception e){
                    e.printStackTrace();
                }
-            }else {
-                try {
-
-
-
-                    TextInputDialog dialog = new TextInputDialog();
-
-                    dialog.setTitle("السعر");
-                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل سعر البيع ");
-                    dialog.setContentText("السعر :");
-
-                    Optional<String> result = dialog.showAndWait();
-
-                    result.ifPresent(price -> {
-                        double pr = Double.parseDouble(price);
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                        data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                        data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
-                        data.add(3, new SimpleStringProperty(String.valueOf(1)));
-                        data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
-
-                        priceList.add(pr);
-                        dataTable.add(data);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
-            tablePurchases.setItems(dataTable);
+            tableSales.setItems(dataTable);
             sumTotalTableSales();
         }
     }
@@ -358,62 +344,62 @@ public class AddController implements Initializable {
     }
 
     @FXML
-    private void ActionModifiedQte(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
-        if (compoSelectedIndex != -1){
-            TextInputDialog dialog = new TextInputDialog();
+    private void tableSalesClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
-            dialog.setTitle("الكمية");
-            dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            dialog.setHeaderText("تعديل الكمية ");
-            dialog.setContentText("الكمية :");
-
-            Optional<String> result = dialog.showAndWait();
-
-            result.ifPresent(qte -> {
-                if (!qte.isEmpty()) {
-                    int q = Integer.parseInt(qte);
-                    double pr = priceList.get(compoSelectedIndex);
-                    dataTable.get(compoSelectedIndex).get(3).setValue(qte);
-                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
-                    sumTotalTableSales();
-                }
-            });
+            ActionUpdateSales();
         }
     }
+
     @FXML
-    private void ActionModifiedPrice(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+    private void ActionUpdateSales(){
+        int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
-            TextInputDialog dialog = new TextInputDialog();
+            try {
+                Product product = productOperation.get(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(0).getValue()));
+                ComponentInvoice componentInvoice = new ComponentInvoice();
+                componentInvoice.setQte(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(3).getValue()));
 
-            dialog.setTitle("السعر");
-            dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            dialog.setHeaderText("تعديل السعر ");
-            dialog.setContentText("السعر :");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
+                DialogPane temp = loader.load();
+                UpdateSaleController controller = loader.getController();
+                controller.Init(product,componentInvoice);
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(temp);
+                dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
+                dialog.showAndWait();
 
-            Optional<String> result = dialog.showAndWait();
+                if (componentInvoice.getPrice() != 0) {
 
-            result.ifPresent(price -> {
-                if (!price.isEmpty()) {
-                    double pr = Double.parseDouble(price);
-                    int q = Integer.parseInt(dataTable.get(compoSelectedIndex).get(3).getValue());
-                    priceList.set(compoSelectedIndex, pr);
-                    dataTable.get(compoSelectedIndex).get(2).setValue(String.format(Locale.FRANCE, "%,.2f", pr ));
-                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
-                    sumTotalTableSales();
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(0, new SimpleStringProperty(String.valueOf(product.getId())));
+                    data.add(1, new SimpleStringProperty(product.getName()));
+                    data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
+                    data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
+                    data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
+
+                    priceList.set(compoSelectedIndex,componentInvoice.getPrice());
+                    dataTable.set(compoSelectedIndex,data);
                 }
-            });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            tableSales.setItems(dataTable);
+            sumTotalTableSales();
         }
     }
+
     @FXML
-    private void ActionDeleteFromComposition(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+    private void ActionDeleteSales(){
+        int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             dataTable.remove(compoSelectedIndex);
-            tablePurchases.setItems(dataTable);
+            priceList.remove(compoSelectedIndex);
+            tableSales.setItems(dataTable);
 
             sumTotalTableSales();
         }
@@ -460,6 +446,7 @@ public class AddController implements Initializable {
 
                         Invoice invoice = new Invoice();
                         invoice.setNumber(nbr);
+                        System.out.println("id = " + selectedClient);
                         invoice.setIdClient(selectedClient);
                         invoice.setDate(date);
                         invoice.setPaying(paying);
@@ -523,6 +510,8 @@ public class AddController implements Initializable {
             componentInvoice.setQte(qte);
             componentInvoice.setPrice(this.priceList.get(i));
 
+            System.out.println("price 01  = " + componentInvoice.getPrice());
+
             insertComponentInvoice(componentInvoice);
         }
     }
@@ -580,7 +569,7 @@ public class AddController implements Initializable {
     @FXML
     private void ActionRefresh(){
         clearRecherche();
-        tablePurchases.setItems(dataTable);
+        tableSales.setItems(dataTable);
     }
 
     private void clearRecherche(){
@@ -590,7 +579,7 @@ public class AddController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tablePurchases.getItems();
+        ObservableList<List<StringProperty>> items = tableSales.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
@@ -608,8 +597,8 @@ public class AddController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
-        tablePurchases.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tableSales.comparatorProperty());
+        tableSales.setItems(sortedList);
     }
 
 

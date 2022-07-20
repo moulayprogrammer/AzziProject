@@ -4,14 +4,14 @@
 }
 
 @font-face {
-    font-family: stv_bold_0;
-    src: url('stv_bold_0.ttf');
+    font-family: ubuntu_Arabic;
+    src: url('ubuntu_Arabic.ttf');
 }
 
 .root {
 	-fx-body-color : #F5F5F5;
 	-fx-outer-border : #cecece;
-    -fx-font-family: 'ae_Graph' ;
+    -fx-font-family: 'ubuntu_Arabic' , 'ae_Graph';
 }
 
 

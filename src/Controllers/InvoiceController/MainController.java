@@ -249,13 +249,14 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.valueOf(invoice.getId())));//0
                 data.add( new SimpleStringProperty(client.getName()));//1
                 data.add( new SimpleStringProperty(String.valueOf(invoice.getDate())));//2
+
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (invoice.getPaying()))));//4
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - invoice.getPaying()))));//5
 
-                sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + invoice.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - invoice.getPaying())));
+                sumAmount.updateAndGet(v -> v + sumR.get());
+                sumPaying.updateAndGet(v -> v + invoice.getPaying());
+                sumDebt.updateAndGet(v -> v + (sumR.get() - invoice.getPaying()));
 
                 dataTable.add(data);
             });

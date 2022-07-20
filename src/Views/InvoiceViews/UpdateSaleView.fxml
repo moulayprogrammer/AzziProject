@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane expanded="true" maxHeight="500.0" maxWidth="450.0" minHeight="500.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.InvoiceController.UpdateSaleController">
+   <header>
+      <AnchorPane minHeight="50.0" prefHeight="50.0" style="-fx-background-color: #EFF;">
+         <children>
+            <Label layoutX="10.0" layoutY="12.0" text="تعديل المبيعات" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </header>
+   <content>
+      <AnchorPane minHeight="450.0" minWidth="450.0" prefHeight="450.0" prefWidth="450.0">
+         <children>
+            <HBox fillHeight="false" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <VBox prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Label prefHeight="30.0" text="الكمية">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="30.0" text="تكلفة الانتاج الوحدة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label prefHeight="30.0" text="تكلفة الانتاج الكلية">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="110.0" prefHeight="30.0" text="سعر بيع الوحدة">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="210.0" prefHeight="30.0" text="سعر البيع الاجمالي">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="160.0" prefHeight="30.0" text="صافي الربح الاجمالي">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <TextField fx:id="tfQte" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPriceProductionUnit" disable="true" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPriceProduction" disable="true" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPriceUnit" layoutX="10.0" layoutY="110.0" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfPrice" disable="true" layoutX="10.0" layoutY="160.0" prefHeight="30.0" prefWidth="200.0" />
+                        <TextField fx:id="tfNetProfit" disable="true" layoutX="10.0" layoutY="260.0" prefHeight="30.0" prefWidth="200.0" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0">
+               <children>
+                  <Button fx:id="btnSale" defaultButton="true" mnemonicParsing="false" onAction="#ActionAdd" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="تاكيد" textAlignment="CENTER" textFill="#2005a8">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/Save.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#ActionAnnul" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="إلغاء" textFill="#dd0000">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.71" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </content>
+</DialogPane>

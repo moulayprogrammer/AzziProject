@@ -3,8 +3,6 @@ package Controllers.InvoiceController;
 import BddPackage.ConnectBD;
 import Models.ComponentInvoice;
 import Models.Product;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
@@ -18,11 +16,10 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class AddSaleController implements Initializable {
+public class UpdateSaleController implements Initializable {
 
     @FXML
     TextField tfQte,tfPriceProductionUnit,tfPriceProduction,tfPriceUnit,tfPrice,tfNetProfit;
@@ -32,7 +29,7 @@ public class AddSaleController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
-    private ComponentInvoice componentInvoice;
+    private ComponentInvoice selectedComponentInvoice;
     private Product selectedProduct;
     private double price;
     private double cost;
@@ -59,10 +56,11 @@ public class AddSaleController implements Initializable {
 
     public void Init(Product product, ComponentInvoice componentInvoice){
 
-        this.componentInvoice = componentInvoice;
+        this.selectedComponentInvoice = componentInvoice;
         this.selectedProduct = product;
-        tfQte.setText(String.valueOf(selectedProduct.getQte()));
+        tfQte.setText(String.valueOf(selectedComponentInvoice.getQte()));
         Count();
+
     }
 
     private void Count(){
@@ -158,9 +156,9 @@ public class AddSaleController implements Initializable {
         int qte = Integer.parseInt(tfQte.getText().trim());
         double PriceU = Double.parseDouble(tfPriceUnit.getText().trim());
 
-        componentInvoice.setIdComponent(this.selectedProduct.getId());
-        componentInvoice.setPrice(PriceU);
-        componentInvoice.setQte(qte);
+        selectedComponentInvoice.setIdComponent(this.selectedProduct.getId());
+        selectedComponentInvoice.setPrice(PriceU);
+        selectedComponentInvoice.setQte(qte);
 
         ActionAnnul();
     }

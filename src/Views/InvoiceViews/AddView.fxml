@@ -38,7 +38,7 @@
                         </TableView>
                         <HBox prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" text="اضافة" HBox.hgrow="ALWAYS" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddSales" prefHeight="25.0" text="اضافة" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
@@ -52,16 +52,15 @@
                         </Label>
                         <HBox prefWidth="200.0" spacing="5.0">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="150.0" text="تعديل الكمية" />
-                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionModifiedPrice" prefHeight="25.0" prefWidth="150.0" text="تعديل السعر" />
-                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="150.0" text="حذف سطر" />
-                              <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
+                              <Button mnemonicParsing="false" onAction="#ActionUpdateSales" prefHeight="25.0" prefWidth="150.0" text="التعديل" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionDeleteSales" prefHeight="25.0" prefWidth="150.0" text="الحذف" />
+                              <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="tfRecherche" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0">
+                        <TableView fx:id="tableSales" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" onMouseClicked="#tableSalesClick">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="معرف المنتج" />
                               <TableColumn fx:id="tcName" prefWidth="245.0" text="اسم المنتج" />

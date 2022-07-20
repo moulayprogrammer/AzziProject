@@ -13,6 +13,7 @@ public class ClientOperation extends BDD<Client> {
 
     @Override
     public boolean insert(Client o) {
+        connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO زبون (الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?)";
         try {
@@ -26,11 +27,13 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return ins;
     }
 
     @Override //
     public boolean update(Client o1, Client o2) {
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE زبون SET الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
         try {
@@ -45,6 +48,7 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
@@ -60,6 +64,7 @@ public class ClientOperation extends BDD<Client> {
 
     @Override
     public ArrayList<Client> getAll() {
+        connectDatabase();
         ArrayList<Client> list = new ArrayList<>();
         String query = "SELECT * FROM  زبون WHERE ارشيف = 0;";
         try {
@@ -79,10 +84,12 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 
     public Client get(int idClient) {
+        connectDatabase();
         Client client = new Client();
         String query = "SELECT * FROM  زبون WHERE ارشيف = 0 AND المعرف = ?;";
         try {
@@ -101,10 +108,12 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return client;
     }
 
     public boolean AddToArchive(Client client){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE زبون SET ارشيف = 1 WHERE المعرف = ?; ";
         try {
@@ -115,10 +124,12 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public boolean DeleteFromArchive(Client client){
+        connectDatabase();
         boolean upd = false;
         String query = "UPDATE زبون SET ارشيف = 0 WHERE المعرف = ?; ";
         try {
@@ -129,10 +140,12 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return upd;
     }
 
     public ArrayList<Client> getAllArchive() {
+        connectDatabase();
         ArrayList<Client> list = new ArrayList<>();
         String query = "SELECT * FROM  زبون WHERE ارشيف = 1;";
         try {
@@ -153,6 +166,7 @@ public class ClientOperation extends BDD<Client> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        closeDatabase();
         return list;
     }
 }

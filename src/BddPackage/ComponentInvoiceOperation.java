@@ -21,7 +21,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
             preparedStmt.setInt(2,o.getIdComponent());
             preparedStmt.setInt(3,o.getQte());
             preparedStmt.setDouble(4,o.getPrice());
-            preparedStmt.setDouble(4,o.getPriceRoad());
+            preparedStmt.setDouble(5,o.getPriceRoad());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
