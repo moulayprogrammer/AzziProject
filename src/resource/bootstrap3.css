@@ -1,17 +1,13 @@
 @font-face {
-    font-family: ae_Graph;
-    src: url('ae_Graph.ttf');
-}
-
-@font-face {
-    font-family: ubuntu_Arabic;
-    src: url('ubuntu_Arabic.ttf');
+    font-family: HSDream-Regular;
+    src: url('HSDream-Regular.otf');
 }
 
 .root {
 	-fx-body-color : #F5F5F5;
 	-fx-outer-border : #cecece;
-    -fx-font-family: 'ubuntu_Arabic' , 'ae_Graph';
+    -fx-font-family: 'HSDream-Regular' ;
+
 }
 
 
@@ -805,13 +801,16 @@ VBox > .split-menu-button.last > .arrow-button {
 /*table view columns*/
 .filler,.column-header,.show-hide-columns-button {
 	-fx-background-color: #dddddd, white, white;
+
 }
 .show-hide-columns-button {
 	-fx-border-width: 0;
 	-fx-background-insets: 0 0 1 1;
+
 }
 .column-header:hover,.show-hide-columns-button:hover {
 	-fx-background-color: #dddddd, white, #f8f8f8;
+
 }
 .column-header-background > .filler {
 	-fx-border-color: transparent #dddddd transparent transparent;
@@ -819,6 +818,7 @@ VBox > .split-menu-button.last > .arrow-button {
 }
 .column-drag-header {
 	-fx-background-color: #2fb254;
+
 }
 
 /*split pane*/

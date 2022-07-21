@@ -86,7 +86,7 @@
                            <children>
                               <Label maxWidth="1.7976931348623157E308" text="البحث" HBox.hgrow="ALWAYS">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="System Bold" size="20.0" />
                                  </font>
                               </Label>
                               <ImageView fitHeight="20.0" fitWidth="23.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
