@@ -1,7 +1,6 @@
 package BddPackage;
 
 import Models.ComponentInvoice;
-import Models.ComponentReceipt;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,7 +17,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdInvoice());
-            preparedStmt.setInt(2,o.getIdComponent());
+            preparedStmt.setInt(2,o.getIdProduct());
             preparedStmt.setInt(3,o.getQte());
             preparedStmt.setDouble(4,o.getPrice());
             preparedStmt.setDouble(5,o.getPriceRoad());
@@ -43,7 +42,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
             preparedStmt.setDouble(2,o1.getPrice());
             preparedStmt.setDouble(3,o1.getPriceRoad());
             preparedStmt.setInt(4,o2.getIdInvoice());
-            preparedStmt.setInt(5,o2.getIdComponent());
+            preparedStmt.setInt(5,o2.getIdProduct());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -61,7 +60,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdInvoice());
-            preparedStmt.setInt(2,o.getIdComponent());
+            preparedStmt.setInt(2,o.getIdProduct());
 
             int update = preparedStmt.executeUpdate();
             if(update != -1) del = true;
@@ -94,7 +93,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
 
                 ComponentInvoice componentInvoice = new ComponentInvoice();
                 componentInvoice.setIdInvoice(resultSet.getInt("معرف_الفاتورة"));
-                componentInvoice.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                componentInvoice.setIdProduct(resultSet.getInt("معرف_المنتج"));
                 componentInvoice.setQte(resultSet.getInt("الكمية"));
                 componentInvoice.setPrice(resultSet.getDouble("سعر_الوحدة"));
                 componentInvoice.setPriceRoad(resultSet.getDouble("سعر_الطريق"));

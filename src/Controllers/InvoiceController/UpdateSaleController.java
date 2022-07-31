@@ -2,6 +2,8 @@ package Controllers.InvoiceController;
 
 import BddPackage.ConnectBD;
 import Models.ComponentInvoice;
+import Models.ComponentStoreProduct;
+import Models.ComponentStoreProductTemp;
 import Models.Product;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,6 +18,8 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -29,45 +33,96 @@ public class UpdateSaleController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
+    private List<ComponentStoreProduct> storeProducts = new ArrayList<>();
+    private List<ComponentStoreProductTemp> storeProductTemps = new ArrayList<>();
     private ComponentInvoice selectedComponentInvoice;
     private Product selectedProduct;
     private double price;
     private double cost;
     private int qte;
+    boolean init = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
 
         tfQte.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue.isEmpty()) tfQte.setText(String.valueOf(qte));
-            else Count();
+            if (init) {
+                if (newValue.isEmpty()) tfQte.setText(String.valueOf(qte));
+                else Count();
+            }
         });
 
-        tfPriceUnit.textProperty().addListener((observable, oldValue, newValue) -> {
+       /* tfPriceUnit.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.isEmpty()) {
                 tfPriceUnit.setText(String.valueOf(price / qte));
                 tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", price ));
                 tfNetProfit.setText(String.format(Locale.FRANCE, "%,.2f", (price - cost) ));
             }
             else CountProfit();
-        });
+        });*/
     }
 
-    public void Init(Product product, ComponentInvoice componentInvoice){
+    public void Init(Product product, ComponentInvoice componentInvoice , List<ComponentStoreProduct> storeProducts, List<ComponentStoreProductTemp> storeProductTemps){
 
+        this.storeProducts = storeProducts;
+        this.storeProductTemps = storeProductTemps;
         this.selectedComponentInvoice = componentInvoice;
         this.selectedProduct = product;
-        tfQte.setText(String.valueOf(selectedComponentInvoice.getQte()));
-        Count();
+        InitFields();
+//        tfQte.setText(String.valueOf(selectedComponentInvoice.getQte()));
 
+    }
+
+    private void InitFields(){
+        try {
+            qte = selectedComponentInvoice.getQte();
+            for (int i = 0; i < storeProducts.size(); i++) {
+                ComponentStoreProduct storeProduct = storeProducts.get(i);
+                ComponentStoreProductTemp storeProductTemp = storeProductTemps.get(i);
+
+                cost = 0.0;
+                price = 0.0;
+
+                try {
+                    String query = "SELECT * FROM الانتاج WHERE المعرف = ?;";
+                    PreparedStatement preparedStmt = conn.prepareStatement(query);
+                    preparedStmt.setInt(1, storeProduct.getIdProduction());
+                    ResultSet resultSet = preparedStmt.executeQuery();
+
+                    if (resultSet.next()) {
+                        double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
+                        cost += costPro * storeProductTemp.getQte();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                price += storeProduct.getPriceHt() * storeProductTemp.getQte();
+
+            }
+
+            tfQte.setText(String.valueOf(qte));
+            tfPriceProductionUnit.setText(String.format(Locale.FRANCE, "%,.2f",cost/qte ));
+            tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", cost ));
+            tfPriceUnit.setText(String.valueOf(price/qte));
+            tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", price ));
+            tfNetProfit.setText(String.format(Locale.FRANCE, "%,.2f", (price - cost) ));
+
+            init = true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void Count(){
         String stQte = tfQte.getText().trim();
         if (!stQte.isEmpty() && !stQte.equals("0")){
-            qte = Integer.parseInt(stQte);
-            if (qte <= this.selectedProduct.getQte() ) {
+            int qte = Integer.parseInt(stQte);
+            if (qte <= this.qte){
+                if (qte <= this.selectedProduct.getQte() ) {
+
+
+                /*
                 try {
                     if (conn.isClosed()) conn = connectBD.connect();
                     price = 0.0;
@@ -109,19 +164,21 @@ public class UpdateSaleController implements Initializable {
                     conn.close();
                 }catch (Exception e){
                     e.printStackTrace();
+                }*/
+
+                }else {
+                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                    alertWarning.setHeaderText("الكمية ");
+                    alertWarning.setContentText("الكمية غير متوفرة");
+                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertWarning.showAndWait();
+
+                    tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
                 }
+            }else{
 
-
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("الكمية ");
-                alertWarning.setContentText("الكمية غير متوفرة");
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
-
-                tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
             }
 
         }else {
@@ -140,8 +197,7 @@ public class UpdateSaleController implements Initializable {
             try {
                 String stPriceNew = tfPriceUnit.getText().trim();
                 double priceNew = Double.parseDouble(stPriceNew);
-
-
+                
                 tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", priceNew * qte));
                 tfNetProfit.setText(String.format(Locale.FRANCE, "%,.2f", ((priceNew * qte) - cost)));
 
@@ -156,7 +212,7 @@ public class UpdateSaleController implements Initializable {
         int qte = Integer.parseInt(tfQte.getText().trim());
         double PriceU = Double.parseDouble(tfPriceUnit.getText().trim());
 
-        selectedComponentInvoice.setIdComponent(this.selectedProduct.getId());
+        selectedComponentInvoice.setIdProduct(this.selectedProduct.getId());
         selectedComponentInvoice.setPrice(PriceU);
         selectedComponentInvoice.setQte(qte);
 

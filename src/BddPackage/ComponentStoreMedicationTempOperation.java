@@ -1,19 +1,16 @@
 package BddPackage;
 
-import Models.ComponentStore;
-import Models.ComponentStoreProductTemp;
+import Models.ComponentStoreTemp;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class ComponentStoreProductTempMedicationOperation extends BDD<ComponentStoreProductTemp> {
+public class ComponentStoreMedicationTempOperation extends BDD<ComponentStoreTemp> {
 
     @Override
-    public boolean insert(ComponentStoreProductTemp o) {
+    public boolean insert(ComponentStoreTemp o) {
         connectDatabase();
         boolean ins = false;
         String query = "INSERT INTO  تخزين_الادوية_مؤقت_للانتاج (معرف_الدواء, معرف_وصل_التوصيل, معرف_الانتاج, الكمية) VALUES (?,?,?,?);";
@@ -33,12 +30,12 @@ public class ComponentStoreProductTempMedicationOperation extends BDD<ComponentS
     }
 
     @Override
-    public boolean update(ComponentStoreProductTemp o1, ComponentStoreProductTemp o2) {
+    public boolean update(ComponentStoreTemp o1, ComponentStoreTemp o2) {
         return false;
     }
 
     @Override
-    public boolean delete(ComponentStoreProductTemp o) {
+    public boolean delete(ComponentStoreTemp o) {
         connectDatabase();
         boolean del = false;
         try {
@@ -56,18 +53,18 @@ public class ComponentStoreProductTempMedicationOperation extends BDD<ComponentS
     }
 
     @Override
-    public boolean isExist(ComponentStoreProductTemp o) {
+    public boolean isExist(ComponentStoreTemp o) {
         return false;
     }
 
     @Override
-    public ArrayList<ComponentStoreProductTemp> getAll() {
+    public ArrayList<ComponentStoreTemp> getAll() {
         return null;
     }
 
-    public ArrayList<ComponentStoreProductTemp> getAllByProduction(int idProduction) {
+    public ArrayList<ComponentStoreTemp> getAllByProduction(int idProduction) {
         connectDatabase();
-        ArrayList<ComponentStoreProductTemp> list = new ArrayList<>();
+        ArrayList<ComponentStoreTemp> list = new ArrayList<>();
         String query = "SELECT * FROM تخزين_الادوية_مؤقت_للانتاج WHERE معرف_الانتاج = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
@@ -75,15 +72,15 @@ public class ComponentStoreProductTempMedicationOperation extends BDD<ComponentS
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 
-                ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
 
-                componentStoreProductTemp.setId(resultSet.getInt("المعرف"));
-                componentStoreProductTemp.setIdComponent(resultSet.getInt("معرف_الدواء"));
-                componentStoreProductTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
-                componentStoreProductTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
-                componentStoreProductTemp.setQte(resultSet.getInt("الكمية"));
+                componentStoreTemp.setId(resultSet.getInt("المعرف"));
+                componentStoreTemp.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStoreTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                componentStoreTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                componentStoreTemp.setQte(resultSet.getInt("الكمية"));
 
-                list.add(componentStoreProductTemp);
+                list.add(componentStoreTemp);
             }
         } catch (SQLException e) {
             e.printStackTrace();

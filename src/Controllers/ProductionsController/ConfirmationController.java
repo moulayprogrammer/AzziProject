@@ -1,11 +1,11 @@
 package Controllers.ProductionsController;
 
 import BddPackage.ComponentStoreProductOperation;
-import BddPackage.ComponentStoreProductTempMaterialOperation;
-import BddPackage.ComponentStoreProductTempMedicationOperation;
+import BddPackage.ComponentStoreRawMaterialTempOperation;
+import BddPackage.ComponentStoreMedicationTempOperation;
 import BddPackage.ProductOperation;
 import Models.ComponentStoreProduct;
-import Models.ComponentStoreProductTemp;
+import Models.ComponentStoreTemp;
 import Models.Production;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -88,11 +88,11 @@ public class ConfirmationController implements Initializable {
     }
 
     private void deleteTempStore() {
-        ComponentStoreProductTempMaterialOperation componentStoreProductTempMaterialOperation = new ComponentStoreProductTempMaterialOperation();
-        componentStoreProductTempMaterialOperation.delete(new ComponentStoreProductTemp(productionSelected.getId()));
+        ComponentStoreRawMaterialTempOperation componentStoreRawMaterialTempOperation = new ComponentStoreRawMaterialTempOperation();
+        componentStoreRawMaterialTempOperation.delete(new ComponentStoreTemp(productionSelected.getId()));
 
-        ComponentStoreProductTempMedicationOperation componentStoreProductTempMedicationOperation = new ComponentStoreProductTempMedicationOperation();
-        componentStoreProductTempMedicationOperation.delete(new ComponentStoreProductTemp(productionSelected.getId()));
+        ComponentStoreMedicationTempOperation componentStoreMedicationTempOperation = new ComponentStoreMedicationTempOperation();
+        componentStoreMedicationTempOperation.delete(new ComponentStoreTemp(productionSelected.getId()));
     }
 
     private boolean insert(ComponentStoreProduct csp)  {

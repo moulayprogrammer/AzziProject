@@ -34,13 +34,13 @@ public class UpdateController implements Initializable {
     private final ProductionOperation operation = new ProductionOperation();
     private final ProductOperation productOperation = new ProductOperation();
     private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
-    private final ComponentStoreProductTempMaterialOperation componentStoreProductTempMaterialOperation = new ComponentStoreProductTempMaterialOperation();
+    private final ComponentStoreRawMaterialTempOperation componentStoreRawMaterialTempOperation = new ComponentStoreRawMaterialTempOperation();
 
     private final ObservableList<String> dataComboProduct = FXCollections.observableArrayList();
     private final ObservableList<String> dataComboMaterial = FXCollections.observableArrayList();
     private final ArrayList<Integer> listIdProduct = new ArrayList<>();
     private final ArrayList<Integer> listIdMaterial = new ArrayList<>();
-    private final ArrayList<ComponentStoreProductTemp> componentStoreMaterialTemp = new ArrayList<>();
+    private final ArrayList<ComponentStoreTemp> componentStoreMaterialTemp = new ArrayList<>();
     private final ArrayList<ComponentStore> componentStoreMaterial = new ArrayList<>();
 
     private Production productionSelected;
@@ -140,15 +140,15 @@ public class UpdateController implements Initializable {
                         int qteConsumed = componentStore.getQteConsumed();
                         double price = componentStore.getPrice();
 
-                        ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                        componentStoreProductTemp.setIdComponent(componentStore.getIdComponent());
-                        componentStoreProductTemp.setIdDeliveryArrival(componentStore.getIdDeliveryArrival());
+                        ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
+                        componentStoreTemp.setIdComponent(componentStore.getIdComponent());
+                        componentStoreTemp.setIdDeliveryArrival(componentStore.getIdDeliveryArrival());
 
                         if ((qteStored - qteConsumed) >= qteNeed) {
 
                             priceProduction += qteNeed * price;
-                            componentStoreProductTemp.setQte(qteNeed);
-                            componentStoreMaterialTemp.add(componentStoreProductTemp);
+                            componentStoreTemp.setQte(qteNeed);
+                            componentStoreMaterialTemp.add(componentStoreTemp);
                             componentStore.setQteConsumed(qteConsumed + qteNeed);
                             componentStoreMaterial.add(componentStore);
                             break;
@@ -158,8 +158,8 @@ public class UpdateController implements Initializable {
                             int qteRest = qteStored - qteConsumed;
                             qteNeed -= qteRest;
                             priceProduction += qteRest * price;
-                            componentStoreProductTemp.setQte(qteRest);
-                            componentStoreMaterialTemp.add(componentStoreProductTemp);
+                            componentStoreTemp.setQte(qteRest);
+                            componentStoreMaterialTemp.add(componentStoreTemp);
                             componentStore.setQteConsumed(qteConsumed + qteRest);
                             componentStoreMaterial.add(componentStore);
                         }
@@ -266,10 +266,10 @@ public class UpdateController implements Initializable {
 
 
         for (int i = 0; i < componentStoreMaterialTemp.size(); i++) {
-            ComponentStoreProductTemp componentStoreProductTemp = componentStoreMaterialTemp.get(i);
+            ComponentStoreTemp componentStoreTemp = componentStoreMaterialTemp.get(i);
 
-            componentStoreProductTemp.setIdProduction(productionSelected.getId());
-            insertComponentStoreTempMaterial(componentStoreProductTemp);
+            componentStoreTemp.setIdProduction(productionSelected.getId());
+            insertComponentStoreTempMaterial(componentStoreTemp);
             updateQteComponentStoreMaterial(componentStoreMaterial.get(i));
         }
     }
@@ -285,10 +285,10 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void insertComponentStoreTempMaterial(ComponentStoreProductTemp storeProductTemp){
+    private void insertComponentStoreTempMaterial(ComponentStoreTemp storeProductTemp){
         boolean insert = false;
         try {
-            insert = componentStoreProductTempMaterialOperation.insert(storeProductTemp);
+            insert = componentStoreRawMaterialTempOperation.insert(storeProductTemp);
         }catch (Exception e){
             e.printStackTrace();
         }

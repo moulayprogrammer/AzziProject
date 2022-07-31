@@ -52,6 +52,11 @@ public class AddController implements Initializable {
     private final ProductOperation productOperation = new ProductOperation();
     private final ClientOperation clientOperation = new ClientOperation();
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
+    private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
+    private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+    private final HashMap<Integer,List<ComponentStoreProduct>> storeProducts = new HashMap<>();
+    private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTemps = new HashMap<>();
+
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboClientData = FXCollections.observableArrayList();
@@ -297,11 +302,14 @@ public class AddController implements Initializable {
                try {
                    Product product = productOperation.get(Integer.parseInt(tableProduct.getSelectionModel().getSelectedItem().get(0).getValue()));
                    ComponentInvoice componentInvoice = new ComponentInvoice();
+                   List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>();
+                   List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>();
+
 
                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddSaleView.fxml"));
                    DialogPane temp = loader.load();
                    AddSaleController controller = loader.getController();
-                   controller.Init(product,componentInvoice);
+                   controller.Init(product,componentInvoice,componentStoreProducts,componentStoreProductTemps);
                    Dialog<ButtonType> dialog = new Dialog<>();
                    dialog.setDialogPane(temp);
                    dialog.resizableProperty().setValue(false);
@@ -318,6 +326,9 @@ public class AddController implements Initializable {
                        data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
                        data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
                        data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
+
+                       storeProducts.put(product.getId(), componentStoreProducts);
+                       storeProductTemps.put(product.getId(), componentStoreProductTemps);
 
                        priceList.add(componentInvoice.getPrice());
                        dataTable.add(data);
@@ -363,7 +374,7 @@ public class AddController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateSaleController controller = loader.getController();
-                controller.Init(product,componentInvoice);
+                controller.Init(product,componentInvoice,storeProducts.get(product.getId()),storeProductTemps.get(product.getId()));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
@@ -446,7 +457,6 @@ public class AddController implements Initializable {
 
                         Invoice invoice = new Invoice();
                         invoice.setNumber(nbr);
-                        System.out.println("id = " + selectedClient);
                         invoice.setIdClient(selectedClient);
                         invoice.setDate(date);
                         invoice.setPaying(paying);
@@ -506,14 +516,22 @@ public class AddController implements Initializable {
 
             ComponentInvoice  componentInvoice = new ComponentInvoice();
             componentInvoice.setIdInvoice(idInvoice);
-            componentInvoice.setIdComponent(id);
+            componentInvoice.setIdProduct(id);
             componentInvoice.setQte(qte);
             componentInvoice.setPrice(this.priceList.get(i));
 
-            System.out.println("price 01  = " + componentInvoice.getPrice());
+            for (ComponentStoreProductTemp storeProductTemp : storeProductTemps.get(id)) {
+                if (storeProductTemp.getIdProduct() == id) {
+                    storeProductTemp.setIdInvoice(idInvoice);
+                    insertProductStoreTemp(storeProductTemp);
+                }
+            }
+            storeProducts.get(id).forEach(this::updateQteConsumedProductStore);
 
             insertComponentInvoice(componentInvoice);
         }
+
+
     }
 
     private int insert(Invoice receipt) {
@@ -538,6 +556,27 @@ public class AddController implements Initializable {
         }
     }
 
+    private boolean insertProductStoreTemp(ComponentStoreProductTemp storeProductTemp){
+        boolean insert = false;
+        try {
+            insert = componentStoreProductTempOperation.insert(storeProductTemp);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
+        }
+    }
+
+    private boolean updateQteConsumedProductStore(ComponentStoreProduct componentStoreProduct){
+        boolean update = false;
+        try {
+            update = componentStoreProductOperation.updateQte(componentStoreProduct);
+            return update;
+        }catch (Exception e){
+            e.printStackTrace();
+            return update;
+        }
+    }
 
     private void closeDialog(Button btn) {
         ((Stage)btn.getScene().getWindow()).close();

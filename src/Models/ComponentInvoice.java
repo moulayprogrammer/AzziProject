@@ -3,7 +3,7 @@ package Models;
 public class ComponentInvoice {
 
     private int idInvoice;
-    private int idComponent;
+    private int idProduct;
     private int qte;
     private double price;
     private double priceRoad;
@@ -11,9 +11,9 @@ public class ComponentInvoice {
     public ComponentInvoice() {
     }
 
-    public ComponentInvoice(int idInvoice, int idComponent, int qte, double price, double priceRoad) {
+    public ComponentInvoice(int idInvoice, int idProduct, int qte, double price, double priceRoad) {
         this.idInvoice = idInvoice;
-        this.idComponent = idComponent;
+        this.idProduct = idProduct;
         this.qte = qte;
         this.price = price;
         this.priceRoad = priceRoad;
@@ -27,12 +27,12 @@ public class ComponentInvoice {
         this.idInvoice = idInvoice;
     }
 
-    public int getIdComponent() {
-        return idComponent;
+    public int getIdProduct() {
+        return idProduct;
     }
 
-    public void setIdComponent(int idComponent) {
-        this.idComponent = idComponent;
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
     }
 
     public int getQte() {

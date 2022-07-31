@@ -126,12 +126,12 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionUpdate(){
-        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+        /*List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
             try {
                 Invoice invoice = operation.get(Integer.parseInt(data.get(0).getValue()));
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
                 controller.Init(invoice);
@@ -156,7 +156,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }
+        }*/
     }
 
     @FXML
@@ -211,7 +211,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionDeleteFromArchive(){
-        try {
+        /*try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/ArchiveView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -225,7 +225,7 @@ public class MainController implements Initializable {
             refresh();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void refresh(){
@@ -409,6 +409,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionRefreshCombo(){
         cbClient.getSelectionModel().clearSelection();
+        selectedClient = new Client();
         LocalDate dateFirst = dpFirst.getValue();
         LocalDate dateSecond = dpSecond.getValue();
         if (dateFirst != null && dateSecond != null) setDateInvoice(dateFirst , dateSecond);
@@ -431,6 +432,7 @@ public class MainController implements Initializable {
     private void clearRecherche(){
         tfRecherche.clear();
         cbClient.getSelectionModel().clearSelection();
+        selectedClient = new Client();
         dpFirst.setValue(null);
         dpSecond.setValue(null);
     }

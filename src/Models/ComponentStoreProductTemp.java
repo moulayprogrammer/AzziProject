@@ -3,9 +3,9 @@ package Models;
 public class ComponentStoreProductTemp {
 
     private int id;
-    private int idComponent;
-    private int idDeliveryArrival;
     private int idProduction;
+    private int idProduct;
+    private int idInvoice;
     private int qte;
 
     public ComponentStoreProductTemp() {
@@ -15,17 +15,17 @@ public class ComponentStoreProductTemp {
         this.idProduction = idProduction;
     }
 
-    public ComponentStoreProductTemp(int id, int idComponent, int idDeliveryArrival, int qte) {
+    public ComponentStoreProductTemp(int id, int idProduct, int idInvoice, int qte) {
         this.id = id;
-        this.idComponent = idComponent;
-        this.idDeliveryArrival = idDeliveryArrival;
+        this.idProduct = idProduct;
+        this.idInvoice = idInvoice;
         this.qte = qte;
     }
 
-    public ComponentStoreProductTemp(int id, int idComponent, int idDeliveryArrival, int idProduction, int qte) {
+    public ComponentStoreProductTemp(int id, int idProduct, int idInvoice, int idProduction, int qte) {
         this.id = id;
-        this.idComponent = idComponent;
-        this.idDeliveryArrival = idDeliveryArrival;
+        this.idProduct = idProduct;
+        this.idInvoice = idInvoice;
         this.idProduction = idProduction;
         this.qte = qte;
     }
@@ -38,20 +38,20 @@ public class ComponentStoreProductTemp {
         this.id = id;
     }
 
-    public int getIdComponent() {
-        return idComponent;
+    public int getIdProduct() {
+        return idProduct;
     }
 
-    public void setIdComponent(int idComponent) {
-        this.idComponent = idComponent;
+    public void setIdProduct(int idProduct) {
+        this.idProduct = idProduct;
     }
 
-    public int getIdDeliveryArrival() {
-        return idDeliveryArrival;
+    public int getIdInvoice() {
+        return idInvoice;
     }
 
-    public void setIdDeliveryArrival(int idDeliveryArrival) {
-        this.idDeliveryArrival = idDeliveryArrival;
+    public void setIdInvoice(int idInvoice) {
+        this.idInvoice = idInvoice;
     }
 
     public int getIdProduction() {

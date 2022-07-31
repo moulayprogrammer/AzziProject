@@ -43,15 +43,15 @@ public class AddController implements Initializable {
     private final ComponentProductionMedicationOperation componentProductionMedicationOperation = new ComponentProductionMedicationOperation();
     private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
     private final ComponentStoreRawMaterialOperation componentStoreMaterialOperation = new ComponentStoreRawMaterialOperation();
-    private final ComponentStoreProductTempMedicationOperation componentStoreProductTempMedicationOperation = new ComponentStoreProductTempMedicationOperation();
-    private final ComponentStoreProductTempMaterialOperation componentStoreProductTempMaterialOperation = new ComponentStoreProductTempMaterialOperation();
+    private final ComponentStoreMedicationTempOperation componentStoreMedicationTempOperation = new ComponentStoreMedicationTempOperation();
+    private final ComponentStoreRawMaterialTempOperation componentStoreRawMaterialTempOperation = new ComponentStoreRawMaterialTempOperation();
 
     private final ObservableList<String> dataComboProduct = FXCollections.observableArrayList();
     private final ArrayList<Integer> listIdProduct = new ArrayList<>();
     private ArrayList<ComponentProduction> componentProductionsMedication = new ArrayList<>();
     private ArrayList<ComponentProduction> componentProductionsMaterial = new ArrayList<>();
-    private final ArrayList<ComponentStoreProductTemp> componentStoreMedicationTemp = new ArrayList<>();
-    private final ArrayList<ComponentStoreProductTemp> componentStoreMaterialTemp = new ArrayList<>();
+    private final ArrayList<ComponentStoreTemp> componentStoreMedicationTemp = new ArrayList<>();
+    private final ArrayList<ComponentStoreTemp> componentStoreMaterialTemp = new ArrayList<>();
     private final ArrayList<ComponentStore> componentStoreMedication = new ArrayList<>();
     private final ArrayList<ComponentStore> componentStoreMaterial = new ArrayList<>();
 
@@ -135,15 +135,15 @@ public class AddController implements Initializable {
                             int qteConsumed = CSM.get(j).getQteConsumed();
                             double price = CSM.get(j).getPrice();
 
-                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                            ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
+                            componentStoreTemp.setIdComponent(CSM.get(j).getIdComponent());
+                            componentStoreTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
 
                             if ((qteStored - qteConsumed) >= qteNeed){
 
                                 priceProduction +=  qteNeed * price;
-                                componentStoreProductTemp.setQte(qteNeed);
-                                componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                componentStoreTemp.setQte(qteNeed);
+                                componentStoreMedicationTemp.add(componentStoreTemp);
                                 CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
                                 componentStoreMedication.add(CSM.get(j));
                                 break;
@@ -153,8 +153,8 @@ public class AddController implements Initializable {
                                 int qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
-                                componentStoreProductTemp.setQte(qteRest);
-                                componentStoreMedicationTemp.add(componentStoreProductTemp);
+                                componentStoreTemp.setQte(qteRest);
+                                componentStoreMedicationTemp.add(componentStoreTemp);
                                 CSM.get(j).setQteConsumed(qteConsumed + qteRest);
                                 componentStoreMedication.add(CSM.get(j));
                             }
@@ -171,15 +171,15 @@ public class AddController implements Initializable {
                             int qteConsumed = CSM.get(j).getQteConsumed();
                             double price = CSM.get(j).getPrice();
 
-                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                            componentStoreProductTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreProductTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                            ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
+                            componentStoreTemp.setIdComponent(CSM.get(j).getIdComponent());
+                            componentStoreTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
 
                             if ((qteStored - qteConsumed) >= qteNeed){
 
                                 priceProduction +=  qteNeed * price;
-                                componentStoreProductTemp.setQte(qteNeed);
-                                componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                componentStoreTemp.setQte(qteNeed);
+                                componentStoreMaterialTemp.add(componentStoreTemp);
                                 CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
                                 componentStoreMaterial.add(CSM.get(j));
                                 break;
@@ -189,8 +189,8 @@ public class AddController implements Initializable {
                                 int qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
-                                componentStoreProductTemp.setQte(qteRest);
-                                componentStoreMaterialTemp.add(componentStoreProductTemp);
+                                componentStoreTemp.setQte(qteRest);
+                                componentStoreMaterialTemp.add(componentStoreTemp);
                                 CSM.get(j).setQteConsumed(qteConsumed + qteRest);
                                 componentStoreMaterial.add(CSM.get(j));
                             }
@@ -319,19 +319,19 @@ public class AddController implements Initializable {
     private void insertComponent(int idProduction) {
 
         for (int i = 0; i < componentStoreMedicationTemp.size(); i++) {
-            ComponentStoreProductTemp componentStoreProductTemp = componentStoreMedicationTemp.get(i);
+            ComponentStoreTemp componentStoreTemp = componentStoreMedicationTemp.get(i);
 
-            componentStoreProductTemp.setIdProduction(idProduction);
-            insertComponentStoreTempMedication(componentStoreProductTemp);
+            componentStoreTemp.setIdProduction(idProduction);
+            insertComponentStoreTempMedication(componentStoreTemp);
             updateQteComponentStoreMedication(componentStoreMedication.get(i));
 
         }
 
         for (int i = 0; i < componentStoreMaterialTemp.size(); i++) {
-            ComponentStoreProductTemp componentStoreProductTemp = componentStoreMaterialTemp.get(i);
+            ComponentStoreTemp componentStoreTemp = componentStoreMaterialTemp.get(i);
 
-            componentStoreProductTemp.setIdProduction(idProduction);
-            insertComponentStoreTempMaterial(componentStoreProductTemp);
+            componentStoreTemp.setIdProduction(idProduction);
+            insertComponentStoreTempMaterial(componentStoreTemp);
             updateQteComponentStoreMaterial(componentStoreMaterial.get(i));
         }
     }
@@ -347,10 +347,10 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentStoreTempMedication(ComponentStoreProductTemp storeProductTemp){
+    private boolean insertComponentStoreTempMedication(ComponentStoreTemp storeProductTemp){
         boolean insert = false;
         try {
-            insert = componentStoreProductTempMedicationOperation.insert(storeProductTemp);
+            insert = componentStoreMedicationTempOperation.insert(storeProductTemp);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -358,10 +358,10 @@ public class AddController implements Initializable {
         }
     }
 
-    private boolean insertComponentStoreTempMaterial(ComponentStoreProductTemp storeProductTemp){
+    private boolean insertComponentStoreTempMaterial(ComponentStoreTemp storeProductTemp){
         boolean insert = false;
         try {
-            insert = componentStoreProductTempMaterialOperation.insert(storeProductTemp);
+            insert = componentStoreRawMaterialTempOperation.insert(storeProductTemp);
             return insert;
         }catch (Exception e){
             e.printStackTrace();

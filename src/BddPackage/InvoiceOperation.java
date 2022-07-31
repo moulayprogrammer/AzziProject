@@ -184,11 +184,12 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND تاريخ_البيع BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDate(1,Date.valueOf(dateFirst));
             preparedStmt.setDate(2,Date.valueOf(dateSecond));
+
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 
@@ -211,7 +212,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAllByDateClient(int idClient, LocalDate dateFirst, LocalDate dateSecond) {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ? AND تاريخ_الشراء BETWEEN ? AND ? ;";
+        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ? AND تاريخ_البيع BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idClient);

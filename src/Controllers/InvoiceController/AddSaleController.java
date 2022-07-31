@@ -2,9 +2,9 @@ package Controllers.InvoiceController;
 
 import BddPackage.ConnectBD;
 import Models.ComponentInvoice;
+import Models.ComponentStoreProduct;
+import Models.ComponentStoreProductTemp;
 import Models.Product;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
@@ -18,6 +18,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -32,6 +33,8 @@ public class AddSaleController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
+    private List<ComponentStoreProduct> storeProducts = new ArrayList<>();
+    private List<ComponentStoreProductTemp> storeProductTemps = new ArrayList<>();
     private ComponentInvoice componentInvoice;
     private Product selectedProduct;
     private double price;
@@ -57,12 +60,13 @@ public class AddSaleController implements Initializable {
         });
     }
 
-    public void Init(Product product, ComponentInvoice componentInvoice){
+    public void Init(Product product, ComponentInvoice componentInvoice, List<ComponentStoreProduct> storeProducts, List<ComponentStoreProductTemp> storeProductTemps){
 
+        this.storeProducts = storeProducts;
+        this.storeProductTemps = storeProductTemps;
         this.componentInvoice = componentInvoice;
         this.selectedProduct = product;
         tfQte.setText(String.valueOf(selectedProduct.getQte()));
-        Count();
     }
 
     private void Count(){
@@ -72,30 +76,58 @@ public class AddSaleController implements Initializable {
             if (qte <= this.selectedProduct.getQte() ) {
                 try {
                     if (conn.isClosed()) conn = connectBD.connect();
+                    this.storeProducts.clear();
+                    this.storeProductTemps.clear();
                     price = 0.0;
                     cost = 0.0;
 
                     try {
-                        String query = "SELECT كمية_مخزنة - كمية_مستهلكة AS الكمية, سعر_البيع, التكلفة, الكمية_المنتجة FROM تخزين_منتج, الانتاج" +
-                                " WHERE  تخزين_منتج.معرف_المنتج = ? AND  كمية_مخزنة - كمية_مستهلكة > 0 AND الانتاج.المعرف = تخزين_منتج.معرف_الانتاج ORDER BY (تاريخ_التخزين) ASC;";
+
+                        String query = "SELECT تخزين_منتج.معرف_الانتاج, تخزين_منتج.معرف_المنتج, كمية_مخزنة, كمية_مستهلكة, سعر_البيع, التكلفة, الكمية_المنتجة FROM تخزين_منتج, الانتاج  WHERE  تخزين_منتج.معرف_المنتج = ? AND  كمية_مخزنة - كمية_مستهلكة > 0 AND الانتاج.المعرف = تخزين_منتج.معرف_الانتاج ORDER BY (تاريخ_التخزين) ASC;";
                         PreparedStatement preparedStmt = conn.prepareStatement(query);
                         preparedStmt.setInt(1,this.selectedProduct.getId());
                         ResultSet resultSet = preparedStmt.executeQuery();
 
                         while (resultSet.next()){
-                            int qtePro = resultSet.getInt("الكمية");
+                            int idProduction = resultSet.getInt("معرف_الانتاج");
+                            int idProduct = resultSet.getInt("معرف_المنتج");
+                            int qteProConsumed = resultSet.getInt("كمية_مستهلكة");
+                            int qtePro = resultSet.getInt("كمية_مخزنة") - qteProConsumed;
                             double pricePro = resultSet.getDouble("سعر_البيع");
                             double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
+
+                            ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
+                            componentStoreProduct.setIdComponent(idProduct);
+                            componentStoreProduct.setIdProduction(idProduction);
+                            componentStoreProduct.setPriceHt(pricePro);
+
+                            ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                            componentStoreProductTemp.setIdProduct(idProduct);
+                            componentStoreProductTemp.setIdProduction(idProduction);
 
                             if (qtePro >= qte){
                                 price += (pricePro * qte);
                                 cost += (costPro * qte );
+
+                                componentStoreProduct.setQteConsumed(qteProConsumed  + qte);
+                                componentStoreProductTemp.setQte(qte);
+
+                                this.storeProducts.add(componentStoreProduct);
+                                this.storeProductTemps.add(componentStoreProductTemp);
                                 break;
                             }else {
                                 price += (pricePro * qtePro);
                                 cost += (costPro * qtePro);
                                 qte -= qtePro;
+
+                                componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
+                                componentStoreProductTemp.setQte(qtePro);
+
+                                this.storeProducts.add(componentStoreProduct);
+                                this.storeProductTemps.add(componentStoreProductTemp);
                             }
+
+
                         }
 
                     }catch (Exception e){
@@ -158,7 +190,7 @@ public class AddSaleController implements Initializable {
         int qte = Integer.parseInt(tfQte.getText().trim());
         double PriceU = Double.parseDouble(tfPriceUnit.getText().trim());
 
-        componentInvoice.setIdComponent(this.selectedProduct.getId());
+        componentInvoice.setIdProduct(this.selectedProduct.getId());
         componentInvoice.setPrice(PriceU);
         componentInvoice.setQte(qte);
 
