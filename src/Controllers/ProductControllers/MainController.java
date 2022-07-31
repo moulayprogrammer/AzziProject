@@ -38,7 +38,7 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lbName.setText("قائمة المنتجات");
+//        lbName.setText("قائمة المنتجات");
 
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));

@@ -10,19 +10,19 @@
 
 }
 
-.button:focused, .toggle-button:focused,
+/*.button:focused, .toggle-button:focused,
 .split-menu-button:focused, .menu-button:focused,
 .number-button:focused,
 .combo-box:focused .text-field, .choice-box:focused, .color-picker:focused, .date-picker:focused .text-field
 {
 	-fx-effect: dropshadow(gaussian, #b4d1f3, 3, 3, 0, 0);
-}
+}*/
 .combo-box:focused * {
 	-fx-effect: none;
 }
 
 .button,.menu-button,.toggle-button,.split-menu-button {
-	-fx-font-size: 14;
+	-fx-font-size: 15;
 	-fx-background-radius: 4;
 	-fx-border-radius: 4;
 	-fx-pref-height: 30;
@@ -389,7 +389,9 @@ VBox > .split-menu-button.last > .arrow-button {
 }
 
 .text-field {
-	-fx-pref-height: 30;
+	-fx-pref-height: 25;
+	-fx-font-family: 'HSDream-Regular' ;
+	-fx-font-size: 14 px ;
 }
 
 .combo-box, .choice-box {
@@ -431,7 +433,7 @@ VBox > .split-menu-button.last > .arrow-button {
 
 .text-field:focused, .text-area:focused {
 	-fx-border-color: #66afe9;
-	-fx-effect: dropshadow(gaussian, #66afe9, 10, 0, 0, 0);
+/*	-fx-effect: dropshadow(gaussian, #66afe9, 10, 0, 0, 0);*/
 }
 
 .text-area .scroll-pane, .text-area .scroll-pane .content {

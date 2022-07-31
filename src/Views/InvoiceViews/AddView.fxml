@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.InvoiceController.AddController">
+<DialogPane cache="true" cacheHint="SPEED" expanded="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.InvoiceController.AddController">
    <content>
-      <AnchorPane minHeight="660.0" style="-fx-background-color: #FFF;" styleClass="container">
+      <AnchorPane minHeight="650.0" style="-fx-background-color: #FFF;" styleClass="container">
          <children>
             <HBox prefHeight="100.0" spacing="20.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
                <children>
@@ -25,7 +25,7 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="120.0" text="التاريخ ">
+                              <Label prefHeight="25.0" prefWidth="120.0" style="-fx-font-size: 15;" text="التاريخ ">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -35,12 +35,12 @@
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="120.0" text="رقم الفاتورة">
+                              <Label prefHeight="25.0" prefWidth="120.0" style="-fx-font-size: 15;" text="رقم الفاتورة">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="lbFactureNbr" prefHeight="25.0" prefWidth="220.0">
+                              <Label fx:id="lbFactureNbr" prefHeight="25.0" prefWidth="220.0" style="-fx-font-size: 15;">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -57,7 +57,7 @@
                      <children>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="77.0" text="الزبون">
+                              <Label prefHeight="25.0" prefWidth="77.0" style="-fx-font-size: 15;" text="الزبون">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -68,12 +68,12 @@
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="77.0" text="الدين">
+                              <Label prefHeight="25.0" prefWidth="77.0" style="-fx-font-size: 15;" text="الدين">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="lbDebt" prefHeight="25.0" prefWidth="220.0">
+                              <Label fx:id="lbDebt" prefHeight="25.0" prefWidth="220.0" style="-fx-font-size: 15;">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -83,12 +83,12 @@
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                            <children>
-                              <Label prefHeight="25.0" prefWidth="77.0" text="المعاملات">
+                              <Label prefHeight="25.0" prefWidth="77.0" style="-fx-font-size: 15;" text="المعاملات">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Label fx:id="lbTransaction" prefHeight="25.0" prefWidth="220.0">
+                              <Label fx:id="lbTransaction" prefHeight="25.0" prefWidth="220.0" style="-fx-font-size: 15;">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -121,7 +121,7 @@
                            </font>
                         </Label>
                         <TextField fx:id="tfRechercheProduct" prefHeight="25.0" promptText="بحث" />
-                        <TableView fx:id="tableProduct" maxHeight="1.7976931348623157E308" minHeight="400.0" onMouseClicked="#tableProductClick">
+                        <TableView fx:id="tableProduct" maxHeight="1.7976931348623157E308" minHeight="390.0" onMouseClicked="#tableProductClick" prefHeight="390.0">
                           <columns>
                               <TableColumn fx:id="tcIdProd" prefWidth="54.0" text="المعرف" visible="false" />
                               <TableColumn fx:id="tcNameProd" prefWidth="100.0" text="الاسم" />
@@ -153,7 +153,7 @@
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableSales" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="400.0" onMouseClicked="#tableSalesClick">
+                        <TableView fx:id="tableSales" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="390.0" onMouseClicked="#tableSalesClick" prefHeight="390.0">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
                               <TableColumn fx:id="tcName" prefWidth="245.0" text="اسم المنتج" />
@@ -192,18 +192,32 @@
       </AnchorPane>
    </content>
    <header>
-      <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;" styleClass="bar">
+      <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;" styleClass="bar">
          <children>
-            <Label layoutX="26.0" layoutY="19.0" style="-fx-font-size: 25;" text="فاتورة بيع" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="15.0">
+            <Label layoutX="26.0" layoutY="19.0" style="-fx-font-size: 25;" text="فاتورة بيع" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font size="21.0" />
                </font>
             </Label>
-            <JFXButton fx:id="btnInsert" buttonType="RAISED" layoutX="1137.0" layoutY="16.0" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#0cc333" style="-fx-background-color: #DEF;" text="بيع" textFill="#e10bbd">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </JFXButton>
+            <HBox layoutX="920.0" layoutY="-36.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <JFXButton fx:id="btnInsert" buttonType="RAISED" defaultButton="true" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#0cc333" styleClass="info" text="حفظ" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" layoutX="10.0" layoutY="10.0" onAction="#ActionConfirm" prefWidth="120.0" ripplerFill="#0cc333" styleClass="success" text="تأكيد" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton  buttonType="RAISED" cancelButton="true" layoutX="130.0" layoutY="10.0" onAction="#ActionAnnulledAdd" prefWidth="120.0" ripplerFill="#0cc333" styleClass="danger" text="إلغاء" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
          </children>
       </AnchorPane>
    </header>

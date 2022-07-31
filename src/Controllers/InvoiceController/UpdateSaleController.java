@@ -35,6 +35,8 @@ public class UpdateSaleController implements Initializable {
 
     private List<ComponentStoreProduct> storeProducts = new ArrayList<>();
     private List<ComponentStoreProductTemp> storeProductTemps = new ArrayList<>();
+    private List<ComponentStoreProduct> storeProducts_ = new ArrayList<>();
+    private List<ComponentStoreProductTemp> storeProductTemps_ = new ArrayList<>();
     private ComponentInvoice selectedComponentInvoice;
     private Product selectedProduct;
     private double price;
@@ -47,9 +49,10 @@ public class UpdateSaleController implements Initializable {
         conn = connectBD.connect();
 
         tfQte.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue.isEmpty()) tfQte.setText(String.valueOf(qte));
+            else Count();
             if (init) {
-                if (newValue.isEmpty()) tfQte.setText(String.valueOf(qte));
-                else Count();
+
             }
         });
 
@@ -69,60 +72,63 @@ public class UpdateSaleController implements Initializable {
         this.storeProductTemps = storeProductTemps;
         this.selectedComponentInvoice = componentInvoice;
         this.selectedProduct = product;
-        InitFields();
-//        tfQte.setText(String.valueOf(selectedComponentInvoice.getQte()));
 
-    }
+        this.qte = selectedComponentInvoice.getQte();
+        tfQte.setText(String.valueOf(qte));
 
-    private void InitFields(){
-        try {
-            qte = selectedComponentInvoice.getQte();
-            for (int i = 0; i < storeProducts.size(); i++) {
-                ComponentStoreProduct storeProduct = storeProducts.get(i);
-                ComponentStoreProductTemp storeProductTemp = storeProductTemps.get(i);
 
-                cost = 0.0;
-                price = 0.0;
-
-                try {
-                    String query = "SELECT * FROM الانتاج WHERE المعرف = ?;";
-                    PreparedStatement preparedStmt = conn.prepareStatement(query);
-                    preparedStmt.setInt(1, storeProduct.getIdProduction());
-                    ResultSet resultSet = preparedStmt.executeQuery();
-
-                    if (resultSet.next()) {
-                        double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
-                        cost += costPro * storeProductTemp.getQte();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                price += storeProduct.getPriceHt() * storeProductTemp.getQte();
-
-            }
-
-            tfQte.setText(String.valueOf(qte));
-            tfPriceProductionUnit.setText(String.format(Locale.FRANCE, "%,.2f",cost/qte ));
-            tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", cost ));
-            tfPriceUnit.setText(String.valueOf(price/qte));
-            tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", price ));
-            tfNetProfit.setText(String.format(Locale.FRANCE, "%,.2f", (price - cost) ));
-
-            init = true;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     private void Count(){
         String stQte = tfQte.getText().trim();
         if (!stQte.isEmpty() && !stQte.equals("0")){
             int qte = Integer.parseInt(stQte);
-            if (qte <= this.qte){
-                if (qte <= this.selectedProduct.getQte() ) {
+            if (qte <= this.selectedProduct.getQte() ) {
+                if (qte <= this.qte){
 
+                    storeProducts_.clear();
+                    storeProductTemps_.clear();
 
-                /*
+                    for (int i = 0; i <storeProducts.size(); i++) {
+                        ComponentStoreProduct storeProduct = storeProducts.get(i);
+                        ComponentStoreProductTemp storeProductTemp = storeProductTemps.get( i);
+
+                        ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
+                        componentStoreProduct.setIdProduction(storeProduct.getIdProduction());
+                        componentStoreProduct.setIdComponent(storeProduct.getIdComponent());
+                        componentStoreProduct.setQteStored(storeProduct.getQteStored());
+                        componentStoreProduct.setQteConsumed(storeProduct.getQteConsumed());
+                        componentStoreProduct.setPriceHt(storeProduct.getPriceHt());
+                        
+                        ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                        componentStoreProductTemp.setId(storeProductTemp.getId());
+                        componentStoreProductTemp.setIdProduct(storeProductTemp.getIdProduct());
+                        componentStoreProductTemp.setIdProduction(storeProductTemp.getIdProduction());
+                        componentStoreProductTemp.setIdInvoice(storeProductTemp.getIdInvoice());
+                        componentStoreProductTemp.setQte(storeProductTemp.getQte());
+                        
+                        if (storeProductTemp.getQte() >= qte){
+                            componentStoreProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte() + qte);
+                            componentStoreProductTemp.setQte(qte);
+                            
+                            storeProducts_.add(componentStoreProduct);
+                            storeProductTemps_.add(componentStoreProductTemp);
+                            
+                            break;
+                        }else {
+                            qte -= storeProductTemp.getQte();
+
+                            storeProducts_.add(componentStoreProduct);
+                            storeProductTemps_.add(componentStoreProductTemp);
+                        }
+
+                    }
+
+                    UpdateFields(Integer.parseInt(stQte));
+
+                }else{
+                    System.out.println("qte more the the last  ...................");
+      /*
                 try {
                     if (conn.isClosed()) conn = connectBD.connect();
                     price = 0.0;
@@ -165,20 +171,17 @@ public class UpdateSaleController implements Initializable {
                 }catch (Exception e){
                     e.printStackTrace();
                 }*/
-
-                }else {
-                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                    alertWarning.setHeaderText("الكمية ");
-                    alertWarning.setContentText("الكمية غير متوفرة");
-                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                    okButton.setText("موافق");
-                    alertWarning.showAndWait();
-
-                    tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
                 }
-            }else{
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("الكمية ");
+                alertWarning.setContentText("الكمية غير متوفرة");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
 
+                tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
             }
 
         }else {
@@ -187,6 +190,47 @@ public class UpdateSaleController implements Initializable {
             tfPriceUnit.setText("0");
             tfPrice.setText("0");
             tfNetProfit.setText("0");
+        }
+    }
+
+    private void UpdateFields(int qte){
+        try {
+            double cost = 0.0;
+            double price = 0.0;
+            for (int i = 0; i < storeProductTemps_.size(); i++) {
+                ComponentStoreProduct storeProduct = storeProducts_.get(i);
+                ComponentStoreProductTemp storeProductTemp = storeProductTemps_.get(i);
+
+                if (storeProduct.getIdProduction() == storeProductTemp.getIdProduction() && storeProduct.getIdComponent() == storeProductTemp.getIdProduct()) {
+                    try {
+                        String query = "SELECT * FROM الانتاج WHERE المعرف = ?;";
+                        PreparedStatement preparedStmt = conn.prepareStatement(query);
+                        preparedStmt.setInt(1, storeProductTemp.getIdProduction());
+                        ResultSet resultSet = preparedStmt.executeQuery();
+
+                        if (resultSet.next()) {
+                            double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
+                            cost += costPro * storeProductTemp.getQte();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    price += storeProduct.getPriceHt() * storeProductTemp.getQte();
+
+                }else {
+                    System.out.println();
+                }
+
+            }
+
+            tfPriceProductionUnit.setText(String.format(Locale.FRANCE, "%,.2f",cost/qte ));
+            tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", cost ));
+            tfPriceUnit.setText(String.valueOf(price/qte));
+            tfPrice.setText(String.format(Locale.FRANCE, "%,.2f", price ));
+            tfNetProfit.setText(String.format(Locale.FRANCE, "%,.2f", (price - cost) ));
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 

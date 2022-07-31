@@ -126,14 +126,13 @@ public class AddSaleController implements Initializable {
                                 this.storeProducts.add(componentStoreProduct);
                                 this.storeProductTemps.add(componentStoreProductTemp);
                             }
-
-
                         }
 
                     }catch (Exception e){
                         e.printStackTrace();
                     }
 
+                    qte = Integer.parseInt(stQte);
                     tfPriceProductionUnit.setText(String.format(Locale.FRANCE, "%,.2f",cost/qte ));
                     tfPriceProduction.setText(String.format(Locale.FRANCE, "%,.2f", cost ));
                     tfPriceUnit.setText(String.valueOf(price/qte));

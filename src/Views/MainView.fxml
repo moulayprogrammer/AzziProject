@@ -1,52 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 
-<BorderPane stylesheets="@../resource/bootstrap3.css" nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainController">
    <top>
-      <MenuBar prefHeight="30.0" prefWidth="1280.0" BorderPane.alignment="CENTER">
-        <menus>
-          <Menu  mnemonicParsing="false" text="الملف">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#close" text="إغلاق" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="المواد الخام">
-            <items>
-                <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="القائمة" />
-                <MenuItem mnemonicParsing="false" onAction="#ShowReceiptRawMaterialScreen" text="الشراء" />
-                <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalRawMaterialScreen" text="التوصيل" />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="الادوية">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="القائمة" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowReceiptMedicationScreen" text="الشراء" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalMedicationScreen" text="التوصيل" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="المنتجات">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="القائمة" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowProductionScreen" text="الانتاج" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowInvoiceScreen" text="البيع" />
-               </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="متابعة">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="الناقلين" />
-                  <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
-                  <MenuItem mnemonicParsing="false" text="التقارير" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
+      <HBox alignment="CENTER" style="-fx-border-color: GRAY; -fx-border-width: 0 0 0.5 0;" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar maxWidth="1.7976931348623157E308" prefHeight="30.0" HBox.hgrow="ALWAYS">
+              <menus>
+                <Menu mnemonicParsing="false" text="الملف">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#close" text="إغلاق" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="المواد الخام">
+                  <items>
+                      <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="القائمة" />
+                      <MenuItem mnemonicParsing="false" onAction="#ShowReceiptRawMaterialScreen" text="الشراء" />
+                      <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalRawMaterialScreen" text="التوصيل" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="الادوية">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="القائمة" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowReceiptMedicationScreen" text="الشراء" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalMedicationScreen" text="التوصيل" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="المنتجات">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="القائمة" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowProductionScreen" text="الانتاج" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowInvoiceScreen" text="البيع" />
+                     </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="متابعة">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="الناقلين" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
+                        <MenuItem mnemonicParsing="false" text="التقارير" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Label fx:id="lbWindowName" maxWidth="1.7976931348623157E308" prefHeight="32.0" style="-fx-font-size: 15; -fx-background-color: #FFF;" text="الرئيسية">
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </Label>
+         </children>
+         <opaqueInsets>
+            <Insets bottom="1.0" />
+         </opaqueInsets>
+      </HBox>
    </top>
    <center>
-      <BorderPane fx:id="mainPane" prefHeight="690.0" prefWidth="1280.0" BorderPane.alignment="CENTER" />
+      <BorderPane fx:id="mainPane" prefHeight="690.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

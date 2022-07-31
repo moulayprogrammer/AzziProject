@@ -34,8 +34,6 @@ import java.util.function.Predicate;
 public class MainController implements Initializable {
 
     @FXML
-    Label lbName;
-    @FXML
     TextField tfRecherche;
     @FXML
     TableView<List<StringProperty>> table;
@@ -61,7 +59,6 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        lbName.setText("جدول توصيل و تخزين مشتريات الادوية");
         conn = connectBD.connect();
         receipt = new Receipt();
 

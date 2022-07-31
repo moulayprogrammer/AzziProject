@@ -32,14 +32,6 @@
    <top>
       <VBox style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="lbName" alignment="CENTER" contentDisplay="CENTER" maxHeight="45.0" maxWidth="1.7976931348623157E308" minHeight="45.0" opacity="0.8" prefHeight="45.0" style="-fx-border-color: GRAY; -fx-border-radius: 5;" text="قائمة المنتجات" textAlignment="CENTER" VBox.vgrow="ALWAYS">
-               <font>
-                  <Font name="System Bold" size="30.0" />
-               </font>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
             <HBox alignment="CENTER_LEFT" maxHeight="120.0" minHeight="120.0" prefHeight="120.0" spacing="20.0" style="-fx-background-color: #FFF;">
                <children>
                   <VBox alignment="CENTER" spacing="20.0" HBox.hgrow="NEVER">

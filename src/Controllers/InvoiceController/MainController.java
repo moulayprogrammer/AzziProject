@@ -108,6 +108,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<Boolean> dialog = new Dialog<>();
@@ -116,6 +117,7 @@ public class MainController implements Initializable {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
+
             dialog.showAndWait();
 
             refresh();

@@ -431,7 +431,24 @@ public class AddController implements Initializable {
     }
     @FXML
     private void ActionAnnulledAdd(){
-        closeDialog(btnInsert);
+        Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        alertConfirmation.setHeaderText("تاكيد الالغاء");
+        alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
+        alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setText("موافق");
+
+        Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+        cancel.setText("الغاء");
+
+        alertConfirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.CANCEL) {
+
+            } else if (response == ButtonType.OK) {
+                closeDialog(btnInsert);
+            }
+        });
+
     }
 
     @FXML
@@ -505,6 +522,11 @@ public class AddController implements Initializable {
         });
     }
 
+    @FXML
+    private void ActionConfirm(){
+
+    }
+
     private void insertComponent(int idInvoice) {
 
         for (int i = 0; i < dataTable.size(); i++) {
@@ -530,8 +552,6 @@ public class AddController implements Initializable {
 
             insertComponentInvoice(componentInvoice);
         }
-
-
     }
 
     private int insert(Invoice receipt) {
@@ -580,29 +600,6 @@ public class AddController implements Initializable {
 
     private void closeDialog(Button btn) {
         ((Stage)btn.getScene().getWindow()).close();
-    }
-
-    @FXML
-    void ActionSearchRawMadTable() {
-        // filtrer les données
-        ObservableList<List<StringProperty>> items = tableProduct.getItems();
-        FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRechercheProduct.getText().trim();
-
-        filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
-            if (txtRecherche.isEmpty()) {
-                //loadDataInTable();
-                return true;
-            } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
-                return true;
-            } else if (stringProperties.get(2).toString().contains(txtRecherche)) {
-                return true;
-            }  else return stringProperties.get(3).toString().contains(txtRecherche);
-        });
-
-        SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tableProduct.comparatorProperty());
-        tableProduct.setItems(sortedList);
     }
 
     @FXML
