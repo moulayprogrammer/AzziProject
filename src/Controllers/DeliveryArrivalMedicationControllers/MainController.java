@@ -16,6 +16,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
@@ -119,7 +121,11 @@ public class MainController implements Initializable {
                 controller.Init(this.receipt);
                 Dialog<Boolean> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
+                dialog.resizableProperty().setValue(true);
+
+                dialog.initOwner(this.tfRecherche.getScene().getWindow());
+                dialog.initModality(Modality.WINDOW_MODAL);
+
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);

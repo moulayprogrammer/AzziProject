@@ -408,6 +408,8 @@ public class AddController implements Initializable {
     private void ActionDeleteSales(){
         int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
+            storeProducts.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            storeProductTemps.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
             dataTable.remove(compoSelectedIndex);
             priceList.remove(compoSelectedIndex);
             tableSales.setItems(dataTable);
@@ -481,8 +483,8 @@ public class AddController implements Initializable {
 
                         int ins = insert(invoice);
                         if (ins != -1) {
-                            insertComponent(ins);
-                            ActionAnnulledAdd();
+                            insertComponent(ins,false);
+                            closeDialog(this.btnInsert);
                         } else {
                             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                             alertWarning.setHeaderText("تحذير ");
@@ -524,10 +526,76 @@ public class AddController implements Initializable {
 
     @FXML
     private void ActionConfirm(){
+        TextInputDialog dialog = new TextInputDialog();
 
+        dialog.setTitle("الدفع ");
+        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        dialog.setHeaderText(" السعر المدفوع ");
+        dialog.setContentText("السعر :");
+
+        Optional<String> result = dialog.showAndWait();
+
+        result.ifPresent(price -> {
+            if (!price.isEmpty()){
+                LocalDate date = dpDate.getValue();
+                String lbFactTxt = lbFactureNbr.getText().trim();
+                int nbr = Integer.parseInt(lbFactTxt.substring(0,lbFactTxt.indexOf('/')));
+                double paying = Double.parseDouble(price);
+
+                if (date != null && selectedClient != 0) {
+                    if (paying <= totalFacture) {
+
+                        Invoice invoice = new Invoice();
+                        invoice.setNumber(nbr);
+                        invoice.setIdClient(selectedClient);
+                        invoice.setDate(date);
+                        invoice.setPaying(paying);
+
+
+                        int ins = insert(invoice);
+                        if (ins != -1) {
+                            insertComponent(ins,true);
+                            closeDialog(this.btnInsert);
+                        } else {
+                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                            alertWarning.setHeaderText("تحذير ");
+                            alertWarning.setContentText("خطأ غير معروف");
+                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                            okButton.setText("موافق");
+                            alertWarning.showAndWait();
+                        }
+                    }else {
+                        Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                        alertWarning.setHeaderText("تحذير ");
+                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                        Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                        okButton.setText("موافق");
+                        alertWarning.showAndWait();
+                    }
+                }else {
+                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                    alertWarning.setHeaderText("تحذير ");
+                    alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertWarning.showAndWait();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+        });
     }
 
-    private void insertComponent(int idInvoice) {
+    private void insertComponent(int idInvoice ,boolean confirm) {
 
         for (int i = 0; i < dataTable.size(); i++) {
 
@@ -542,10 +610,12 @@ public class AddController implements Initializable {
             componentInvoice.setQte(qte);
             componentInvoice.setPrice(this.priceList.get(i));
 
-            for (ComponentStoreProductTemp storeProductTemp : storeProductTemps.get(id)) {
-                if (storeProductTemp.getIdProduct() == id) {
-                    storeProductTemp.setIdInvoice(idInvoice);
-                    insertProductStoreTemp(storeProductTemp);
+            if (!confirm) {
+                for (ComponentStoreProductTemp storeProductTemp : storeProductTemps.get(id)) {
+                    if (storeProductTemp.getIdProduct() == id) {
+                        storeProductTemp.setIdInvoice(idInvoice);
+                        insertProductStoreTemp(storeProductTemp);
+                    }
                 }
             }
             storeProducts.get(id).forEach(this::updateQteConsumedProductStore);

@@ -164,6 +164,7 @@ VBox > .split-menu-button.last > .arrow-button {
 .button,.split-menu-button,.toggle-button,.menu-button,
 .font-menu-button, .split-menu-button > .label, .split-menu-button > .arrow-button {
 	-fx-background-color: white;
+	-fx-cursor: hand;
 }
 
 .color-picker,.date-picker > .arrow-button,

@@ -172,7 +172,7 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
+                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="220.0" prefHeight="26.0" prefWidth="220.0">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>
