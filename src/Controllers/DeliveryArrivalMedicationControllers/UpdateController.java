@@ -381,10 +381,10 @@ public class UpdateController implements Initializable {
         int compoSelectedIndex = tableDeliveryComponent.getSelectionModel().getSelectedIndex();
 
         if (compoSelectedIndex != -1){
+            deleteDeliveryComponent(deliveryArrivalSelected.getId(),compoSelectedIndex);
+
             dataTable.remove(compoSelectedIndex);
             tableDeliveryComponent.setItems(dataTable);
-
-            deleteDeliveryComponent(deliveryArrivalSelected.getId(),compoSelectedIndex);
         }
     }
 

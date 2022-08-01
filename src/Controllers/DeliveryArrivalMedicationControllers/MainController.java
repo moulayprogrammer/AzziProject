@@ -15,7 +15,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
@@ -116,20 +119,15 @@ public class MainController implements Initializable {
             if (this.receipt.getDate() != null) {
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
-                DialogPane temp = loader.load();
+                BorderPane temp = loader.load();
                 AddController controller = loader.getController();
                 controller.Init(this.receipt);
-                Dialog<Boolean> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(true);
-
-                dialog.initOwner(this.tfRecherche.getScene().getWindow());
-                dialog.initModality(Modality.WINDOW_MODAL);
-
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(temp));
+                stage.setMaximized(true);
+                stage.getIcons().add(new Image("Images/logo.png"));
+                stage.setTitle("مزرعة الجنوب");
+                stage.showAndWait();
 
                 ActionRefresh();
             }
@@ -171,16 +169,16 @@ public class MainController implements Initializable {
                     DeliveryArrival deliveryArrival = deliveryArrivalMedicationOperation.get(Integer.parseInt(data.get(0).getValue()));
 
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/UpdateView.fxml"));
-                    DialogPane temp = loader.load();
+                    BorderPane temp = loader.load();
                     UpdateController controller = loader.getController();
                     controller.Init(receipt,deliveryArrival);
-                    Dialog<ButtonType> dialog = new Dialog<>();
-                    dialog.setDialogPane(temp);
-                    dialog.resizableProperty().setValue(false);
-                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                    closeButton.setVisible(false);
-                    dialog.showAndWait();
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(temp));
+                    stage.setMaximized(true);
+                    stage.getIcons().add(new Image("Images/logo.png"));
+                    stage.setTitle("مزرعة الجنوب");
+                    stage.showAndWait();
+
                     refresh();
 
                 } catch (IOException e) {

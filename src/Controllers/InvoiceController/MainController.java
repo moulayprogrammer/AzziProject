@@ -1,6 +1,7 @@
 package Controllers.InvoiceController;
 
 import BddPackage.*;
+import Controllers.DeliveryArrivalMedicationControllers.AddController;
 import Models.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,7 +14,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
@@ -110,15 +115,13 @@ public class MainController implements Initializable {
         try {
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<Boolean> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(true);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-
-            dialog.showAndWait();
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.showAndWait();
 
             refresh();
         } catch (IOException e) {

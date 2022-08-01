@@ -5,19 +5,49 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane  expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.AddController">
-   <content>
-      <AnchorPane minHeight="645.0" prefHeight="645.0" prefWidth="1280.0" style="-fx-background-color: #FFF;">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="720.0" prefWidth="1280.0" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.AddController">
+   <top>
+      <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="26.0" layoutY="19.0" style="-fx-font-size: 25;" text="وصل توصيل" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <HBox layoutX="975.0" layoutY="16.0" spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <JFXButton fx:id="btnInsert" buttonType="RAISED" defaultButton="true" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#9fd188" styleClass="info" text="حفظ" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" onAction="#ActionInsertAndStored" prefHeight="30.0" prefWidth="120.0" ripplerFill="#0cc333" styleClass="success" text="تأكيد" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton buttonType="RAISED" cancelButton="true" layoutX="150.0" layoutY="10.0" onAction="#ActionAnnulledAdd" prefHeight="30.0" prefWidth="120.0" ripplerFill="#0cc333" styleClass="danger" text="إلغاء" textFill="#e10bbd">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <AnchorPane minHeight="645.0" prefHeight="645.0" prefWidth="1280.0" style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
          <children>
             <HBox layoutX="30.0" layoutY="15.0" minHeight="90.0" prefHeight="90.0" spacing="40.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="5.0">
                <children>
@@ -93,20 +123,21 @@
                   </VBox>
                </children>
             </HBox>
-            <HBox layoutX="130.0" layoutY="96.0" minHeight="570.0" prefHeight="570.0" spacing="10.0" styleClass="container-table" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="120.0">
+            <HBox layoutX="130.0" layoutY="96.0" minHeight="530.0" prefHeight="530.0" spacing="10.0" styleClass="container-table" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="120.0">
                <children>
-                  <VBox prefWidth="300.0" spacing="10.0">
+                  <VBox spacing="10.0">
                      <children>
                         <Label prefHeight="25.0" prefWidth="130.0" style="-fx-font-size: 20;" text="المشتريات">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfRecherchePurchases" prefHeight="25.0" promptText="بحث">
+                        <TextField fx:id="tfRecherchePurchases" prefHeight="25.0" promptText="بحث" style="-fx-pref-height: 30; -fx-font-size: 15;">
                            <VBox.margin>
-                              <Insets bottom="4.0" />
-                           </VBox.margin></TextField>
-                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" minHeight="375.0" prefHeight="400.0">
+                              <Insets />
+                           </VBox.margin>
+                        </TextField>
+                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
                           <columns>
                               <TableColumn fx:id="tcIdPurchases" prefWidth="54.0" text="المعرف" visible="false" />
                               <TableColumn fx:id="tcNamePurchases" prefWidth="100.0" text="الاسم" />
@@ -134,12 +165,12 @@
                               <Button mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="25.0" prefWidth="120.0" styleClass="primary" text="تعديل" />
                               <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#ActionDeleteFromComposition" prefHeight="25.0" prefWidth="120.0" styleClass="warning" text="حذف " />
                               <Button layoutX="165.0" layoutY="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionModifiedQte" prefHeight="23.0" prefWidth="150.0" text="حذف سطر" visible="false" HBox.hgrow="ALWAYS" />
-                              <TextField fx:id="tfRechercheDeliveryComponent" prefHeight="26.0" prefWidth="182.0" promptText="بحث" />
+                              <TextField fx:id="tfRechercheDeliveryComponent" prefHeight="26.0" prefWidth="180.0" promptText="بحث" style="-fx-pref-height: 30; -fx-font-size: 15;" />
                               <Button mnemonicParsing="false" onAction="#ActionSearch" text="بحث" />
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableDeliveryComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="375.0" prefHeight="375.0">
+                        <TableView fx:id="tableDeliveryComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
                               <TableColumn fx:id="tcName" prefWidth="371.0" text="الاسم" />
@@ -149,6 +180,11 @@
                               <TableColumn fx:id="tcPriceUnite" prefWidth="100.0" text="سعر الوحدة" visible="false" />
                            </columns>
                         </TableView>
+                        <HBox prefWidth="200.0" spacing="5.0" visible="false">
+                           <children>
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" styleClass="info" text="اضافة" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>
@@ -158,35 +194,5 @@
             </HBox>
          </children>
       </AnchorPane>
-   </content>
-   <header>
-      <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
-         <children>
-            <Label layoutX="26.0" layoutY="19.0" style="-fx-font-size: 25;" text="وصل توصيل" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <HBox layoutX="975.0" layoutY="16.0" spacing="20.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
-               <children>
-                  <JFXButton fx:id="btnInsert" buttonType="RAISED" defaultButton="true" onAction="#ActionInsert" prefWidth="120.0" ripplerFill="#9fd188" styleClass="info" text="حفظ" textFill="#e10bbd">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton buttonType="RAISED" onAction="#ActionInsertAndStored" prefHeight="30.0" prefWidth="120.0" ripplerFill="#0cc333" styleClass="success" text="تأكيد" textFill="#e10bbd">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXButton>
-                  <JFXButton buttonType="RAISED" cancelButton="true" layoutX="150.0" layoutY="10.0" onAction="#ActionAnnulledAdd" prefHeight="30.0" prefWidth="120.0" ripplerFill="#0cc333" styleClass="danger" text="إلغاء" textFill="#e10bbd">
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </JFXButton>
-               </children>
-            </HBox>
-         </children>
-      </AnchorPane>
-   </header>
-</DialogPane>
+   </center>
+</BorderPane>
