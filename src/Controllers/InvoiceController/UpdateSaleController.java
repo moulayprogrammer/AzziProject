@@ -45,6 +45,7 @@ public class UpdateSaleController implements Initializable {
     private double cost;
     private int qte;
     private int qteInit;
+    private boolean update;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -65,12 +66,13 @@ public class UpdateSaleController implements Initializable {
         });
     }
 
-    public void Init(Product product, ComponentInvoice componentInvoice , List<ComponentStoreProduct> storeProducts, List<ComponentStoreProductTemp> storeProductTemps) {
+    public void Init(Product product, ComponentInvoice componentInvoice , List<ComponentStoreProduct> storeProducts, List<ComponentStoreProductTemp> storeProductTemps, boolean update) {
 
         this.storeProducts = storeProducts;
         this.storeProductTemps = storeProductTemps;
         this.selectedComponentInvoice = componentInvoice;
         this.selectedProduct = product;
+        this.update = update;
 
         this.qte = selectedComponentInvoice.getQte();
         this.qteInit = this.qte;
@@ -82,7 +84,6 @@ public class UpdateSaleController implements Initializable {
         String stQte = tfQte.getText().trim();
         if (!stQte.isEmpty() && !stQte.equals("0")){
             int qte = Integer.parseInt(stQte);
-            if (qte <= this.selectedProduct.getQte() ) {
                 if (qte <= this.qteInit){
 
                     storeProducts_.clear();
@@ -126,113 +127,117 @@ public class UpdateSaleController implements Initializable {
 
                 }else{
                     int qteRest =  qte - this.qteInit;
-                    try {
-                        if (conn.isClosed()) conn = connectBD.connect();
-                        storeProducts_add.clear();
-                        storeProductTemps_add.clear();
-                        storeProducts_.clear();
-                        storeProductTemps_.clear();
-                        storeProducts_.addAll(storeProducts);
-                        storeProductTemps_.addAll(storeProductTemps);
-
+                    int qteComp;
+                    if (update)  qteComp = this.selectedProduct.getQte();
+                    else qteComp = this.selectedProduct.getQte() - this.qteInit;
+                    if (qteRest <= qteComp ) {
                         try {
-                            String query = "SELECT تخزين_منتج.معرف_الانتاج, تخزين_منتج.معرف_المنتج, كمية_مخزنة, كمية_مستهلكة, سعر_البيع, التكلفة, الكمية_المنتجة FROM تخزين_منتج, الانتاج  " +
-                                    "WHERE  تخزين_منتج.معرف_المنتج = ? AND  كمية_مخزنة - كمية_مستهلكة > 0 AND الانتاج.المعرف = تخزين_منتج.معرف_الانتاج ORDER BY (تاريخ_التخزين) ASC;";
-                            PreparedStatement preparedStmt = conn.prepareStatement(query);
-                            preparedStmt.setInt(1,this.selectedProduct.getId());
-                            ResultSet resultSet = preparedStmt.executeQuery();
+                            if (conn.isClosed()) conn = connectBD.connect();
+                            storeProducts_add.clear();
+                            storeProductTemps_add.clear();
+                            storeProducts_.clear();
+                            storeProductTemps_.clear();
+                            storeProducts_.addAll(storeProducts);
+                            storeProductTemps_.addAll(storeProductTemps);
+
+                            try {
+                                String query = "SELECT تخزين_منتج.معرف_الانتاج, تخزين_منتج.معرف_المنتج, كمية_مخزنة, كمية_مستهلكة, سعر_البيع, التكلفة, الكمية_المنتجة FROM تخزين_منتج, الانتاج  " +
+                                        "WHERE  تخزين_منتج.معرف_المنتج = ? AND  كمية_مخزنة - كمية_مستهلكة > 0 AND الانتاج.المعرف = تخزين_منتج.معرف_الانتاج ORDER BY (تاريخ_التخزين) ASC;";
+                                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                                preparedStmt.setInt(1,this.selectedProduct.getId());
+                                ResultSet resultSet = preparedStmt.executeQuery();
 
 
-                            while (resultSet.next()){
-                                int idProduction = resultSet.getInt("معرف_الانتاج");
-                                int idProduct = resultSet.getInt("معرف_المنتج");
-                                int qteProConsumed = resultSet.getInt("كمية_مستهلكة");
-                                int qtePro = resultSet.getInt("كمية_مخزنة") - qteProConsumed;
-                                double pricePro = resultSet.getDouble("سعر_البيع");
+                                while (resultSet.next()){
+                                    int idProduction = resultSet.getInt("معرف_الانتاج");
+                                    int idProduct = resultSet.getInt("معرف_المنتج");
+                                    int qteProConsumed = resultSet.getInt("كمية_مستهلكة");
+                                    int qtePro = resultSet.getInt("كمية_مخزنة") - qteProConsumed;
+                                    double pricePro = resultSet.getDouble("سعر_البيع");
 
-                                ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
-                                componentStoreProduct.setIdProduction(idProduction);
-                                componentStoreProduct.setIdComponent(idProduct);
-                                componentStoreProduct.setQteConsumed(qteProConsumed);
-                                componentStoreProduct.setPriceHt(pricePro);
+                                    ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
+                                    componentStoreProduct.setIdProduction(idProduction);
+                                    componentStoreProduct.setIdComponent(idProduct);
+                                    componentStoreProduct.setQteConsumed(qteProConsumed);
+                                    componentStoreProduct.setPriceHt(pricePro);
 
-                                ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                                componentStoreProductTemp.setIdProduct(idProduct);
-                                componentStoreProductTemp.setIdProduction(idProduction);
+                                    ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                                    componentStoreProductTemp.setIdProduct(idProduct);
+                                    componentStoreProductTemp.setIdProduction(idProduction);
 
-                                boolean qteComplete = true ;
-                                boolean notEx = true;
-                                for (ComponentStoreProductTemp productTemp : storeProductTemps_) {
-                                    if (productTemp.getIdProduct() == idProduct && productTemp.getIdProduction() == idProduction){
-                                        notEx = false;
-                                        if (productTemp.getQte() < qtePro){
-                                            qtePro -= productTemp.getQte();
-                                            qteComplete = false;
+                                    boolean qteComplete = true ;
+                                    boolean notEx = true;
+                                    for (ComponentStoreProductTemp productTemp : storeProductTemps_) {
+                                        if (productTemp.getIdProduct() == idProduct && productTemp.getIdProduction() == idProduction){
+                                            notEx = false;
+                                            if (productTemp.getQte() < qtePro){
+                                                qtePro -= productTemp.getQte();
+                                                qteComplete = false;
+                                            }
+                                            break;
                                         }
-                                        break;
+                                    }
+                                    if (notEx) {
+                                        if (qtePro >= qteRest) {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
+                                            componentStoreProductTemp.setQte(qteRest);
+
+                                            storeProducts_add.add(componentStoreProduct);
+                                            storeProductTemps_add.add(componentStoreProductTemp);
+                                            break;
+                                        } else {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
+                                            componentStoreProductTemp.setQte(qtePro);
+
+                                            storeProducts_add.add(componentStoreProduct);
+                                            storeProductTemps_add.add(componentStoreProductTemp);
+                                            qteRest -= qtePro;
+                                        }
+                                    }else if (!qteComplete){
+                                        if (qtePro >= qteRest) {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
+                                            componentStoreProductTemp.setQte(qteRest);
+
+                                            storeProducts_add.add(componentStoreProduct);
+                                            storeProductTemps_add.add(componentStoreProductTemp);
+                                            break;
+                                        } else {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
+                                            componentStoreProductTemp.setQte(qtePro);
+
+                                            storeProducts_add.add(componentStoreProduct);
+                                            storeProductTemps_add.add(componentStoreProductTemp);
+                                            qteRest -= qtePro;
+                                        }
                                     }
                                 }
-                                if (notEx) {
-                                    if (qtePro >= qteRest) {
-                                        componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
-                                        componentStoreProductTemp.setQte(qteRest);
 
-                                        storeProducts_add.add(componentStoreProduct);
-                                        storeProductTemps_add.add(componentStoreProductTemp);
-                                        break;
-                                    } else {
-                                        componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
-                                        componentStoreProductTemp.setQte(qtePro);
+                                if (storeProducts_add.size() != 0 ){
+                                    storeProducts_.addAll(storeProducts_add);
+                                    storeProductTemps_.addAll(storeProductTemps_add);
 
-                                        storeProducts_add.add(componentStoreProduct);
-                                        storeProductTemps_add.add(componentStoreProductTemp);
-                                        qteRest -= qtePro;
-                                    }
-                                }else if (!qteComplete){
-                                    if (qtePro >= qteRest) {
-                                        componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
-                                        componentStoreProductTemp.setQte(qteRest);
-
-                                        storeProducts_add.add(componentStoreProduct);
-                                        storeProductTemps_add.add(componentStoreProductTemp);
-                                        break;
-                                    } else {
-                                        componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
-                                        componentStoreProductTemp.setQte(qtePro);
-
-                                        storeProducts_add.add(componentStoreProduct);
-                                        storeProductTemps_add.add(componentStoreProductTemp);
-                                        qteRest -= qtePro;
-                                    }
+                                    UpdateFields(Integer.parseInt(stQte));
                                 }
+
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
 
-                            if (storeProducts_add.size() != 0 ){
-                                storeProducts_.addAll(storeProducts_add);
-                                storeProductTemps_.addAll(storeProductTemps_add);
-
-                                UpdateFields(Integer.parseInt(stQte));
-                            }
-
+                            conn.close();
                         }catch (Exception e){
                             e.printStackTrace();
                         }
+                }else {
+                        Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                        alertWarning.setHeaderText("الكمية ");
+                        alertWarning.setContentText("الكمية غير متوفرة");
+                        alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                        Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                        okButton.setText("موافق");
+                        alertWarning.showAndWait();
 
-                        conn.close();
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
                     }
-                }
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("الكمية ");
-                alertWarning.setContentText("الكمية غير متوفرة");
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
-
-                tfQte.setText(String.valueOf(this.selectedProduct.getQte()));
             }
 
         }else {

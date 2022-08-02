@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane expanded="true" maxHeight="450.0" maxWidth="450.0" minHeight="450.0" minWidth="450.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="450.0" prefWidth="450.0" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ClientControllers.AddController">
+   <header>
+      <AnchorPane minHeight="50.0" prefHeight="50.0" style="-fx-background-color: #EFF;">
+         <children>
+            <Label layoutX="26.0" layoutY="20.0" style="-fx-font-size: 25;" text="إضافة زبون" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </header>
+   <content>
+      <AnchorPane prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #FFF;" >
+         <children>
+            <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <VBox prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Label prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الإسم">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="العنوان">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="194.0" prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="النشاط">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="10.0" layoutY="243.0" prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الرقم الوطني">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <TextField fx:id="tfName" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                     <TextField fx:id="tfAddress" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="tfActivity" layoutX="10.0" layoutY="56.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="tfNationalNumber" layoutX="10.0" layoutY="102.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="10.0">
+               <children>
+                  <Button fx:id="btnInsert" defaultButton="true" mnemonicParsing="false" onAction="#ActionInsert" prefWidth="130.0" styleClass="primary" text="حفظ" textFill="#2005a8">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+                  <Button cancelButton="true" mnemonicParsing="false" onAction="#ActionAnnulledAdd" prefWidth="130.0" styleClass="danger" text="إلغاء" textFill="#dd0000">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </content>
+</DialogPane>
