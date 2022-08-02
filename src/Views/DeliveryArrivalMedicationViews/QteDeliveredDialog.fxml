@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<DialogPane expanded="true" minHeight="240.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="240.0" prefWidth="350.0" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DeliveryArrivalMedicationControllers.QteDeliveredController">
+   <content>
+      <AnchorPane minHeight="200.0" prefHeight="200.0" prefWidth="350.0">
+         <children>
+            <VBox prefWidth="350.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+               <children>
+                  <Label style="-fx-font-size: 17;" text="ادخل الكمية المفوترة و الكمية الموصلة الحقيقية">
+                     <font>
+                        <Font name="System Bold" size="15.0" />
+                     </font>
+                  </Label>
+                  <HBox prefWidth="350.0" spacing="15.0">
+                     <children>
+                        <Label style="-fx-font-size: 15; -fx-pref-height: 30;" text="الكمية المفوترة">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfQteFractured" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox prefWidth="350.0" spacing="15.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Label style="-fx-font-size: 15; -fx-pref-height: 30;" text="الكمية الموصلة">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfQteDelivered" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+                  <HBox nodeOrientation="LEFT_TO_RIGHT" spacing="15.0">
+                     <children>
+                        <Button cancelButton="true" mnemonicParsing="false" onAction="#ActionCancel" prefWidth="100.0" styleClass="danger" text="الغاء" />
+                        <Button defaultButton="true" mnemonicParsing="false" onAction="#ActionOk" prefWidth="100.0" styleClass="primary" text="موافق" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </content>
+   <header>
+      <VBox prefHeight="40.0" prefWidth="350.0" spacing="10.0">
+         <children>
+            <Label style="-fx-font-size: 20;" text="الكمية">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
+            </Label>
+            <Separator prefHeight="4.0" prefWidth="350.0" />
+         </children>
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+      </VBox>
+   </header>
+</DialogPane>

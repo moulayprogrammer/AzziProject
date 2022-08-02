@@ -1,7 +1,6 @@
 package Controllers.InvoiceController;
 
 import BddPackage.*;
-import Controllers.DeliveryArrivalMedicationControllers.AddController;
 import Models.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -42,7 +40,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId, clClient,clDate,clAmount,clPaying,clDebt;
+    TableColumn<List<StringProperty>,String> clId, clClient,clDate,clAmount,clPaying,clDebt,clConfirmation;
     @FXML
     Label lbSumAmount,lbSumPaying,lbSumDebt;
     @FXML
@@ -58,6 +56,8 @@ public class MainController implements Initializable {
     private final InvoiceOperation operation = new InvoiceOperation();
     private final ClientOperation clientOperation = new ClientOperation();
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
+    private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+    private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
     private Client selectedClient;
 
     @Override
@@ -71,6 +71,7 @@ public class MainController implements Initializable {
         clAmount.setCellValueFactory(data -> data.getValue().get(3));
         clPaying.setCellValueFactory(data -> data.getValue().get(4));
         clDebt.setCellValueFactory(data -> data.getValue().get(5));
+        clConfirmation.setCellValueFactory(data -> data.getValue().get(6));
 
         refresh();
         refreshComboClient();
@@ -103,6 +104,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء تحديد تاريخ");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -131,49 +133,65 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionUpdate(){
-        /*List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
-            try {
-                Invoice invoice = operation.get(Integer.parseInt(data.get(0).getValue()));
+            if (data.get(6).getValue().equals("غير مأكد")) {
+                try {
+                    Invoice invoice = operation.get(Integer.parseInt(data.get(0).getValue()));
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateView.fxml"));
-                DialogPane temp = loader.load();
-                UpdateController controller = loader.getController();
-                controller.Init(invoice);
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateView.fxml"));
+                    BorderPane temp = loader.load();
+                    UpdateController controller = loader.getController();
+                    controller.Init(invoice);
+                    Stage stage = new Stage();
+                    stage.setScene(new Scene(temp));
+                    stage.setMaximized(true);
+                    stage.getIcons().add(new Image("Images/logo.png"));
+                    stage.setTitle("مزرعة الجنوب");
+                    stage.showAndWait();
 
-                refresh();
+                    refresh();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("الفاتورة مأكدة بالفعل لا يمكن تعديلها");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("تحذير");
-            alertWarning.setContentText("الرجاء اختيار فاتورة من اجل التعديل");
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء اختيار فاتورة للتعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
-    private void ActionAddToArchive(){
-        /*List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+    private void ActionConfirm(){
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null){
-            if (data.get(5).getValue().equals("0,00")) {
+            if (data.get(6).getValue().equals("غير مأكد")) {
                 try {
-                    Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
+                    Invoice invoice = operation.get(Integer.parseInt(data.get(0).getValue()));
+
                     Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                    alertConfirmation.setHeaderText("تاكيد الارشفة");
-                    alertConfirmation.setContentText("هل انت متاكد من ارشفة الفاتورة");
+                    alertConfirmation.setHeaderText("تاكيد");
+                    alertConfirmation.setContentText("هل انت متاكد من تاكيد الفاتورة");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                     alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -185,7 +203,7 @@ public class MainController implements Initializable {
                         if (response == ButtonType.CANCEL) {
                             alertConfirmation.close();
                         } else if (response == ButtonType.OK) {
-                            operation.AddToArchive(receipt);
+                            componentStoreProductTempOperation.deleteByInvoice(invoice.getId());
                             refresh();
                         }
                     });
@@ -196,7 +214,8 @@ public class MainController implements Initializable {
             }else {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("يجب دفع الديون حتى تستطيع ارشفة الفاتورة ");
+                alertWarning.setContentText("الفاتورة مأكدة بالفعل");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -205,32 +224,77 @@ public class MainController implements Initializable {
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار فاتورة لارشفتها");
+            alertWarning.setContentText("الرجاء اختيار فاتورة لتأكيدها");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
-
     @FXML
-    private void ActionDeleteFromArchive(){
-        /*try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/ArchiveView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-            dialog.showAndWait();
+    private void ActionDelete(){
 
-            refresh();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+        if (data != null){
+            if (data.get(6).getValue().equals("غير مأكد")) {
+                try {
+                    Invoice invoice = operation.get(Integer.parseInt(data.get(0).getValue()));
+
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("حذف فاتورة");
+                    alertConfirmation.setContentText("هل انت متاكد من حذف الفاتورة");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+
+                            ArrayList<ComponentStoreProductTemp> storeProductTemps = componentStoreProductTempOperation.getAllByInvoice(invoice.getId());
+                            for (ComponentStoreProductTemp storeProductTemp : storeProductTemps){
+
+                                ComponentStoreProduct storeProduct = componentStoreProductOperation.get(storeProductTemp.getIdProduct(),storeProductTemp.getIdProduction());
+                                storeProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte());
+                                componentStoreProductOperation.updateQte(storeProduct);
+                            }
+                            componentStoreProductTempOperation.deleteByInvoice(invoice.getId());
+                            operation.delete(invoice);
+
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("الفاتورة مأكدة بالفعل لا يمكن حذفها");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير ");
+            alertWarning.setContentText("الرجاء اختيار فاتورة للحذف");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
     }
 
     private void refresh(){
@@ -258,6 +322,7 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (invoice.getPaying()))));//4
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - invoice.getPaying()))));//5
+                data.add( new SimpleStringProperty(invoice.getConfirmation()));//6
 
                 sumAmount.updateAndGet(v -> v + sumR.get());
                 sumPaying.updateAndGet(v -> v + invoice.getPaying());
@@ -317,6 +382,7 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (invoice.getPaying()))));//4
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - invoice.getPaying()))));//5
+                data.add( new SimpleStringProperty(invoice.getConfirmation()));//6
 
                 sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
                 sumPaying.updateAndGet(v -> (double) (v + invoice.getPaying()));
@@ -340,9 +406,9 @@ public class MainController implements Initializable {
             AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
             AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
             AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-            invoices.forEach(receipt -> {
-                Client client = clientOperation.get(receipt.getIdClient());
-                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(receipt.getId());
+            invoices.forEach(invoice -> {
+                Client client = clientOperation.get(invoice.getIdClient());
+                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                 componentInvoices.forEach(componentInvoice -> {
                     double pr = componentInvoice.getPrice() * componentInvoice.getQte();
@@ -350,16 +416,17 @@ public class MainController implements Initializable {
                 });
 
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getId())));//0
+                data.add( new SimpleStringProperty(String.valueOf(invoice.getId())));//0
                 data.add( new SimpleStringProperty(client.getName()));//1
-                data.add( new SimpleStringProperty(String.valueOf(receipt.getDate())));//2
+                data.add( new SimpleStringProperty(String.valueOf(invoice.getDate())));//2
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (receipt.getPaying()))));//4
-                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - receipt.getPaying()))));//5
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (invoice.getPaying()))));//4
+                data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - invoice.getPaying()))));//5
+                data.add( new SimpleStringProperty(invoice.getConfirmation()));//6
 
                 sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
-                sumPaying.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - receipt.getPaying())));
+                sumPaying.updateAndGet(v -> (double) (v + invoice.getPaying()));
+                sumDebt.updateAndGet(v -> (double) (v + (sumR.get() - invoice.getPaying())));
 
                 dataTable.add(data);
             });
@@ -395,6 +462,7 @@ public class MainController implements Initializable {
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get()))));//3
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (invoice.getPaying()))));//4
                 data.add( new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", (sumR.get() - invoice.getPaying()))));//5
+                data.add( new SimpleStringProperty(invoice.getConfirmation()));//6
 
                 sumAmount.updateAndGet(v -> (double) (v + sumR.get()));
                 sumPaying.updateAndGet(v -> (double) (v + invoice.getPaying()));

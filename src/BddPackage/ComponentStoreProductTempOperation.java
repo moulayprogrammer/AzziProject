@@ -2,8 +2,10 @@ package BddPackage;
 
 import Models.ComponentStoreProduct;
 import Models.ComponentStoreProductTemp;
+import Models.Delivery;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -40,6 +42,23 @@ public class ComponentStoreProductTempOperation extends BDD<ComponentStoreProduc
         return false;
     }
 
+    public boolean deleteByInvoice(int idInvoice){
+        connectDatabase();
+        boolean del = false;
+        String query = "DELETE FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idInvoice);
+
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return del;
+    }
+
     @Override
     public boolean isExist(ComponentStoreProductTemp o) {
         return false;
@@ -48,5 +67,32 @@ public class ComponentStoreProductTempOperation extends BDD<ComponentStoreProduc
     @Override
     public ArrayList<ComponentStoreProductTemp> getAll() {
         return null;
+    }
+
+    public ArrayList<ComponentStoreProductTemp> getAllByInvoice(int idInvoice){
+        connectDatabase();
+        ArrayList<ComponentStoreProductTemp> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idInvoice);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreProductTemp storeProductTemp = new ComponentStoreProductTemp();
+                storeProductTemp.setId(resultSet.getInt("المعرف"));
+                storeProductTemp.setIdInvoice(resultSet.getInt("معرف_فاتورة_البيع"));
+                storeProductTemp.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                storeProductTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                storeProductTemp.setQte(resultSet.getInt("الكمية"));
+
+                list.add(storeProductTemp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
+
     }
 }

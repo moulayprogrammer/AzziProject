@@ -2,9 +2,11 @@ package BddPackage;
 
 
 import Models.ComponentStoreProduct;
+import Models.ComponentStoreProductTemp;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -69,5 +71,30 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
     @Override
     public ArrayList<ComponentStoreProduct> getAll() {
         return null;
+    }
+
+    public ComponentStoreProduct get(int idProduct , int idProduction) {
+        connectDatabase();
+        ComponentStoreProduct storeProduct = new ComponentStoreProduct();
+        String query = "SELECT * FROM تخزين_منتج WHERE معرف_الانتاج = ? AND معرف_المنتج = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProduction);
+            preparedStmt.setInt(2,idProduct);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            if (resultSet.next()){
+
+                storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
+                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return storeProduct;
     }
 }

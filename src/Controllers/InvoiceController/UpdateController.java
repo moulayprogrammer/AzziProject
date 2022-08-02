@@ -15,6 +15,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -23,7 +25,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,13 +38,14 @@ public class UpdateController implements Initializable {
     @FXML
     Label lbFactureNbr,lbDebt,lbTransaction,lbSumWeight,lbSumTotal;
     @FXML
-    ComboBox<String> cbProvider;
+    ComboBox<String> cbClient;
     @FXML
-    TextField tfRechercheMad,tfRecherche;
+    TextField tfRechercheProduct,tfRecherche;
     @FXML
-    TableView<List<StringProperty>> tableMed, tablePurchases;
+    TableView<List<StringProperty>> tableProduct, tableSales;
+
     @FXML
-    TableColumn<List<StringProperty>,String>  tcIdMed,tcNameMed,tcReferenceMed;
+    TableColumn<List<StringProperty>,String> tcIdProd, tcNameProd, tcQteProd, tcReferenceProd;
     @FXML
     TableColumn<List<StringProperty>,String> tcId,tcName,tcPriceU,tcQte,tcPriceTotal;
     @FXML
@@ -51,25 +53,31 @@ public class UpdateController implements Initializable {
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
-    private final ReceiptMedicationOperation operation = new ReceiptMedicationOperation();
-    private final MedicationOperation medicationOperation = new MedicationOperation();
-    private final ProviderOperation providerOperation = new ProviderOperation();
-    private final ComponentReceiptMedicationOperation componentMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final InvoiceOperation operation = new InvoiceOperation();
+    private final ProductOperation productOperation = new ProductOperation();
+    private final ClientOperation clientOperation = new ClientOperation();
+    private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
+    private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
+    private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+    private final HashMap<Integer,List<ComponentStoreProduct>> storeProducts = new HashMap<>();
+    private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTemps = new HashMap<>();
+
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
-    private final ObservableList<String> comboProviderData = FXCollections.observableArrayList();
-    private final List<Integer> idProviderCombo = new ArrayList<>();
-    private int selectedProvider = 0;
+    private final ObservableList<String> comboClientData = FXCollections.observableArrayList();
+    private final List<Integer> idClientCombo = new ArrayList<>();
+    private int selectedClient = 0;
     private double totalFacture = 0;
-    private Receipt receiptSelected;
+    private Invoice selectInvoice;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         conn = connectBD.connect();
 
-        tcIdMed.setCellValueFactory(data -> data.getValue().get(0));
-        tcNameMed.setCellValueFactory(data -> data.getValue().get(1));
-        tcReferenceMed.setCellValueFactory(data -> data.getValue().get(2));
+        tcIdProd.setCellValueFactory(data -> data.getValue().get(0));
+        tcNameProd.setCellValueFactory(data -> data.getValue().get(1));
+        tcQteProd.setCellValueFactory(data -> data.getValue().get(2));
+        tcReferenceProd.setCellValueFactory(data -> data.getValue().get(3));
 
         tcId.setCellValueFactory(data -> data.getValue().get(0));
         tcName.setCellValueFactory(data -> data.getValue().get(1));
@@ -77,21 +85,18 @@ public class UpdateController implements Initializable {
         tcQte.setCellValueFactory(data -> data.getValue().get(3));
         tcPriceTotal.setCellValueFactory(data -> data.getValue().get(4));
 
-        refreshComponent();
-        refreshComboProvider();
-
-        // set Date
-        dpDate.setValue(LocalDate.now());
+        refreshProduct();
+        refreshComboClient();
 
         //set Combo Search
-        cbProvider.setEditable(true);
-        cbProvider.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        TextFields.bindAutoCompletion(cbProvider.getEditor(), cbProvider.getItems());
+        cbClient.setEditable(true);
+        cbClient.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        TextFields.bindAutoCompletion(cbClient.getEditor(), cbClient.getItems());
 
-        tfRechercheMad.textProperty().addListener((observable, oldValue, newValue) -> {
+        tfRechercheProduct.textProperty().addListener((observable, oldValue, newValue) -> {
 
             if (!newValue.isEmpty()) {
-                ObservableList<List<StringProperty>> items = tableMed.getItems();
+                ObservableList<List<StringProperty>> items = tableProduct.getItems();
                 FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
 
                 filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
@@ -102,85 +107,111 @@ public class UpdateController implements Initializable {
                 });
 
                 SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-                sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-                tableMed.setItems(sortedList);
+                sortedList.comparatorProperty().bind(tableProduct.comparatorProperty());
+                tableProduct.setItems(sortedList);
             }else {
-                refreshComponent();
+                refreshProduct();
             }
         });
+
     }
 
-    public void Init(Invoice invoice
-    ){
-        /*this.receiptSelected = receipt;
-
-        dpDate.setValue(receipt.getDate());
-        lbFactureNbr.setText(receipt.getNumber() + "/" + receipt.getDate().getYear() );
-        Provider provider = providerOperation.get(receipt.getIdProvider());
-        cbProvider.getSelectionModel().select(provider.getName());
-        ActionComboProvider();
-        refreshPurchases();*/
+    public void Init(Invoice invoice){
+        this.selectInvoice = invoice;
+        selectedClient = invoice.getIdClient();
+        cbClient.getSelectionModel().select(idClientCombo.indexOf(invoice.getIdClient()));
+        dpDate.setValue(invoice.getDate());
+        setClientTransaction(invoice.getIdClient());
+        setFactureNumber(invoice.getNumber());
+        InitSales();
     }
 
-    private void refreshPurchases() {
-        dataTable.clear();
-        priceList.clear();
+    private void InitSales(){
         try {
-            String query = "SELECT مشتريات_الدواء.معرف_الدواء , مشتريات_الدواء.معرف_الفاتورة , مشتريات_الدواء.الكمية , مشتريات_الدواء.سعر_الوحدة , الادوية.المعرف , الادوية.الاسم " +
-                    "FROM مشتريات_الدواء , الادوية WHERE الادوية.ارشيف = 0 AND مشتريات_الدواء.معرف_الفاتورة = ? AND الادوية.المعرف = مشتريات_الدواء.معرف_الدواء ;" ;
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                preparedStmt.setInt(1,this.receiptSelected.getId());
-                ResultSet resultSet = preparedStmt.executeQuery();
-                while (resultSet.next()){
-                    List<StringProperty> data = new ArrayList<>();
-                    data.add(0, new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
-                    data.add(1, new SimpleStringProperty(resultSet.getString("الاسم")));
-                    double pr = resultSet.getDouble("سعر_الوحدة");
-                    data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
-                    int qte = resultSet.getInt("الكمية");
-                    data.add(3, new SimpleStringProperty(String.valueOf(qte)));
-                    data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", ( pr * qte ))));
+            List<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(selectInvoice.getId());
+            for (ComponentInvoice componentInvoice : componentInvoices) {
+                try {
+                    if (conn.isClosed()) conn = connectBD.connect();
+                    List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>();
+                    List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>();
 
-                    priceList.add(pr);
+                    String query = "SELECT تخزين_منتج.معرف_المنتج, تخزين_منتج.معرف_الانتاج, تخزين_منتج.سعر_البيع, تخزين_منتج.كمية_مخزنة, تخزين_منتج.كمية_مستهلكة, \n" +
+                            "تخزين_منتجات_مؤقت_للبيع.المعرف, تخزين_منتجات_مؤقت_للبيع.الكمية,تخزين_منتجات_مؤقت_للبيع.معرف_فاتورة_البيع FROM تخزين_منتج, تخزين_منتجات_مؤقت_للبيع\n" +
+                            "WHERE معرف_فاتورة_البيع = ? AND تخزين_منتج.معرف_المنتج = ? AND تخزين_منتج.معرف_المنتج = تخزين_منتجات_مؤقت_للبيع.معرف_المنتج AND تخزين_منتج.معرف_الانتاج = تخزين_منتجات_مؤقت_للبيع.معرف_الانتاج\n";
+                    PreparedStatement preparedStmt = conn.prepareStatement(query);
+                    preparedStmt.setInt(1,componentInvoice.getIdInvoice());
+                    preparedStmt.setInt(2,componentInvoice.getIdProduct());
+                    ResultSet resultSet = preparedStmt.executeQuery();
+
+                    while (resultSet.next()){
+                        ComponentStoreProduct storeProduct = new ComponentStoreProduct();
+                        storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                        storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                        storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
+                        storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                        storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+
+                        ComponentStoreProductTemp storeProductTemp = new ComponentStoreProductTemp();
+                        storeProductTemp.setId(resultSet.getInt("المعرف"));
+                        storeProductTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                        storeProductTemp.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                        storeProductTemp.setIdInvoice(resultSet.getInt("معرف_فاتورة_البيع"));
+                        storeProductTemp.setQte(resultSet.getInt("الكمية"));
+
+
+                        componentStoreProducts.add(storeProduct);
+                        componentStoreProductTemps.add(storeProductTemp);
+                    }
+                    Product product = productOperation.get(componentInvoice.getIdProduct());
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(0, new SimpleStringProperty(String.valueOf(product.getId())));
+                    data.add(1, new SimpleStringProperty(product.getName()));
+                    data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
+                    data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
+                    data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
+
+                    priceList.add(componentInvoice.getPrice());
                     dataTable.add(data);
+                    storeProducts.put(componentInvoice.getIdProduct(),componentStoreProducts);
+                    storeProductTemps.put(componentInvoice.getIdProduct(),componentStoreProductTemps);
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                tablePurchases.setItems(dataTable);
-                sumTotalTablePorches();
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+            tableSales.setItems(dataTable);
+            sumTotalTableSales();
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     @FXML
     private void ActionComboProvider(){
-        int index = cbProvider.getSelectionModel().getSelectedIndex();
+        int index = cbClient.getSelectionModel().getSelectedIndex();
         if (index >= 0 ) {
-            selectedProvider = idProviderCombo.get(index);
-            setProviderTransaction(selectedProvider);
+            selectedClient = idClientCombo.get(index);
+            setClientTransaction(selectedClient);
         }
     }
 
-    private void setProviderTransaction(int idProvider) {
+    private void setClientTransaction(int idClient) {
         try {
-            double debt = 0.0;
+            double debt;
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
-            ArrayList<Receipt> receipts = operation.getAllByProvider(idProvider);
-            receipts.forEach(receipt -> {
-                ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+            // Medication
+            ArrayList<Invoice> invoices = operation.getAllByClient(idClient);
+            invoices.forEach(invoice -> {
+                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
                 AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentReceipts.forEach(componentReceipt -> {
-                    double pr = componentReceipt.getPrice() * componentReceipt.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
+                componentInvoices.forEach(componentInvoice -> {
+                    double pr = componentInvoice.getPrice() * componentInvoice.getQte();
+                    sumR.updateAndGet(v -> v + pr);
                 });
-                pay.updateAndGet(v -> (double) (v + receipt.getPaying()));
-                trans.updateAndGet(v -> (double) (v + sumR.get()));
+                pay.updateAndGet(v -> v + invoice.getPaying());
+                trans.updateAndGet(v -> v + sumR.get());
             });
+
             debt = trans.get() - pay.get();
             lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
             lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
@@ -189,38 +220,45 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void refreshComboProvider() {
+    private void setFactureNumber(int nbr) {
+        int year = LocalDate.now().getYear();
+        lbFactureNbr.setText((nbr + 1) + "/" + year );
+    }
+
+    private void refreshComboClient() {
         clearCombo();
         try {
-            ArrayList<Provider> providers = providerOperation.getAll();
-            providers.forEach(provider -> {
-                comboProviderData.add(provider.getName());
-                idProviderCombo.add(provider.getId());
+            ArrayList<Client> clients = clientOperation.getAll();
+            clients.forEach(client -> {
+                comboClientData.add(client.getName());
+                idClientCombo.add(client.getId());
             });
-            cbProvider.setItems(comboProviderData);
+            cbClient.setItems(comboClientData);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
+
     private void clearCombo(){
-        cbProvider.getSelectionModel().clearSelection();
-        comboProviderData.clear();
-        idProviderCombo.clear();
+        cbClient.getSelectionModel().clearSelection();
+        comboClientData.clear();
+        idClientCombo.clear();
         lbDebt.setText("");
         lbTransaction.setText("");
     }
 
-    private void refreshComponent(){
+    private void refreshProduct(){
         ObservableList<List<StringProperty>> componentDataTable = FXCollections.observableArrayList();
 
         try {
-            ArrayList<Medication> medications = medicationOperation.getAll();
+            ArrayList<Product> products = productOperation.getAllWithQteNotNull();
 
-            medications.forEach(medication -> {
+            products.forEach(product -> {
                 List<StringProperty> data = new ArrayList<>();
-                data.add( new SimpleStringProperty(String.valueOf(medication.getId())));
-                data.add( new SimpleStringProperty(medication.getName()));
-                data.add(new SimpleStringProperty(medication.getReference()));
+                data.add( new SimpleStringProperty(String.valueOf(product.getId())));
+                data.add( new SimpleStringProperty(product.getName()));
+                data.add( new SimpleStringProperty(String.valueOf(product.getQte())));
+                data.add(new SimpleStringProperty(product.getReference()));
                 componentDataTable.add(data);
             });
 
@@ -228,14 +266,14 @@ public class UpdateController implements Initializable {
             e.printStackTrace();
         }
 
-        tableMed.setItems(componentDataTable);
+        tableProduct.setItems(componentDataTable);
 
     }
 
     @FXML
-    private void ActionAddProvider(){
+    private void ActionAddClient(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProviderViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -245,7 +283,8 @@ public class UpdateController implements Initializable {
             closeButton.setVisible(false);
             dialog.showAndWait();
 
-            refreshComboProvider();
+            refreshComboClient();
+            cbClient.getSelectionModel().select(comboClientData.size() - 1);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -253,7 +292,7 @@ public class UpdateController implements Initializable {
     }
 
     @FXML
-    private void ActionPayDebtProvider(){
+    private void ActionPayDebtClient(){
         TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("التسديد");
@@ -268,26 +307,25 @@ public class UpdateController implements Initializable {
             if (!price.isEmpty() && !lbDebt.getText().equals("0.0")) {
                 double pr = Double.parseDouble(price);
 
-                ArrayList<Receipt> receipts = operation.getAllByProvider(selectedProvider);
-                for (int i = 0; i < receipts.size(); i++) {
-                    Receipt receipt = receipts.get(i);
-                    ArrayList<ComponentReceipt> componentReceipts = componentMedicationOperation.getAllByReceipt(receipt.getId());
+                ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
+                for (Invoice invoice : invoices) {
+                    ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                    componentReceipts.forEach(componentReceipt -> {
-                        double pre = componentReceipt.getPrice() * componentReceipt.getQte();
-                        sumR.updateAndGet(v -> (double) (v + pre));
+                    componentInvoices.forEach(componentInvoice -> {
+                        double pre = componentInvoice.getPrice() * componentInvoice.getQte();
+                        sumR.updateAndGet(v -> v + pre);
                     });
-                    double debt = sumR.get() - receipt.getPaying();
-                    if (debt > 0){
-                        if (pr <= debt){
-                            double newPaying = pr + receipt.getPaying();
+                    double debt = sumR.get() - invoice.getPaying();
+                    if (debt > 0) {
+                        if (pr <= debt) {
+                            double newPaying = pr + invoice.getPaying();
                             pr = 0;
-                            PayDebtReceipt(receipt.getId(),newPaying);
+                            PayDebtInvoice(invoice.getId(), newPaying);
                             break;
-                        }else {
-                            double newPaying = debt + receipt.getPaying();
+                        } else {
+                            double newPaying = debt + invoice.getPaying();
                             pr = pr - debt;
-                            PayDebtReceipt(receipt.getId(),newPaying);
+                            PayDebtInvoice(invoice.getId(), newPaying);
                         }
                     }
                 }
@@ -300,74 +338,79 @@ public class UpdateController implements Initializable {
                     okButton.setText("موافق");
                     alertInformation.showAndWait();
                 }
-                setProviderTransaction(selectedProvider);
+                setClientTransaction(selectedClient);
             }
         });
     }
 
-    private void PayDebtReceipt(int receiptId , double price) {
+    private void PayDebtInvoice(int invoiceId , double price) {
         try {
-            Receipt receipt1 = new Receipt();
-            receipt1.setPaying(price);
+            Invoice invoice1 = new Invoice();
+            invoice1.setPaying(price);
 
-            Receipt receipt2 =  new Receipt();
-            receipt2.setId(receiptId);
+            Invoice invoice2 =  new Invoice();
+            invoice2.setId(invoiceId);
 
-            operation.updatePaying(receipt1,receipt2);
+            operation.updatePaying(invoice1,invoice2);
 
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-
     @FXML
-    private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = tableMed.getSelectionModel().getSelectedItem();
+    private void tableProductClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionAddSales();
+        }
+    }
+    @FXML
+    private void ActionAddSales(){
+        List<StringProperty> dataSelected = tableProduct.getSelectionModel().getSelectedItem();
         if (dataSelected != null) {
             int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(3).getValue()) + 1 ;
-                    double pr = priceList.get(ex);
-                    dataTable.get(ex).get(3).setValue(String.valueOf(val));
-                    dataTable.get(ex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (val * pr)));
+            if ( ex == -1 ){
+               try {
+                   Product product = productOperation.get(Integer.parseInt(tableProduct.getSelectionModel().getSelectedItem().get(0).getValue()));
+                   ComponentInvoice componentInvoice = new ComponentInvoice();
+                   List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>();
+                   List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>();
 
-                    tablePurchases.setItems(dataTable);
-                    updateComponent(ex);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    TextInputDialog dialog = new TextInputDialog();
 
-                    dialog.setTitle("السعر");
-                    dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    dialog.setHeaderText("ادخل سعر الشراء ");
-                    dialog.setContentText("السعر :");
+                   FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddSaleView.fxml"));
+                   DialogPane temp = loader.load();
+                   AddSaleController controller = loader.getController();
+                   controller.Init(product,componentInvoice,componentStoreProducts,componentStoreProductTemps);
+                   Dialog<ButtonType> dialog = new Dialog<>();
+                   dialog.setDialogPane(temp);
+                   dialog.resizableProperty().setValue(false);
+                   dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                   Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                   closeButton.setVisible(false);
+                   dialog.showAndWait();
 
-                    Optional<String> result = dialog.showAndWait();
+                   if (componentInvoice.getPrice() != 0) {
 
-                    result.ifPresent(price -> {
-                        double pr = Double.parseDouble(price);
-                        List<StringProperty> data = new ArrayList<>();
-                        data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                        data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                        data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
-                        data.add(3, new SimpleStringProperty(String.valueOf(1)));
-                        data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", pr)));
+                       List<StringProperty> data = new ArrayList<>();
+                       data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
+                       data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
+                       data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
+                       data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
+                       data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
 
-                        priceList.add(pr);
-                        dataTable.add(data);
+                       storeProducts.put(product.getId(), componentStoreProducts);
+                       storeProductTemps.put(product.getId(), componentStoreProductTemps);
 
-                        tablePurchases.setItems(dataTable);
-                        insertComponent(tablePurchases.getItems().size() - 1);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                       priceList.add(componentInvoice.getPrice());
+                       dataTable.add(data);
+                   }
+
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
             }
-            sumTotalTablePorches();
+            tableSales.setItems(dataTable);
+            sumTotalTableSales();
         }
     }
 
@@ -383,72 +426,69 @@ public class UpdateController implements Initializable {
     }
 
     @FXML
-    private void ActionModifiedQte(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
-        if (compoSelectedIndex != -1){
-            TextInputDialog dialog = new TextInputDialog();
+    private void tableSalesClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
-            dialog.setTitle("الكمية");
-            dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            dialog.setHeaderText("تعديل الكمية ");
-            dialog.setContentText("الكمية :");
-
-            Optional<String> result = dialog.showAndWait();
-
-            result.ifPresent(qte -> {
-                if (!qte.isEmpty()) {
-                    int q = Integer.parseInt(qte);
-                    double pr = priceList.get(compoSelectedIndex);
-                    dataTable.get(compoSelectedIndex).get(3).setValue(qte);
-                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
-                    updateComponent(compoSelectedIndex);
-                    sumTotalTablePorches();
-                }
-            });
+            ActionUpdateSales();
         }
     }
+
     @FXML
-    private void ActionModifiedPrice(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
+    private void ActionUpdateSales(){
+        int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
-            TextInputDialog dialog = new TextInputDialog();
+            try {
+                Product product = productOperation.get(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(0).getValue()));
+                ComponentInvoice componentInvoice = new ComponentInvoice();
+                componentInvoice.setQte(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(3).getValue()));
 
-            dialog.setTitle("السعر");
-            dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            dialog.setHeaderText("تعديل السعر ");
-            dialog.setContentText("السعر :");
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
+                DialogPane temp = loader.load();
+                UpdateSaleController controller = loader.getController();
+                controller.Init(product,componentInvoice,storeProducts.get(product.getId()),storeProductTemps.get(product.getId()));
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(temp);
+                dialog.resizableProperty().setValue(false);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
+                dialog.showAndWait();
 
-            Optional<String> result = dialog.showAndWait();
+                if (componentInvoice.getPrice() != 0) {
 
-            result.ifPresent(price -> {
-                if (!price.isEmpty()) {
-                    double pr = Double.parseDouble(price);
-                    int q = Integer.parseInt(dataTable.get(compoSelectedIndex).get(3).getValue());
-                    priceList.set(compoSelectedIndex, pr);
-                    dataTable.get(compoSelectedIndex).get(2).setValue(String.format(Locale.FRANCE, "%,.2f", pr ));
-                    dataTable.get(compoSelectedIndex).get(4).setValue(String.format(Locale.FRANCE, "%,.2f", (pr * q) ));
-                    tablePurchases.setItems(dataTable);
-                    updateComponent(compoSelectedIndex);
-                    sumTotalTablePorches();
+                    List<StringProperty> data = new ArrayList<>();
+                    data.add(0, new SimpleStringProperty(String.valueOf(product.getId())));
+                    data.add(1, new SimpleStringProperty(product.getName()));
+                    data.add(2, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice())));
+                    data.add(3, new SimpleStringProperty(String.valueOf(componentInvoice.getQte())));
+                    data.add(4, new SimpleStringProperty(String.format(Locale.FRANCE, "%,.2f", componentInvoice.getPrice() * componentInvoice.getQte())));
+
+                    priceList.set(compoSelectedIndex,componentInvoice.getPrice());
+                    dataTable.set(compoSelectedIndex,data);
                 }
-            });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            tableSales.setItems(dataTable);
+            sumTotalTableSales();
         }
     }
-    @FXML
-    private void ActionDeleteFromComposition(){
-        int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
-        if (compoSelectedIndex != -1){
-            deleteComponent(compoSelectedIndex);
 
+    @FXML
+    private void ActionDeleteSales(){
+        int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
+        if (compoSelectedIndex != -1){
+            storeProducts.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            storeProductTemps.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
             dataTable.remove(compoSelectedIndex);
             priceList.remove(compoSelectedIndex);
-            tablePurchases.setItems(dataTable);
+            tableSales.setItems(dataTable);
 
-            sumTotalTablePorches();
+            sumTotalTableSales();
         }
     }
-    private void sumTotalTablePorches(){
+    private void sumTotalTableSales(){
         double totalPrice = 0.0;
         int totalling = 0;
 
@@ -463,13 +503,30 @@ public class UpdateController implements Initializable {
         lbSumWeight.setText(String.valueOf(totalling));
     }
     @FXML
-    private void ActionAnnulledUpdate(){
-        closeDialog(btnUpdate);
+    private void ActionAnnulledAdd(){
+        Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+        alertConfirmation.setHeaderText("تاكيد الالغاء");
+        alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
+        alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+        okButton.setText("موافق");
+
+        Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+        cancel.setText("الغاء");
+
+        alertConfirmation.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.CANCEL) {
+
+            } else if (response == ButtonType.OK) {
+                closeDialog(btnUpdate);
+            }
+        });
+
     }
 
     @FXML
-    private void ActionUpdate(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog(String.valueOf(receiptSelected.getPaying()));
+    void ActionUpdate(ActionEvent event) {
+        TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("الدفع ");
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
@@ -481,21 +538,23 @@ public class UpdateController implements Initializable {
         result.ifPresent(price -> {
             if (!price.isEmpty()){
                 LocalDate date = dpDate.getValue();
-                String lbFactTxt = lbFactureNbr.getText().trim();
-                int nbr = Integer.parseInt(lbFactTxt.substring(0,lbFactTxt.indexOf('/')));
                 double paying = Double.parseDouble(price);
 
-                if (date != null && selectedProvider != 0) {
+                if (date != null && selectedClient != 0) {
                     if (paying <= totalFacture) {
-                        Receipt receipt = new Receipt();
-                        receipt.setNumber(nbr);
-                        receipt.setIdProvider(selectedProvider);
-                        receipt.setDate(date);
-                        receipt.setPaying(paying);
 
-                        boolean upd = update(receipt);
-                        if (upd) {
-                            ActionAnnulledUpdate();
+                        Invoice invoice = new Invoice();
+
+                        invoice.setIdClient(selectedClient);
+                        invoice.setDate(date);
+                        invoice.setPaying(paying);
+
+
+                        boolean update = update(invoice);
+                        if (update) {
+                            deleteComponent(this.selectInvoice.getId());
+                            insertComponent(this.selectInvoice.getId(),false);
+                            closeDialog(this.btnUpdate);
                         } else {
                             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                             alertWarning.setHeaderText("تحذير ");
@@ -535,52 +594,119 @@ public class UpdateController implements Initializable {
         });
     }
 
-    private void insertComponent(int index) {
+    @FXML
+    private void ActionConfirm(){
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(selectInvoice.getPaying()));
 
-        int id = Integer.parseInt(dataTable.get(index).get(0).getValue());
-        int qte = Integer.parseInt(dataTable.get(index).get(3).getValue());
+        dialog.setTitle("الدفع ");
+        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        dialog.setHeaderText(" السعر المدفوع ");
+        dialog.setContentText("السعر :");
 
-        ComponentReceipt componentReceipt = new ComponentReceipt();
-        componentReceipt.setIdReceipt(receiptSelected.getId());
-        componentReceipt.setIdComponent(id);
-        componentReceipt.setQte(qte);
-        componentReceipt.setPrice(this.priceList.get(index));
+        Optional<String> result = dialog.showAndWait();
 
-        insertComponentMedication(componentReceipt);
+        result.ifPresent(price -> {
+            if (!price.isEmpty()){
+                LocalDate date = dpDate.getValue();
+                double paying = Double.parseDouble(price);
+
+                if (date != null && selectedClient != 0) {
+                    if (paying <= totalFacture) {
+
+                        Invoice invoice = new Invoice();
+                        invoice.setIdClient(selectedClient);
+                        invoice.setDate(date);
+                        invoice.setPaying(paying);
+
+
+                        boolean update = update(invoice);
+                        if (update) {
+                            deleteComponent(this.selectInvoice.getId());
+                            insertComponent(this.selectInvoice.getId(),true);
+                            closeDialog(this.btnUpdate);
+                        } else {
+                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                            alertWarning.setHeaderText("تحذير ");
+                            alertWarning.setContentText("خطأ غير معروف");
+                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                            okButton.setText("موافق");
+                            alertWarning.showAndWait();
+                        }
+                    }else {
+                        Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                        alertWarning.setHeaderText("تحذير ");
+                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                        Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                        okButton.setText("موافق");
+                        alertWarning.showAndWait();
+                    }
+                }else {
+                    Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                    alertWarning.setHeaderText("تحذير ");
+                    alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+                    alertWarning.showAndWait();
+                }
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("تحذير ");
+                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+        });
     }
 
-    private void updateComponent(int index) {
+    private void deleteComponent(int idInvoice){
+        ArrayList<ComponentStoreProductTemp> storeProductTemps = componentStoreProductTempOperation.getAllByInvoice(idInvoice);
+        for (ComponentStoreProductTemp storeProductTemp : storeProductTemps){
 
-        int id = Integer.parseInt(dataTable.get(index).get(0).getValue());
-        int qte = Integer.parseInt(dataTable.get(index).get(3).getValue());
-
-        ComponentReceipt componentReceipt = new ComponentReceipt();
-        componentReceipt.setIdReceipt(receiptSelected.getId());
-        componentReceipt.setIdComponent(id);
-        componentReceipt.setQte(qte);
-        componentReceipt.setPrice(this.priceList.get(index));
-
-        updateComponentMedication(componentReceipt);
+            ComponentStoreProduct storeProduct = componentStoreProductOperation.get(storeProductTemp.getIdProduct(),storeProductTemp.getIdProduction());
+            storeProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte());
+            componentStoreProductOperation.updateQte(storeProduct);
+        }
+        componentStoreProductTempOperation.deleteByInvoice(idInvoice);
     }
 
-    private void deleteComponent(int index) {
+    private void insertComponent(int idInvoice ,boolean confirm) {
 
-        int id = Integer.parseInt(dataTable.get(index).get(0).getValue());
-        int qte = Integer.parseInt(dataTable.get(index).get(3).getValue());
+        for (int i = 0; i < dataTable.size(); i++) {
 
-        ComponentReceipt componentReceipt = new ComponentReceipt();
-        componentReceipt.setIdReceipt(receiptSelected.getId());
-        componentReceipt.setIdComponent(id);
-        componentReceipt.setQte(qte);
-        componentReceipt.setPrice(this.priceList.get(index));
+            List<StringProperty> stringProperties = dataTable.get(i);
 
-        deleteComponentMedication(componentReceipt);
+            int id = Integer.parseInt(stringProperties.get(0).getValue());
+            int qte = Integer.parseInt(stringProperties.get(3).getValue());
+
+            ComponentInvoice  componentInvoice = new ComponentInvoice();
+            componentInvoice.setIdInvoice(idInvoice);
+            componentInvoice.setIdProduct(id);
+            componentInvoice.setQte(qte);
+            componentInvoice.setPrice(this.priceList.get(i));
+
+            if (!confirm) {
+                for (ComponentStoreProductTemp storeProductTemp : storeProductTemps.get(id)) {
+                    if (storeProductTemp.getIdProduct() == id) {
+                        storeProductTemp.setIdInvoice(idInvoice);
+                        insertProductStoreTemp(storeProductTemp);
+                    }
+                }
+            }
+            storeProducts.get(id).forEach(this::updateQteConsumedProductStore);
+
+            insertComponentInvoice(componentInvoice);
+        }
     }
 
-    private boolean update(Receipt receipt) {
+    private boolean update(Invoice receipt) {
         boolean update = false;
         try {
-            update = operation.update(receipt,receiptSelected);
+            update = operation.update(receipt,this.selectInvoice);
             return update;
         }catch (Exception e){
             e.printStackTrace();
@@ -588,10 +714,10 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean insertComponentMedication(ComponentReceipt componentReceipt){
+    private boolean insertComponentInvoice(ComponentInvoice componentInvoice){
         boolean insert = false;
         try {
-            insert = componentMedicationOperation.insert(componentReceipt);
+            insert = componentInvoiceOperation.insert(componentInvoice);
             return insert;
         }catch (Exception e){
             e.printStackTrace();
@@ -599,25 +725,25 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private boolean updateComponentMedication(ComponentReceipt componentReceipt){
+    private boolean insertProductStoreTemp(ComponentStoreProductTemp storeProductTemp){
+        boolean insert = false;
+        try {
+            insert = componentStoreProductTempOperation.insert(storeProductTemp);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
+        }
+    }
+
+    private boolean updateQteConsumedProductStore(ComponentStoreProduct componentStoreProduct){
         boolean update = false;
         try {
-            update = componentMedicationOperation.update(componentReceipt,componentReceipt);
+            update = componentStoreProductOperation.updateQte(componentStoreProduct);
             return update;
         }catch (Exception e){
             e.printStackTrace();
             return update;
-        }
-    }
-
-    private boolean deleteComponentMedication(ComponentReceipt componentReceipt){
-        boolean delete = false;
-        try {
-            delete = componentMedicationOperation.delete(componentReceipt);
-            return delete;
-        }catch (Exception e){
-            e.printStackTrace();
-            return delete;
         }
     }
 
@@ -626,32 +752,9 @@ public class UpdateController implements Initializable {
     }
 
     @FXML
-    void ActionSearchRawMadTable() {
-        // filtrer les données
-        ObservableList<List<StringProperty>> items = tableMed.getItems();
-        FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
-        String txtRecherche = tfRechercheMad.getText().trim();
-
-        filteredData.setPredicate((Predicate<? super List<StringProperty>>) stringProperties -> {
-            if (txtRecherche.isEmpty()) {
-                //loadDataInTable();
-                return true;
-            } else if (stringProperties.get(1).toString().contains(txtRecherche)) {
-                return true;
-            } else if (stringProperties.get(2).toString().contains(txtRecherche)) {
-                return true;
-            }  else return stringProperties.get(3).toString().contains(txtRecherche);
-        });
-
-        SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tableMed.comparatorProperty());
-        tableMed.setItems(sortedList);
-    }
-
-    @FXML
     private void ActionRefresh(){
         clearRecherche();
-        tablePurchases.setItems(dataTable);
+        tableSales.setItems(dataTable);
     }
 
     private void clearRecherche(){
@@ -661,7 +764,7 @@ public class UpdateController implements Initializable {
     @FXML
     void ActionSearch() {
         // filtrer les données
-        ObservableList<List<StringProperty>> items = tablePurchases.getItems();
+        ObservableList<List<StringProperty>> items = tableSales.getItems();
         FilteredList<List<StringProperty>> filteredData = new FilteredList<>(items, e -> true);
         String txtRecherche = tfRecherche.getText().trim();
 
@@ -679,7 +782,9 @@ public class UpdateController implements Initializable {
         });
 
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
-        sortedList.comparatorProperty().bind(tablePurchases.comparatorProperty());
-        tablePurchases.setItems(sortedList);
+        sortedList.comparatorProperty().bind(tableSales.comparatorProperty());
+        tableSales.setItems(sortedList);
     }
+
+
 }

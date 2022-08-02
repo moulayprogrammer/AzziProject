@@ -294,13 +294,14 @@ public class UpdateController implements Initializable {
                     ArrayList<String> qteList = new ArrayList<>();
                     qteList.add(dataSelected.get(2).getValue());
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/QteDelivredDialog.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/QteDeliveredDialog.fxml"));
                     DialogPane temp = loader.load();
                     QteDeliveredController controller = loader.getController();
                     controller.Init(qteList);
                     Dialog<ButtonType> dialog = new Dialog<>();
                     dialog.setDialogPane(temp);
                     dialog.resizableProperty().setValue(false);
+                    dialog.initOwner(this.btnUpdate.getScene().getWindow());
                     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                     Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                     closeButton.setVisible(false);
@@ -349,13 +350,14 @@ public class UpdateController implements Initializable {
                 qteList.add(tableDeliveryComponent.getItems().get(compoSelectedIndex).get(3).getValue());
                 qteList.add(tableDeliveryComponent.getItems().get(compoSelectedIndex).get(4).getValue());
 
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/QteDelivredDialog.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/QteDeliveredDialog.fxml"));
                 DialogPane temp = loader.load();
                 QteDeliveredController controller = loader.getController();
                 controller.Init(qteList);
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.initOwner(this.btnUpdate.getScene().getWindow());
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);

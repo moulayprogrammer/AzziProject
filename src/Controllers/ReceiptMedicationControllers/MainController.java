@@ -18,8 +18,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
@@ -114,14 +118,13 @@ public class MainController implements Initializable {
     private void ActionAdd(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/AddView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<Boolean> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-            dialog.showAndWait();
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.showAndWait();
 
             refresh();
 
@@ -137,16 +140,16 @@ public class MainController implements Initializable {
             try {
                 Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/UpdateView.fxml"));
-                DialogPane temp = loader.load();
+                BorderPane temp = loader.load();
                 UpdateController controller = loader.getController();
                 controller.Init(receipt);
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(temp));
+                stage.setMaximized(true);
+                stage.getIcons().add(new Image("Images/logo.png"));
+                stage.setTitle("مزرعة الجنوب");
+                stage.showAndWait();
+
                 refresh();
 
             } catch (IOException e) {

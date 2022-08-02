@@ -76,7 +76,20 @@ public class InvoiceOperation extends BDD<Invoice> {
 
     @Override
     public boolean delete(Invoice o) {
-        return false;
+        connectDatabase();
+        boolean del = false;
+        String query = "DELETE FROM فاتورة_بيع WHERE المعرف = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getId());
+
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return del;
     }
 
     @Override
@@ -88,7 +101,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAll() {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0";
+        String query = "SELECT * , (SELECT sum(الكمية) FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = فاتورة_بيع.المعرف) AS التاكيد  FROM فاتورة_بيع; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -100,6 +113,9 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
                 invoice.setPaying(resultSet.getDouble("الدفع"));
+                if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
+                else invoice.setConfirmation("غير مأكد");
+
 
                 list.add(invoice);
             }
@@ -112,7 +128,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public Invoice get(int id) {
         connectDatabase();
         Invoice invoice = new Invoice();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND المعرف = ?;";
+        String query = "SELECT * , (SELECT sum(الكمية) FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = فاتورة_بيع.المعرف) AS التاكيد  FROM فاتورة_بيع WHERE ارشيف = 0 AND المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,id);
@@ -125,7 +141,8 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
                 invoice.setPaying(resultSet.getDouble("الدفع"));
-
+                if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
+                else invoice.setConfirmation("غير مأكد");
 
             }
         } catch (SQLException e) {
@@ -158,7 +175,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAllByClient(int idClient) {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ?;";
+        String query = "SELECT * , (SELECT sum(الكمية) FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = فاتورة_بيع.المعرف) AS التاكيد  FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idClient);
@@ -171,6 +188,8 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
                 invoice.setPaying(resultSet.getDouble("الدفع"));
+                if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
+                else invoice.setConfirmation("غير مأكد");
 
                 list.add(invoice);
             }
@@ -184,7 +203,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND تاريخ_البيع BETWEEN ? AND ? ;";
+        String query = "SELECT * , (SELECT sum(الكمية) FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = فاتورة_بيع.المعرف) AS التاكيد  FROM فاتورة_بيع WHERE ارشيف = 0 AND تاريخ_البيع BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDate(1,Date.valueOf(dateFirst));
@@ -199,6 +218,8 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
                 invoice.setPaying(resultSet.getDouble("الدفع"));
+                if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
+                else invoice.setConfirmation("غير مأكد");
 
                 list.add(invoice);
             }
@@ -212,7 +233,7 @@ public class InvoiceOperation extends BDD<Invoice> {
     public ArrayList<Invoice> getAllByDateClient(int idClient, LocalDate dateFirst, LocalDate dateSecond) {
         connectDatabase();
         ArrayList<Invoice> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ? AND تاريخ_البيع BETWEEN ? AND ? ;";
+        String query = "SELECT * , (SELECT sum(الكمية) FROM تخزين_منتجات_مؤقت_للبيع WHERE معرف_فاتورة_البيع = فاتورة_بيع.المعرف) AS التاكيد  FROM فاتورة_بيع WHERE ارشيف = 0 AND معرف_الزبون = ? AND تاريخ_البيع BETWEEN ? AND ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idClient);
@@ -227,6 +248,8 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
                 invoice.setPaying(resultSet.getDouble("الدفع"));
+                if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
+                else invoice.setConfirmation("غير مأكد");
 
                 list.add(invoice);
             }
