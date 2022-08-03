@@ -19,7 +19,7 @@ public class DamageRawMaterialOperation extends BDD<Damage> {
     public int insertId(Damage damage) {
         connectDatabase();
         int ins = 0;
-        String query = "INSERT INTO تلف_المواد_الخام (معرف_المادة, تاريخ_التلف, الكمية, السبب) VALUES (?,?,?,?);";
+        String query = "INSERT INTO اتلاف_المواد_الخام (معرف_المادة, تاريخ_التلف, الكمية, السبب) VALUES (?,?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,damage.getIdProduct());
@@ -41,7 +41,7 @@ public class DamageRawMaterialOperation extends BDD<Damage> {
     public boolean update(Damage o1, Damage o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE تلف_المواد_الخام SET تاريخ_التلف = ?, الكمية = ?, السبب = ? WHERE المعرف = ?;";
+        String query = "UPDATE اتلاف_المواد_الخام SET تاريخ_التلف = ?, الكمية = ?, السبب = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDate(1,Date.valueOf(o1.getDate()));
@@ -61,7 +61,7 @@ public class DamageRawMaterialOperation extends BDD<Damage> {
     public boolean delete(Damage o) {
         connectDatabase();
         boolean del = false;
-        String query = "DELETE FROM تلف_المواد_الخام WHERE المعرف = ?;";
+        String query = "DELETE FROM اتلاف_المواد_الخام WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getId());
@@ -84,7 +84,7 @@ public class DamageRawMaterialOperation extends BDD<Damage> {
     public ArrayList<Damage> getAll() {
         connectDatabase();
         ArrayList<Damage> list = new ArrayList<>();
-        String query = "SELECT * FROM تلف_المواد_الخام ";
+        String query = "SELECT * FROM اتلاف_المواد_الخام ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();

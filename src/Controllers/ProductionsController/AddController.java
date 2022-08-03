@@ -165,34 +165,34 @@ public class AddController implements Initializable {
                         ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
 
                         int qteNeed = production.getQte() * qteProduction;
-                        for (int j = 0; j < CSM.size(); j++) {
+                        for (ComponentStore store : CSM) {
 
-                            int qteStored = CSM.get(j).getQteStored();
-                            int qteConsumed = CSM.get(j).getQteConsumed();
-                            double price = CSM.get(j).getPrice();
+                            int qteStored = store.getQteStored();
+                            int qteConsumed = store.getQteConsumed();
+                            double price = store.getPrice();
 
                             ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
-                            componentStoreTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                            componentStoreTemp.setIdComponent(store.getIdComponent());
+                            componentStoreTemp.setIdDeliveryArrival(store.getIdDeliveryArrival());
 
-                            if ((qteStored - qteConsumed) >= qteNeed){
+                            if ((qteStored - qteConsumed) >= qteNeed) {
 
-                                priceProduction +=  qteNeed * price;
+                                priceProduction += qteNeed * price;
                                 componentStoreTemp.setQte(qteNeed);
                                 componentStoreMaterialTemp.add(componentStoreTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
-                                componentStoreMaterial.add(CSM.get(j));
+                                store.setQteConsumed(qteConsumed + qteNeed);
+                                componentStoreMaterial.add(store);
                                 break;
 
-                            }else {
+                            } else {
 
                                 int qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
                                 componentStoreTemp.setQte(qteRest);
                                 componentStoreMaterialTemp.add(componentStoreTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
-                                componentStoreMaterial.add(CSM.get(j));
+                                store.setQteConsumed(qteConsumed + qteRest);
+                                componentStoreMaterial.add(store);
                             }
                         }
                     }

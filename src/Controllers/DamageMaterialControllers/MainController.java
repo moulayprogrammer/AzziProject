@@ -1,7 +1,8 @@
-package Controllers.DamageControllers;
+package Controllers.DamageMaterialControllers;
 
-import BddPackage.ClientOperation;
-import Models.Client;
+import BddPackage.ConnectBD;
+import Models.Damage;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,10 +14,14 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -29,17 +34,22 @@ public class MainController implements Initializable {
     @FXML
     TableView<List<StringProperty>> table;
     @FXML
-    TableColumn<List<StringProperty>,String> clId,clName, clDate,clQte,clRaison;
-    private final ObservableList<List<List<StringProperty>>> dataTable = FXCollections.observableArrayList();
+    TableColumn<List<StringProperty>,String> clId, clName, clIdMaterial, clDate,clQte,clRaison;
+
+    private final ConnectBD connectBD = new ConnectBD();
+    private Connection conn;
+    private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        conn = connectBD.connect();
 
         clId.setCellValueFactory(data -> data.getValue().get(0));
         clName.setCellValueFactory(data -> data.getValue().get(1));
-        clDate.setCellValueFactory(data -> data.getValue().get(2));
-        clQte.setCellValueFactory(data -> data.getValue().get(3));
-        clRaison.setCellValueFactory(data -> data.getValue().get(4));
+        clIdMaterial.setCellValueFactory(data -> data.getValue().get(2));
+        clDate.setCellValueFactory(data -> data.getValue().get(3));
+        clQte.setCellValueFactory(data -> data.getValue().get(4));
+        clRaison.setCellValueFactory(data -> data.getValue().get(5));
 
         refresh();
     }
@@ -47,7 +57,7 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
-            /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/AddView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DamageMaterialViews/AddView.fxml"));
             DialogPane temp = loader.load();
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
@@ -56,7 +66,7 @@ public class MainController implements Initializable {
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
-            dialog.showAndWait();*/
+            dialog.showAndWait();
 
             refresh();
 
@@ -68,14 +78,20 @@ public class MainController implements Initializable {
     @FXML
     private void ActionUpdate(){
 
-
-        /*Client client = table.getSelectionModel().getSelectedItem();
-        if (client != null){
+        List<StringProperty> data = table.getSelectionModel().getSelectedItem();
+        if (data != null){
+            Damage damage = new Damage(
+                    Integer.parseInt(data.get(0).getValue()),
+                    Integer.parseInt(data.get(2).getValue()),
+                    LocalDate.parse(data.get(3).getValue()),
+                    Integer.parseInt(data.get(4).getValue()),
+                    data.get(5).getValue()
+            );
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/UpdateView.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DamageMaterialViews/UpdateView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateController controller = loader.getController();
-                controller.InitUpdate(client);
+                controller.InitUpdate(damage);
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
@@ -98,7 +114,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
     @FXML
@@ -164,9 +180,31 @@ public class MainController implements Initializable {
     }
 
     private void refresh(){
-        /*ArrayList<Client> clients = operation.getAll();
-        dataTable.setAll(clients);
-        table.setItems(dataTable);*/
+        try {
+            dataTable.clear();
+            if (conn.isClosed()) conn = connectBD.connect();
+            ArrayList<Damage> list = new ArrayList<>();
+            String query = "SELECT * FROM اتلاف_المواد_الخام, المواد_الخام WHERE اتلاف_المواد_الخام.معرف_المادة = المواد_الخام.المعرف;";
+
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                List<StringProperty> data = new ArrayList<>();
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
+                data.add( new SimpleStringProperty(resultSet.getString("الاسم")));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("معرف_المادة"))));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getDate("تاريخ_التلف").toLocalDate())));
+                data.add( new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية"))));
+                data.add( new SimpleStringProperty(resultSet.getString("السبب")));
+
+                dataTable.add(data);
+            }
+            table.setItems(dataTable);
+            conn.close();
+        }catch (Exception e){
+
+        }
     }
 
     @FXML

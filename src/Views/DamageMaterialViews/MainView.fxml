@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DamageControllers.MainController">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.DamageMaterialControllers.MainController">
    <top>
       <VBox style="-fx-background-color: #FFF;" BorderPane.alignment="CENTER">
          <children>
@@ -105,6 +105,7 @@
               <columns>
                 <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
                 <TableColumn fx:id="clName" prefWidth="280.0" text="التلف" />
+                <TableColumn fx:id="clIdMaterial" prefWidth="280.0" text="التلف" visible="false" />
                   <TableColumn fx:id="clDate" prefWidth="280.0" text="التاريخ" />
                   <TableColumn fx:id="clQte" prefWidth="163.0" text="الكمية" />
                   <TableColumn fx:id="clRaison" prefWidth="397.0" text="السبب" />

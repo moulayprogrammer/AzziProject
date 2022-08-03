@@ -1,4 +1,4 @@
-package Controllers.DamageControllers;
+package Controllers.DamageMaterialControllers;
 
 import BddPackage.ClientOperation;
 import Models.Client;

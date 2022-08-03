@@ -14,7 +14,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
     public boolean insert(ComponentDamage o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO المواد_التالفة (معرف_التلف, معرف_المادة, معرف_التوصيل, الكمية) VALUES (?,?,?,?);";
+        String query = "INSERT INTO المواد_الخام_التالفة (معرف_التلف, معرف_المادة, معرف_التوصيل, الكمية) VALUES (?,?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdDamage());
@@ -35,11 +35,31 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
         return false;
     }
 
+    public boolean updateQte(ComponentDamage o){
+        connectDatabase();
+        boolean upd = false;
+        String query = "UPDATE المواد_الخام_التالفة SET   الكمية = ? WHERE معرف_التلف = ? AND معرف_المادة = ? AND معرف_التوصيل = ? ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getQte());
+            preparedStmt.setInt(2,o.getIdDamage());
+            preparedStmt.setInt(3,o.getIdComponent());
+            preparedStmt.setInt(4,o.getIdReference());
+
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) upd = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return upd;
+    }
+
     @Override
     public boolean delete(ComponentDamage o) {
         connectDatabase();
         boolean del = false;
-        String query = "DELETE FROM المواد_التالفة WHERE معرف_التلف = ? AND معرف_المادة = ? AND معرف_التوصيل = ? ;";
+        String query = "DELETE FROM المواد_الخام_التالفة WHERE معرف_التلف = ? AND معرف_المادة = ? AND معرف_التوصيل = ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdDamage());
@@ -64,7 +84,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
     public ArrayList<ComponentDamage> getAll() {
         connectDatabase();
         ArrayList<ComponentDamage> list = new ArrayList<>();
-        String query = "SELECT * FROM المواد_التالفة";
+        String query = "SELECT * FROM المواد_الخام_التالفة";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
@@ -88,7 +108,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
     public ArrayList<ComponentDamage> getAllByDamage(int idDamage) {
         connectDatabase();
         ArrayList<ComponentDamage> list = new ArrayList<>();
-        String query = "SELECT * FROM المواد_التالفة WHERE معرف_التلف = ?";
+        String query = "SELECT * FROM المواد_الخام_التالفة WHERE معرف_التلف = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idDamage);
