@@ -1,6 +1,11 @@
 package Controllers.DamageMaterialControllers;
 
+import BddPackage.ComponentDamageRawMaterialOperation;
+import BddPackage.ComponentStoreRawMaterialOperation;
 import BddPackage.ConnectBD;
+import BddPackage.DamageRawMaterialOperation;
+import Models.ComponentDamage;
+import Models.ComponentStore;
 import Models.Damage;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -20,7 +25,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +42,9 @@ public class MainController implements Initializable {
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
+    private final DamageRawMaterialOperation operation = new DamageRawMaterialOperation();
+    private final ComponentStoreRawMaterialOperation componentStoreRawMaterialOperation = new ComponentStoreRawMaterialOperation();
+    private final ComponentDamageRawMaterialOperation componentDamageRawMaterialOperation = new ComponentDamageRawMaterialOperation();
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
 
     @Override
@@ -118,15 +125,21 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionAddToArchive(){
-        /*Client client = table.getSelectionModel().getSelectedItem();
-
-        if (client != null){
+    private void ActionDelete(){
+        List<StringProperty> data = table.getSelectionModel().getSelectedItem();
+        if (data != null){
+            Damage damage = new Damage(
+                    Integer.parseInt(data.get(0).getValue()),
+                    Integer.parseInt(data.get(2).getValue()),
+                    LocalDate.parse(data.get(3).getValue()),
+                    Integer.parseInt(data.get(4).getValue()),
+                    data.get(5).getValue()
+            );
             try {
-
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة الزبون" );
+                alertConfirmation.setHeaderText("تاكيد الحذف");
+                alertConfirmation.setContentText("هل انت متاكد من حذف التلف" );
+                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -138,45 +151,47 @@ public class MainController implements Initializable {
                     if (response == ButtonType.CANCEL) {
                         alertConfirmation.close();
                     } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(client);
-                        refresh();
+                        ArrayList<ComponentDamage> damages = componentDamageRawMaterialOperation.getAllByDamage(damage.getId());
+                        operation.delete(damage);
+                        deleteComponentDamage(damages);
                     }
                 });
+
+                refresh();
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-            alertWarning.setHeaderText("تحذير ");
-            alertWarning.setContentText("الرجاء اختيار زبون لارشفته");
+            alertWarning.setHeaderText("تحذير");
+            alertWarning.setContentText("الرجاء اختيار زبون من اجل التعديل");
             alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }*/
+        }
     }
 
+    private void deleteComponentDamage(ArrayList<ComponentDamage> componentDamages){
+        for (ComponentDamage selectDamage : componentDamages){
+            ComponentStore store = componentStoreRawMaterialOperation.get(selectDamage.getIdComponent(),selectDamage.getIdReference());
+            store.setQteConsumed(store.getQteConsumed() - selectDamage.getQte());
+            updateQteComponentStoreMaterial(store);
+            componentDamageRawMaterialOperation.delete(selectDamage);
+        }
+    }
 
-    @FXML
-    private void ActionDeleteFromArchive(){
-        /*try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/ArchiveView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.initOwner(this.tfRecherche.getScene().getWindow());
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-            dialog.showAndWait();
-
-            refresh();
-        } catch (IOException e) {
+    private boolean updateQteComponentStoreMaterial( ComponentStore store){
+        boolean update = false;
+        try {
+            update = componentStoreRawMaterialOperation.updateQte(store);
+            return update;
+        }catch (Exception e){
             e.printStackTrace();
-        }*/
+            return update;
+        }
     }
 
     private void refresh(){

@@ -41,14 +41,9 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionAddToArchive" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDelete" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../Icons/addArchive.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/deleteArchive.png" />
+                                    <Image url="@../../Icons/delete.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -81,7 +76,7 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
+                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="220.0" prefHeight="26.0" prefWidth="220.0">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>

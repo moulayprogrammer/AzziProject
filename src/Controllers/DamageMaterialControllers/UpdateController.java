@@ -183,7 +183,8 @@ public class UpdateController implements Initializable {
                         componentDamages.add(damage);
                     }
                 }
-                deleteAddComponentDamage(componentDamages);
+                deleteInitComponentDamage();
+                insertUpdatedComponent(componentDamages);
             }else {
                 int qteRest = qte - this.selectDamage.getQte();
                 if (qteRest <= this.selectMaterial.getQte()){
@@ -235,6 +236,23 @@ public class UpdateController implements Initializable {
         }
     }
 
+    private void deleteInitComponentDamage(){
+        for (ComponentDamage selectDamage : this.initComponentDamages){
+            ComponentStore store = componentStoreRawMaterialOperation.get(selectDamage.getIdComponent(),selectDamage.getIdReference());
+            store.setQteConsumed(store.getQteConsumed() - selectDamage.getQte());
+            updateQteComponentStoreMaterial(store);
+            componentDamageRawMaterialOperation.delete(selectDamage);
+        }
+    }
+
+    private void insertUpdatedComponent(ArrayList<ComponentDamage> componentDamages){
+        for (ComponentDamage componentDamage : componentDamages){
+            ComponentStore store = componentStoreRawMaterialOperation.get(componentDamage.getIdComponent(),componentDamage.getIdReference());
+            store.setQteConsumed(store.getQteConsumed() + componentDamage.getQte());
+            updateQteComponentStoreMaterial(store);
+            insertComponentDamage(componentDamage);
+        }
+    }
     private boolean insertComponentDamage(ComponentDamage componentDamage){
         boolean insert = false;
         try {
@@ -267,18 +285,7 @@ public class UpdateController implements Initializable {
         }
     }
 
-    private void deleteAddComponentDamage(ArrayList<ComponentDamage> componentDamages){
-        for (ComponentDamage damage : componentDamages){
-            for (ComponentDamage selectDamage : this.initComponentDamages){
-                if (damage.getIdComponent() != selectDamage.getIdComponent() && damage.getIdReference() != selectDamage.getIdReference()){
-                    ComponentStore store = componentStoreRawMaterialOperation.get(selectDamage.getIdComponent(),selectDamage.getIdReference());
-                    store.setQteConsumed(store.getQteConsumed() - selectDamage.getQte());
-                    updateQteComponentStoreMaterial(store);
-                    componentDamageRawMaterialOperation.delete(selectDamage);
-                }
-            }
-        }
-    }
+
 
 
     private void closeDialog(Button btn) {
