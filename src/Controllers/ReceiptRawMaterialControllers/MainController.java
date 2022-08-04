@@ -120,6 +120,7 @@ public class MainController implements Initializable {
             stage.setMaximized(true);
             stage.getIcons().add(new Image("Images/logo.png"));
             stage.setTitle("مزرعة الجنوب");
+            stage.initOwner(this.tfRecherche.getScene().getWindow());
             stage.showAndWait();
 
             refresh();

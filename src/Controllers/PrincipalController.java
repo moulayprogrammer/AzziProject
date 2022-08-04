@@ -4,7 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
@@ -15,7 +19,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class  MainController implements Initializable {
+public class PrincipalController implements Initializable {
 
     @FXML
     private Label lbWindowName;
@@ -24,28 +28,17 @@ public class  MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        mainPane.setPadding(new Insets(0,10,5,10));
-        ShowPrincipalScreen();
+
+    }
+
+    public void Init(BorderPane pane, Label lbWindowName){
+        this.mainPane = pane;
+        this.lbWindowName = lbWindowName;
     }
 
     @FXML
     private void close(){
         ((Stage)mainPane.getScene().getWindow()).close();
-    }
-
-    @FXML
-    private void ShowPrincipalScreen(){
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/PrincipalView.fxml"));
-            HBox temp = loader.load();
-            PrincipalController controller = loader.getController();
-            controller.Init(mainPane,lbWindowName);
-            lbWindowName.setText("الرئيسية" );
-            mainPane.setCenter(temp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -144,6 +137,25 @@ public class  MainController implements Initializable {
     }
 
     @FXML
+    private void ShowAddReceiptMedicationScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/AddView.fxml"));
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.resizableProperty().set(true);
+            stage.initOwner(this.mainPane.getScene().getWindow());
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void ShowReceiptRawMaterialScreen(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/MainView.fxml"));
@@ -165,8 +177,10 @@ public class  MainController implements Initializable {
             stage.setMaximized(true);
             stage.getIcons().add(new Image("Images/logo.png"));
             stage.setTitle("مزرعة الجنوب");
+            stage.resizableProperty().set(true);
             stage.initOwner(this.mainPane.getScene().getWindow());
             stage.showAndWait();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,12 +199,68 @@ public class  MainController implements Initializable {
     }
 
     @FXML
+    private void ShowAddDeliveryArrivalMedicationScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.resizableProperty().set(true);
+            stage.initOwner(this.mainPane.getScene().getWindow());
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void ShowDeliveryArrivalRawMaterialScreen(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/MainView.fxml"));
             BorderPane temp = loader.load();
             lbWindowName.setText("وصول توصيل المواد الخام");
             mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowAddDeliveryArrivalRawMaterialScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/AddView.fxml"));
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.resizableProperty().set(true);
+            stage.initOwner(this.mainPane.getScene().getWindow());
+            stage.showAndWait();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowAddProductionScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductionsViews/AddView.fxml"));
+            DialogPane temp = loader.load();
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(temp);
+            dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.lbWindowName.getScene().getWindow());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
+            dialog.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -215,6 +285,24 @@ public class  MainController implements Initializable {
             BorderPane temp = loader.load();
             lbWindowName.setText("فواتير المبيعات");
             mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowAddInvoiceScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/AddView.fxml"));
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.resizableProperty().set(true);
+            stage.initOwner(this.mainPane.getScene().getWindow());
+            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
