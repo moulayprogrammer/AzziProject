@@ -125,6 +125,32 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
         return list;
     }
 
+    public ComponentStore get(int idComp, int idRef) {
+        connectDatabase();
+        ComponentStore componentStore = new ComponentStore();
+        String query = "SELECT * FROM تخزين_الادوية WHERE معرف_الدواء = ? AND معرف_وصل_التوصيل = ? ";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idComp);
+            preparedStmt.setInt(2,idRef);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                componentStore.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                componentStore.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
+                componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
+                componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return componentStore;
+    }
+
     public ArrayList<ComponentStore> getAllByMedicationOrderByDate(int idMedication) {
         connectDatabase();
         ArrayList<ComponentStore> list = new ArrayList<>();

@@ -24,6 +24,7 @@
                       <MenuItem mnemonicParsing="false" onAction="#ShowRawMaterialScreen" text="القائمة" />
                       <MenuItem mnemonicParsing="false" onAction="#ShowReceiptRawMaterialScreen" text="الشراء" />
                       <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalRawMaterialScreen" text="التوصيل" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDamageMaterialScreen" text="التلف" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="الادوية">
@@ -31,6 +32,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#ShowMedicationScreen" text="القائمة" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowReceiptMedicationScreen" text="الشراء" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryArrivalMedicationScreen" text="التوصيل" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDamageMedicationScreen" text="التلف" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="المنتجات">
@@ -38,6 +40,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#ShowProductScreen" text="القائمة" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowProductionScreen" text="الانتاج" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowInvoiceScreen" text="البيع" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDamageProductScreen" text="التلف" />
                      </items>
                   </Menu>
                 <Menu mnemonicParsing="false" text="متابعة">
@@ -45,7 +48,7 @@
                     <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="الموردين" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="الناقلين" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowClientScreen" text="الزبائن" />
-                        <MenuItem mnemonicParsing="false" text="التقارير" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowSpendScreen" text="المصاريف" />
                   </items>
                 </Menu>
               </menus>

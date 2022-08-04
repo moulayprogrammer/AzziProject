@@ -1,6 +1,7 @@
 package BddPackage;
 
 
+import Models.ComponentStore;
 import Models.ComponentStoreProduct;
 import Models.ComponentStoreProductTemp;
 
@@ -96,5 +97,32 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
         }
         closeDatabase();
         return storeProduct;
+    }
+
+    public ArrayList<ComponentStoreProduct> getAllByProductOrderByDate(int idProduct) {
+        connectDatabase();
+        ArrayList<ComponentStoreProduct> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_منتج WHERE معرف_المنتج = ?  AND (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين DESC;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idProduct);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreProduct storeProduct = new ComponentStoreProduct();
+                storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
+                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
+
+                list.add(storeProduct);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
     }
 }

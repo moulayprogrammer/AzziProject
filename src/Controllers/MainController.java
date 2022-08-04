@@ -23,7 +23,7 @@ public class  MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         mainPane.setPadding(new Insets(0,10,5,10));
 
-        ShowDamageMaterialScreen();
+        ShowDamageProductScreen();
     }
 
     @FXML
@@ -198,5 +198,39 @@ public class  MainController implements Initializable {
         }
     }
 
-    
+    @FXML
+    private void ShowDamageMedicationScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DamageMedicationViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            lbWindowName.setText("تلف الادوية");
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowDamageProductScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DamageProductViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            lbWindowName.setText("تلف المنتجات");
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void ShowSpendScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/SpendViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            lbWindowName.setText("المصاريف");
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
