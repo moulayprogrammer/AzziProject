@@ -11,8 +11,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,7 +37,7 @@ public class MainController implements Initializable {
     @FXML
     TableColumn<Product,String> clName,clReference;
     @FXML
-    TableColumn<Product,Integer> clId,clLimiteQte;
+    TableColumn<Product,Integer> clId, clQte, clLimitQte;
 
     private final ObservableList<Product> dataTable = FXCollections.observableArrayList();
     private final ProductOperation operation = new ProductOperation();
@@ -43,7 +49,9 @@ public class MainController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clQte.setCellValueFactory(new PropertyValueFactory<>("qte"));
+        clLimitQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+
 
         refresh();
     }
@@ -51,15 +59,16 @@ public class MainController implements Initializable {
     @FXML
     private void ActionAdd(){
         try {
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/AddView.fxml"));
-            DialogPane temp = loader.load();
-            Dialog<ButtonType> dialog = new Dialog<>();
-            dialog.setDialogPane(temp);
-            dialog.resizableProperty().setValue(false);
-            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-            closeButton.setVisible(false);
-            dialog.showAndWait();
+            BorderPane temp = loader.load();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(temp));
+            stage.setMaximized(true);
+            stage.getIcons().add(new Image("Images/logo.png"));
+            stage.setTitle("مزرعة الجنوب");
+            stage.initOwner(this.tfRecherche.getScene().getWindow());
+            stage.showAndWait();
 
             refresh();
 
@@ -69,22 +78,30 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    private void tableClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionUpdate();
+        }
+    }
+    @FXML
     private void ActionUpdate(){
 
         Product product = table.getSelectionModel().getSelectedItem();
         if (product != null){
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ProductViews/UpdateView.fxml"));
-                DialogPane temp = loader.load();
+                BorderPane temp = loader.load();
                 UpdateController controller = loader.getController();
                 controller.Init(product);
-                Dialog<ButtonType> dialog = new Dialog<>();
-                dialog.setDialogPane(temp);
-                dialog.resizableProperty().setValue(false);
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
-                closeButton.setVisible(false);
-                dialog.showAndWait();
+                Stage stage = new Stage();
+                stage.setScene(new Scene(temp));
+                stage.setMaximized(true);
+                stage.getIcons().add(new Image("Images/logo.png"));
+                stage.setTitle("مزرعة الجنوب");
+                stage.initOwner(this.tfRecherche.getScene().getWindow());
+                stage.showAndWait();
+
                 refresh();
 
             } catch (IOException e) {
@@ -94,6 +111,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار منتج من اجل التعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -112,6 +130,7 @@ public class MainController implements Initializable {
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
                 alertConfirmation.setContentText("هل انت متاكد من ارشفة المنتج" );
                 alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
 
@@ -135,6 +154,7 @@ public class MainController implements Initializable {
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار منتج لارشفته");
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -149,6 +169,7 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);

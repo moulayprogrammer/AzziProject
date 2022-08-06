@@ -16,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -31,7 +33,7 @@ public class AddController implements Initializable {
 
 
     @FXML
-    TextField tfName,tfReference,tfLimiteQte,tfRechercheRawMad,tfRecherche;
+    TextField tfName,tfReference, tfLimitQte,tfRechercheRawMad,tfRecherche;
     @FXML
     TableView<List<StringProperty>> rawMedTable,tableComposition;
     @FXML
@@ -40,10 +42,6 @@ public class AddController implements Initializable {
     TableColumn<List<StringProperty>,String> tcType,tcId,tcName,tcReference,tcQte;
     @FXML
     Button btnInsert;
-
-
-    private final ConnectBD connectBD = new ConnectBD();
-    private Connection conn;
 
     private final ProductOperation operation = new ProductOperation();
     private final RawMaterialOperation materialOperation = new RawMaterialOperation();
@@ -55,7 +53,7 @@ public class AddController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        conn = connectBD.connect();
+
 
         tcTypeComponent.setCellValueFactory(data -> data.getValue().get(0));
         tcIdComponent.setCellValueFactory(data -> data.getValue().get(1));
@@ -130,7 +128,13 @@ public class AddController implements Initializable {
         rawMedTable.setItems(componentDataTable);
 
     }
+    @FXML
+    private void tableMaterialMedClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionAddToCompositionDefault();
+        }
+    }
     @FXML
     private void ActionAddToCompositionDefault(){
         List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
@@ -191,6 +195,7 @@ public class AddController implements Initializable {
 
                     dialog.setTitle("الكمية");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.setHeaderText("ادخل الكمية ");
                     dialog.setContentText("الكمية :");
 
@@ -213,6 +218,15 @@ public class AddController implements Initializable {
             tableComposition.setItems(dataTable);
         }
     }
+
+    @FXML
+    private void tableProductClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionModifiedQte();
+        }
+    }
+
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
@@ -221,6 +235,7 @@ public class AddController implements Initializable {
 
             dialog.setTitle("الكمية");
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.setHeaderText("تعديل الكمية ");
             dialog.setContentText("الكمية :");
 
@@ -250,7 +265,7 @@ public class AddController implements Initializable {
 
         String name = tfName.getText().trim();
         String reference = tfReference.getText().trim();
-        String limitQte = tfLimiteQte.getText().trim();
+        String limitQte = tfLimitQte.getText().trim();
 
         if (!name.isEmpty() && !reference.isEmpty() && !limitQte.isEmpty() && dataTable.size() != 0){
 
@@ -268,6 +283,8 @@ public class AddController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -276,6 +293,8 @@ public class AddController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();

@@ -18,12 +18,13 @@
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <TableView fx:id="table" BorderPane.alignment="CENTER">
+            <TableView onMouseClicked="#tableClick" fx:id="table" BorderPane.alignment="CENTER">
               <columns>
-                <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
-                <TableColumn fx:id="clName" prefWidth="525.0" text="الاسم" />
-                  <TableColumn fx:id="clReference" prefWidth="198.0" text="المرجع" />
-                  <TableColumn fx:id="clLimiteQte" prefWidth="369.0" text=" اقل كمية بالكلغ" />
+                <TableColumn fx:id="clId" prefWidth="130.0" text="المعرف" />
+                <TableColumn fx:id="clName" prefWidth="350.0" text="الاسم" />
+                  <TableColumn fx:id="clReference" prefWidth="200.0" text="المرجع" />
+                 <TableColumn fx:id="clQte" prefWidth="250.0" text="الكمية في المخزن (كغ)" />
+                  <TableColumn fx:id="clLimitQte" prefWidth="250.0" text=" اقل كمية بالكلغ" />
               </columns>
             </TableView>
          </center>
@@ -95,7 +96,7 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
+                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="220.0" prefHeight="26.0" prefWidth="220.0">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>

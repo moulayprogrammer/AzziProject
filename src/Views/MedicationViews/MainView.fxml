@@ -18,13 +18,13 @@
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <TableView fx:id="table" BorderPane.alignment="CENTER">
+            <TableView fx:id="table" onMouseClicked="#tableClick" BorderPane.alignment="CENTER">
               <columns>
                  <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
                  <TableColumn fx:id="clName" prefWidth="318.0" text="الاسم" />
                  <TableColumn fx:id="clReference" prefWidth="260.0" text="المرجع" />
                   <TableColumn fx:id="clQte" prefWidth="253.0" text="الكمية في المخزن" />
-                 <TableColumn fx:id="clLimiteQte" prefWidth="253.0" text="كمية التنبيه" />
+                 <TableColumn fx:id="clLimitQte" prefWidth="253.0" text="كمية التنبيه" />
               </columns>
             </TableView>
          </center>
@@ -39,6 +39,11 @@
                      <children>
                         <HBox spacing="25.0">
                            <children>
+                              <ImageView fitHeight="22.0" fitWidth="27.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../Icons/add.png" />
+                                 </image>
+                              </ImageView>
                               <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../../Icons/config.jpg" />
@@ -47,11 +52,7 @@
                                     <Rectangle2D />
                                  </viewport>
                               </ImageView>
-                              <ImageView fitHeight="22.0" fitWidth="27.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/add.png" />
-                                 </image>
-                              </ImageView>
+
                            </children>
                         </HBox>
                         <HBox spacing="20.0">
@@ -96,7 +97,7 @@
                         </HBox>
                         <HBox spacing="20.0">
                            <children>
-                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
+                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="220.0" prefHeight="26.0" prefWidth="220.0">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>

@@ -14,11 +14,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane expanded="true" nodeOrientation="RIGHT_TO_LEFT" prefHeight="599.0" prefWidth="600.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.ArchiveController">
+<DialogPane expanded="true" maxHeight="600.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="600.0" style="-fx-background-color: #FFF;" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MedicationControllers.ArchiveController">
    <header>
       <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
-            <Label layoutX="14.0" layoutY="19.0" text="الغاء ارشفة الأدوية" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Label layoutX="14.0" layoutY="19.0" style="-fx-font-size: 25;" text="الغاء ارشفة الادوية" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -27,7 +27,7 @@
       </AnchorPane>
    </header>
    <content>
-      <AnchorPane maxHeight="550.0" maxWidth="600.0" minHeight="550.0" minWidth="600.0" prefHeight="550.0" prefWidth="600.0">
+      <AnchorPane maxWidth="600.0" minWidth="600.0" prefHeight="580.0" prefWidth="600.0" style="-fx-background-color: #FFF;">
          <children>
             <VBox maxHeight="500.0" maxWidth="600.0" minHeight="500.0" minWidth="600.0" prefHeight="500.0" prefWidth="600.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
@@ -55,36 +55,22 @@
                            <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" visible="false" />
                            <TableColumn fx:id="clName" prefWidth="200.0" text="الاسم" />
                            <TableColumn fx:id="clReference" minWidth="0.0" prefWidth="190.0" text="المرجع" />
-                           <TableColumn fx:id="clLimiteQte" prefWidth="190.0" text=" اقل كمية بالكلغ" />
+                           <TableColumn fx:id="clLimitQte" prefWidth="190.0" text=" اقل كمية بالكلغ" />
                        </columns>
                    </TableView>
                </children>
             </VBox>
             <HBox spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button fx:id="btnInsert" defaultButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="الغاء الارشفة" textFill="#2005a8">
+                  <Button fx:id="btnInsert" defaultButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="35.0" prefWidth="150.0" styleClass="info" text="الغاء الارشفة" textFill="#2005a8">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
-                     <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../Icons/Save.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
                   </Button>
-                  <Button cancelButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="الغاء" textFill="#dd0000">
+                  <Button cancelButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefHeight="35.0" prefWidth="150.0" styleClass="warning" text="الغاء" textFill="#dd0000">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>
-                     <graphic>
-                        <ImageView fitHeight="22.0" fitWidth="33.0" opacity="0.7" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../../Icons/delete.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
                   </Button>
                </children>
             </HBox>

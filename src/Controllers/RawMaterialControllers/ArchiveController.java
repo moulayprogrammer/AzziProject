@@ -27,7 +27,7 @@ public class ArchiveController implements Initializable {
     @FXML
     TableColumn<RawMaterial,String> clName,clReference;
     @FXML
-    TableColumn<RawMaterial,Integer> clId,clLimiteQte;
+    TableColumn<RawMaterial,Integer> clId, clLimitQte;
 
     private final ObservableList<RawMaterial> dataTable = FXCollections.observableArrayList();
     private final RawMaterialOperation operation = new RawMaterialOperation();
@@ -38,7 +38,7 @@ public class ArchiveController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clLimitQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
 
         refresh();
     }
@@ -50,24 +50,8 @@ public class ArchiveController implements Initializable {
         if (rawMaterial != null){
             try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الغاء الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة المادة" );
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(rawMaterial);
-                        ActionAnnuler();
-                    }
-                });
+                operation.DeleteFromArchive(rawMaterial);
+                ActionAnnuler();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -76,6 +60,7 @@ public class ArchiveController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار مادة خام لالغاء أرشفتها");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

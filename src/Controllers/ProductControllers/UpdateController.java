@@ -16,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -194,7 +196,13 @@ public class UpdateController implements Initializable {
 
         tableComposition.setItems(dataTable);
     }
+    @FXML
+    private void tableMaterialMedClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionAddToCompositionDefault();
+        }
+    }
     @FXML
     private void ActionAddToCompositionDefault(){
         List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
@@ -274,6 +282,7 @@ public class UpdateController implements Initializable {
 
                     dialog.setTitle("الكمية");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.setHeaderText("ادخل الكمية ");
                     dialog.setContentText("الكمية :");
 
@@ -304,6 +313,7 @@ public class UpdateController implements Initializable {
 
                     dialog.setTitle("الكمية");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.setHeaderText("ادخل الكمية ");
                     dialog.setContentText("الكمية :");
 
@@ -339,6 +349,14 @@ public class UpdateController implements Initializable {
 //            tableComposition.setItems(dataTable);
         }
     }
+
+    @FXML
+    private void tableProductClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionModifiedQte();
+        }
+    }
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tableComposition.getSelectionModel().getSelectedIndex();
@@ -347,6 +365,7 @@ public class UpdateController implements Initializable {
 
             dialog.setTitle("الكمية");
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.setHeaderText("تعديل الكمية ");
             dialog.setContentText("الكمية :");
 
@@ -420,6 +439,8 @@ public class UpdateController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -428,6 +449,7 @@ public class UpdateController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();

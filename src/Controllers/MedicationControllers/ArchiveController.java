@@ -27,7 +27,7 @@ public class ArchiveController implements Initializable {
     @FXML
     TableColumn<Medication,String> clName,clReference;
     @FXML
-    TableColumn<Medication,Integer> clId,clLimiteQte;
+    TableColumn<Medication,Integer> clId, clLimitQte;
 
     private final ObservableList<Medication> dataTable = FXCollections.observableArrayList();
     private final MedicationOperation operation = new MedicationOperation();
@@ -38,7 +38,7 @@ public class ArchiveController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clLimitQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
 
         refresh();
     }
@@ -50,24 +50,9 @@ public class ArchiveController implements Initializable {
         if (medication != null){
             try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد إلغاء الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة الدواء" );
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
+                operation.DeleteFromArchive(medication);
+                ActionAnnuler();
 
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.DeleteFromArchive(medication);
-                        ActionAnnuler();
-                    }
-                });
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -76,6 +61,7 @@ public class ArchiveController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار دواء لالغاء أرشفته");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

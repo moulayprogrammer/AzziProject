@@ -13,7 +13,8 @@ import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,7 +31,7 @@ public class MainController implements Initializable {
     @FXML
     TableColumn<Medication,String> clName,clReference;
     @FXML
-    TableColumn<Medication,Integer> clId,clLimiteQte,clQte;
+    TableColumn<Medication,Integer> clId, clLimitQte,clQte;
 
 
     private final ObservableList<Medication> dataTable = FXCollections.observableArrayList();
@@ -42,7 +43,7 @@ public class MainController implements Initializable {
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
-        clLimiteQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
+        clLimitQte.setCellValueFactory(new PropertyValueFactory<>("limitQte"));
         clQte.setCellValueFactory(new PropertyValueFactory<>("qte"));
 
         refresh();
@@ -56,6 +57,7 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -65,6 +67,14 @@ public class MainController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void tableClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionUpdate();
         }
     }
 
@@ -81,6 +91,7 @@ public class MainController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.initOwner(this.tfRecherche.getScene().getWindow());
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);
@@ -94,6 +105,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار دواء من اجل التعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -112,6 +124,7 @@ public class MainController implements Initializable {
                     Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                     alertConfirmation.setHeaderText("تاكيد الارشفة");
                     alertConfirmation.setContentText("هل انت متاكد من ارشفة الدواء");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                     alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -135,6 +148,7 @@ public class MainController implements Initializable {
                 Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                 alertInformation.setHeaderText("لا تستطيع الارشفة ");
                 alertInformation.setContentText("لا تستطيع ارشفة الدواء الحالي لانه متبقي في المخزن");
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                 alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -144,6 +158,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار دواء لارشفته");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -160,6 +175,7 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.OK);
             closeButton.setVisible(false);
@@ -202,6 +218,8 @@ public class MainController implements Initializable {
             } else if (medication.getName().contains(txtRecherche)) {
                 return true;
             } else if (medication.getReference().contains(txtRecherche)) {
+                return true;
+            } else if (String.valueOf(medication.getQte()).contains(txtRecherche)) {
                 return true;
             } else return String.valueOf(medication.getLimitQte()).contains(txtRecherche);
         });
