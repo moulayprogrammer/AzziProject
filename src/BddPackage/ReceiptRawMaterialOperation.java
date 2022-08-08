@@ -171,7 +171,7 @@ public class ReceiptRawMaterialOperation extends BDD<Receipt> {
         }
         return list;
     }
-
+//
     public ArrayList<Receipt> getAllByDate(LocalDate dateFirst, LocalDate dateSecond) {
         ArrayList<Receipt> list = new ArrayList<>();
         String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0 AND تاريخ_الشراء BETWEEN ? AND ? ;";
