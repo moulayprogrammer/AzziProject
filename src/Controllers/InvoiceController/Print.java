@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Print {
@@ -34,16 +35,20 @@ public class Print {
     private final Invoice invoice;
     private final Client client;
     private final ArrayList<ComponentInvoice> componentInvoices;
-
     private double debt ;
+    private boolean fastPrint ;
+    private boolean debtPrint ;
 
-    public Print(Invoice invoice) {
+    public Print(Invoice invoice,ArrayList<ComponentInvoice> componentInvoices ,boolean fastPrint, boolean debtPrint) {
         this.invoice = invoice;
         this.client = clientOperation.get(invoice.getIdClient());
-        this.componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
+        this.componentInvoices = componentInvoices;
         debt = 0;
+        this.fastPrint = fastPrint;
+        this.debtPrint = debtPrint;
         setClientTransaction(client.getId());
     }
+
 
     private void setClientTransaction(int idClient) {
         try {
@@ -119,40 +124,41 @@ public class Print {
                 HTML.append("<tr>")
                         .append("<td>").append(product.getReference()).append("</td>")
                         .append("<td>").append(product.getName()).append("</td>")
-                        .append("<td>").append(price).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", price )).append("</td>")
                         .append("<td>").append(qte).append("</td>")
-                        .append("<td>").append(price*qte).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", price* qte )).append("</td>")
                         .append("</tr>");
             }
             HTML.append("<tr>")
                     .append("<td colspan=\"3\">").append("المجموع").append("</td>")
                     .append("<td>").append(totQte).append("</td>")
-                    .append("<td>").append(totPrice).append("</td>")
+                    .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", totPrice )).append("</td>")
                     .append("</tr>")
                     .append("</table>");
-
-            HTML.append("<div style=\"margin-top: 10px;\">")
-                    .append("<table>")
-                    .append("<tr>")
-                    .append("<td style=\"width: 150px;\">الدين</td>")
-                    .append("<td>").append(debt).append("</td>")
-                    .append(" </tr>")
-                    .append("<tr>")
-                    .append("<td style=\"width: 150px;\">المجموع الكلي</td>")
-                    .append("<td>").append(debt + totPrice).append("</td>")
-                    .append(" </tr>")
-                    .append("<tr>")
-                    .append("<td style=\"width: 150px;\">المدفوع</td>")
-                    .append("<td>").append(invoice.getPaying()).append("</td>")
-                    .append(" </tr>")
-                    .append("<tr>")
-                    .append("<td style=\"width: 150px;\">المتبقي</td>")
-                    .append("<td>").append((invoice.getPaying() - debt - totPrice) * -1).append("</td>")
-                    .append(" </tr>")
-                    .append("</table>");
+            if (debtPrint) {
+                HTML.append("<div style=\"margin-top: 10px;\">")
+                        .append("<table>")
+                        .append("<tr>")
+                        .append("<td style=\"width: 150px;\">الدين</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", debt )).append("</td>")
+                        .append(" </tr>")
+                        .append("<tr>")
+                        .append("<td style=\"width: 150px;\">المجموع الكلي</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", debt + totPrice )).append("</td>")
+                        .append(" </tr>")
+                        .append("<tr>")
+                        .append("<td style=\"width: 150px;\">المدفوع</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", invoice.getPaying() )).append("</td>")
+                        .append(" </tr>")
+                        .append("<tr>")
+                        .append("<td style=\"width: 150px;\">المتبقي</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f",  (invoice.getPaying() - debt - totPrice) * -1 )).append("</td>")
+                        .append(" </tr>")
+                        .append("</table>")
+                        .append(" </div>");
+            }
 
             HTML.append(" </div>" +
-                    " </div>" +
                     "<h6> إمضاء الممون </h6>" +
                     " </div>" );
 
@@ -250,7 +256,7 @@ public class Print {
 
                     HtmlConverter.convertToPdf(HTML.toString(), template, converterProperties);
 
-                    Desktop.getDesktop().print(new File(path));
+                    if (fastPrint) Desktop.getDesktop().print(new File(path));
                 }
             }catch (Exception e){
                 e.printStackTrace();

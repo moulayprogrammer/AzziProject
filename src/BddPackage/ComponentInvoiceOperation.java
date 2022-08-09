@@ -13,7 +13,7 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
     public boolean insert(ComponentInvoice o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO بيع_منتج (معرف_الفاتورة, معرف_المنتج, الكمية, سعر_الوحدة, سعر_الطريق) VALUES (?,?,?,?,?);\n" ;
+        String query = "INSERT INTO بيع_منتج (معرف_الفاتورة, معرف_المنتج, الكمية, سعر_الوحدة, سعر_الطريق) VALUES (?,?,?,?,?);" ;
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdInvoice());
