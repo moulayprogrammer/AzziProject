@@ -1,6 +1,7 @@
 package Controllers.ReceiptRawMaterialControllers;
 
 import BddPackage.*;
+import Controllers.InvoiceController.Print;
 import Models.ComponentReceipt;
 import Models.Provider;
 import Models.Receipt;
@@ -169,7 +170,8 @@ public class MainController implements Initializable {
         if (data != null){
             try {
                 Receipt receipt = operation.get(Integer.parseInt(data.get(0).getValue()));
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+
+                /*Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
                 alertConfirmation.setContentText("هل انت متاكد من ارشفة الفاتورة" );
                 alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
@@ -186,7 +188,7 @@ public class MainController implements Initializable {
                         operation.AddToArchive(receipt);
                         refresh();
                     }
-                });
+                });*/
 
             } catch (Exception e) {
                 e.printStackTrace();

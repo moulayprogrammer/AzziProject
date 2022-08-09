@@ -93,6 +93,7 @@ public class SerialController implements Initializable {
                         primaryStage.setTitle("مزرعة الجنوب");
                         primaryStage.setScene(new Scene(root));
                         primaryStage.getIcons().add(new Image("Images/logo.png"));
+                        primaryStage.setResizable(false);
                         primaryStage.show();
 
                     }catch (Exception e){

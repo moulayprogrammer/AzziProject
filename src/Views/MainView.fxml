@@ -19,6 +19,7 @@
                 <Menu mnemonicParsing="false" text="الملف">
                   <items>
                       <MenuItem mnemonicParsing="false" onAction="#ShowPrincipalScreen" text="الرئيسية" />
+                      <MenuItem mnemonicParsing="false" onAction="#Logout" text="تسجيل الخروج" />
                     <MenuItem mnemonicParsing="false" onAction="#close" text="إغلاق" />
 
                   </items>

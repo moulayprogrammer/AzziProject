@@ -13,5 +13,21 @@
     <orderEntry type="library" name="controlsfx-8.40.11" level="project" />
     <orderEntry type="library" name="jfoenix-8.1.8" level="project" />
     <orderEntry type="library" name="jfoenix-8.1.8" level="project" />
+    <orderEntry type="library" name="barcodes-7.2.3" level="project" />
+    <orderEntry type="library" name="commons-7.2.3" level="project" />
+    <orderEntry type="library" name="forms-7.2.3" level="project" />
+    <orderEntry type="library" name="html2pdf-4.0.3" level="project" />
+    <orderEntry type="library" name="hyph-7.2.3" level="project" />
+    <orderEntry type="library" name="io-7.2.3" level="project" />
+    <orderEntry type="library" name="kernel-7.2.3" level="project" />
+    <orderEntry type="library" name="layout-7.2.3" level="project" />
+    <orderEntry type="library" name="pdfa-7.2.3" level="project" />
+    <orderEntry type="library" name="pdftest-7.2.3" level="project" />
+    <orderEntry type="library" name="slf4j-simple-1.7.9" level="project" />
+    <orderEntry type="library" name="styled-xml-parser-7.2.3" level="project" />
+    <orderEntry type="library" name="typography-3.0.1" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.31" level="project" />
+    <orderEntry type="library" name="svg-7.2.3" level="project" />
+    <orderEntry type="library" name="commons-io-2.9.0" level="project" />
   </component>
 </module>

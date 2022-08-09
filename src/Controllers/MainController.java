@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -13,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class  MainController implements Initializable {
@@ -263,6 +265,22 @@ public class  MainController implements Initializable {
             BorderPane temp = loader.load();
             lbWindowName.setText("المصاريف");
             mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void Logout(){
+        try {
+            ((Stage)this.mainPane.getScene().getWindow()).close();
+            Stage primaryStage = new Stage();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/LoginView.fxml")));
+            primaryStage.setTitle("مزرعة الجنوب");
+            primaryStage.setScene(new Scene(root));
+            primaryStage.getIcons().add(new Image("Images/logo.png"));
+            primaryStage.setResizable(false);
+            primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

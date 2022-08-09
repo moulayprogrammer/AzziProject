@@ -79,6 +79,30 @@ public class RawMaterialOperation extends BDD<RawMaterial> {
         }
         return list;
     }
+    public RawMaterial get(int id) {
+        RawMaterial rawMaterial = new RawMaterial();
+        String query = "SELECT *,(SELECT SUM(تخزين_المواد_الخام.كمية_مخزنة) FROM تخزين_المواد_الخام WHERE تخزين_المواد_الخام.معرف_المادة_الخام = المواد_الخام.المعرف) AS الكمية_المخزنة\n" +
+                "      ,(SELECT SUM(تخزين_المواد_الخام.كمية_مستهلكة) FROM تخزين_المواد_الخام WHERE تخزين_المواد_الخام.معرف_المادة_الخام = المواد_الخام.المعرف) AS الكمية_المستهلكة\n" +
+                "       FROM  المواد_الخام  WHERE ارشيف = 0 AND المعرف = ?;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,id);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            if (resultSet.next()){
+
+
+                rawMaterial.setId(resultSet.getInt("المعرف"));
+                rawMaterial.setName(resultSet.getString("الاسم"));
+                rawMaterial.setReference(resultSet.getString("المرجع"));
+                rawMaterial.setLimitQte(resultSet.getInt("اقل كمية"));
+                rawMaterial.setQte(resultSet.getInt("الكمية_المخزنة") - resultSet.getInt("الكمية_المستهلكة"));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rawMaterial;
+    }
 
     public boolean AddToArchive(RawMaterial rawMaterial){
         boolean upd = false;

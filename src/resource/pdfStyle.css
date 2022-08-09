@@ -1,0 +1,71 @@
+@font-face {
+    font-family: HSDream-Regular;
+    src: url('HSDream-Regular.otf');
+}
+
+html {
+    font-family: 'HSDream-Regular';
+    background-color: white;
+    
+}
+
+body {
+    height: 14cm;
+    width: 19cm;
+    text-align: center; 
+}
+
+table {
+    border: double black;
+    border-collapse: collapse;
+    font-family: 'HSDream-Regular';
+    min-width: 100%;
+    width: 100%;
+    direction: rtl;
+
+}
+
+th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    font-family: 'HSDream-Regular';
+    font-size: 7pt;
+    padding: 2px;
+}
+
+img {
+    width: 100%;
+    height: 80px;
+}
+
+.label {
+    display: inline-block;
+    
+}
+
+#block_container {
+    display: flex;
+    justify-content: center;
+}
+
+.bloc
+{
+    display:inline;
+    margin-right: 10px;
+}
+
+.fact {
+    height: 12cm;
+    width: 9.5cm;
+    min-width: 9.5cm;
+    min-height: 12cm;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 5px;
+}
+
+.vl {
+    border-left: 2px dotted darkred;
+
+    height: 12cm;
+  }

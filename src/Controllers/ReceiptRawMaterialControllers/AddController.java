@@ -1,6 +1,7 @@
 package Controllers.ReceiptRawMaterialControllers;
 
 import BddPackage.*;
+import Controllers.InvoiceController.Print;
 import Models.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -59,6 +60,8 @@ public class AddController implements Initializable {
     private final List<Integer> idProviderCombo = new ArrayList<>();
     private int selectedProvider = 0;
     private double totalFacture = 0;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
