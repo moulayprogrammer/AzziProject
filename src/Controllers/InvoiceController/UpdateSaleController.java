@@ -151,12 +151,14 @@ public class UpdateSaleController implements Initializable {
                                         if (storeProductTemps.get(i).getIdProduct() == idProduct && storeProductTemps.get(i).getIdProduction() == idProduction) {
                                             ex = true;
                                             if (qtePro >= qteRest) {
+                                                storeProducts.get(i).setQteConsumed(storeProductTemps.get(i).getQte() + qteProConsumed + qteRest);
                                                 storeProductTemps.get(i).setQte(storeProductTemps.get(i).getQte() + qteRest);
-                                                storeProducts.get(i).setQteConsumed(storeProducts.get(i).getQteConsumed() + qteRest);
+
                                                 qteRest -= qteRest;
                                             } else {
+                                                storeProducts.get(i).setQteConsumed(storeProductTemps.get(i).getQte() + qteProConsumed + qtePro);
                                                 storeProductTemps.get(i).setQte(storeProductTemps.get(i).getQte() + qtePro);
-                                                storeProducts.get(i).setQteConsumed(storeProducts.get(i).getQteConsumed() + qtePro);
+
                                                 qteRest -= qtePro;
                                             }
                                             break;

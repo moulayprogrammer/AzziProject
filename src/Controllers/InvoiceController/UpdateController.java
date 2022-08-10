@@ -181,8 +181,8 @@ public class UpdateController implements Initializable {
                     storeProductsInit.put(componentInvoice.getIdProduct(),componentStoreProducts);
                     storeProductTempsInit.put(componentInvoice.getIdProduct(),componentStoreProductTemps);
 
-                    storeProducts.put(componentInvoice.getIdProduct(),componentStoreProducts);
-                    storeProductTemps.put(componentInvoice.getIdProduct(),componentStoreProductTemps);
+                    storeProducts.put(componentInvoice.getIdProduct(),new ArrayList<>(componentStoreProducts));
+                    storeProductTemps.put(componentInvoice.getIdProduct(),new ArrayList<>(componentStoreProductTemps));
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -463,7 +463,6 @@ public class UpdateController implements Initializable {
                 ComponentInvoice componentInvoice = new ComponentInvoice();
                 int qte = Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(3).getValue());
                 componentInvoice.setQte(qte);
-                product.setQte(product.getQte() + qte);
 
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
@@ -529,7 +528,7 @@ public class UpdateController implements Initializable {
         lbSumWeight.setText(String.valueOf(totalling));
     }
     @FXML
-    private void ActionAnnulledAdd(){
+    public void ActionAnnulledAdd(){
         Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         alertConfirmation.setHeaderText("تاكيد الالغاء");
         alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
@@ -759,7 +758,7 @@ public class UpdateController implements Initializable {
         return componentInvoices;
     }
 
-    private void insertOldComponent(){
+    public void insertOldComponent(){
 
         storeProductTempsInit.forEach((integer, componentStoreProductTemps) -> {
             List<ComponentStoreProduct> componentStoreProducts = storeProductsInit.get(integer);
