@@ -76,7 +76,7 @@
             </HBox>
             <HBox alignment="CENTER" spacing="30.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="20.0">
                <children>
-                  <Button fx:id="btnSale" defaultButton="true" mnemonicParsing="false" onAction="#ActionAdd" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="تاكيد" textAlignment="CENTER" textFill="#2005a8">
+                  <Button fx:id="btnSale" defaultButton="true" mnemonicParsing="false" onAction="#ActionUpdate" prefWidth="130.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="تاكيد" textAlignment="CENTER" textFill="#2005a8">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

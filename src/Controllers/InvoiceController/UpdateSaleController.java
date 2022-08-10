@@ -33,19 +33,17 @@ public class UpdateSaleController implements Initializable {
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
 
-    private List<ComponentStoreProduct> storeProducts = new ArrayList<>();
-    private List<ComponentStoreProductTemp> storeProductTemps = new ArrayList<>();
-    private List<ComponentStoreProduct> storeProducts_ = new ArrayList<>();
-    private List<ComponentStoreProductTemp> storeProductTemps_ = new ArrayList<>();
-    private List<ComponentStoreProduct> storeProducts_add = new ArrayList<>();
-    private List<ComponentStoreProductTemp> storeProductTemps_add = new ArrayList<>();
+    private List<ComponentStoreProduct> storeProductsInit = new ArrayList<>();
+    private List<ComponentStoreProductTemp> storeProductTempsInit = new ArrayList<>();
+    private final List<ComponentStoreProduct>  storeProducts = new ArrayList<>();
+    private final List<ComponentStoreProductTemp> storeProductTemps = new ArrayList<>();
+
     private ComponentInvoice selectedComponentInvoice;
     private Product selectedProduct;
     private double price;
     private double cost;
     private int qte;
     private int qteInit;
-    private boolean update;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,32 +64,30 @@ public class UpdateSaleController implements Initializable {
         });
     }
 
-    public void Init(Product product, ComponentInvoice componentInvoice , List<ComponentStoreProduct> storeProducts, List<ComponentStoreProductTemp> storeProductTemps, boolean update) {
+    public void Init(Product product, ComponentInvoice componentInvoice , List<ComponentStoreProduct> storeProductsInit, List<ComponentStoreProductTemp> storeProductTempsInit) {
 
-        this.storeProducts = storeProducts;
-        this.storeProductTemps = storeProductTemps;
+        this.storeProductsInit = storeProductsInit;
+        this.storeProductTempsInit = storeProductTempsInit;
         this.selectedComponentInvoice = componentInvoice;
         this.selectedProduct = product;
-        this.update = update;
 
         this.qte = selectedComponentInvoice.getQte();
         this.qteInit = this.qte;
         tfQte.setText(String.valueOf(qte));
-
     }
 
     private void Count(){
         String stQte = tfQte.getText().trim();
         if (!stQte.isEmpty() && !stQte.equals("0")){
-            int qte = Integer.parseInt(stQte);
-                if (qte <= this.qteInit){
+            int qteNeed = Integer.parseInt(stQte);
+                if (qteNeed <= this.qteInit){
 
-                    storeProducts_.clear();
-                    storeProductTemps_.clear();
+                    storeProducts.clear();
+                    storeProductTemps.clear();
 
-                    for (int i = 0; i <storeProducts.size(); i++) {
-                        ComponentStoreProduct storeProduct = storeProducts.get(i);
-                        ComponentStoreProductTemp storeProductTemp = storeProductTemps.get( i);
+                    for (int i = 0; i < storeProductsInit.size(); i++) {
+                        ComponentStoreProduct storeProduct = storeProductsInit.get(i);
+                        ComponentStoreProductTemp storeProductTemp = storeProductTempsInit.get( i);
 
                         ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
                         componentStoreProduct.setIdProduction(storeProduct.getIdProduction());
@@ -107,38 +103,33 @@ public class UpdateSaleController implements Initializable {
                         componentStoreProductTemp.setIdInvoice(storeProductTemp.getIdInvoice());
                         componentStoreProductTemp.setQte(storeProductTemp.getQte());
                         
-                        if (storeProductTemp.getQte() >= qte){
-                            componentStoreProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte() + qte);
-                            componentStoreProductTemp.setQte(qte);
+                        if (storeProductTemp.getQte() >= qteNeed){
+                            componentStoreProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte() + qteNeed);
+                            componentStoreProductTemp.setQte(qteNeed);
                             
-                            storeProducts_.add(componentStoreProduct);
-                            storeProductTemps_.add(componentStoreProductTemp);
+                            storeProducts.add(componentStoreProduct);
+                            storeProductTemps.add(componentStoreProductTemp);
                             
                             break;
                         }else {
-                            qte -= storeProductTemp.getQte();
+                            qteNeed -= storeProductTemp.getQte();
 
-                            storeProducts_.add(componentStoreProduct);
-                            storeProductTemps_.add(componentStoreProductTemp);
+                            storeProducts.add(componentStoreProduct);
+                            storeProductTemps.add(componentStoreProductTemp);
                         }
                     }
 
                     UpdateFields(Integer.parseInt(stQte));
 
                 }else{
-                    int qteRest =  qte - this.qteInit;
-                    int qteComp;
-                    if (update)  qteComp = this.selectedProduct.getQte();
-                    else qteComp = this.selectedProduct.getQte() - this.qteInit;
-                    if (qteRest <= qteComp ) {
+                    int qteRest =  qteNeed - this.qteInit;
+                    if (qteRest <= this.selectedProduct.getQte() ) {
                         try {
                             if (conn.isClosed()) conn = connectBD.connect();
-                            storeProducts_add.clear();
-                            storeProductTemps_add.clear();
-                            storeProducts_.clear();
-                            storeProductTemps_.clear();
-                            storeProducts_.addAll(storeProducts);
-                            storeProductTemps_.addAll(storeProductTemps);
+                            storeProducts.clear();
+                            storeProductTemps.clear();
+                            storeProducts.addAll(storeProductsInit);
+                            storeProductTemps.addAll(storeProductTempsInit);
 
                             try {
                                 String query = "SELECT تخزين_منتج.معرف_الانتاج, تخزين_منتج.معرف_المنتج, كمية_مخزنة, كمية_مستهلكة, سعر_البيع, التكلفة, الكمية_المنتجة FROM تخزين_منتج, الانتاج  " +
@@ -148,61 +139,90 @@ public class UpdateSaleController implements Initializable {
                                 ResultSet resultSet = preparedStmt.executeQuery();
 
 
-                                while (resultSet.next()){
+                                while (resultSet.next()) {
                                     int idProduction = resultSet.getInt("معرف_الانتاج");
                                     int idProduct = resultSet.getInt("معرف_المنتج");
                                     int qteProConsumed = resultSet.getInt("كمية_مستهلكة");
                                     int qtePro = resultSet.getInt("كمية_مخزنة") - qteProConsumed;
                                     double pricePro = resultSet.getDouble("سعر_البيع");
 
-                                    ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
-                                    componentStoreProduct.setIdProduction(idProduction);
-                                    componentStoreProduct.setIdComponent(idProduct);
-                                    componentStoreProduct.setQteConsumed(qteProConsumed);
-                                    componentStoreProduct.setPriceHt(pricePro);
+                                    boolean ex = false;
+                                    for (int i = 0; i < storeProductTemps.size(); i++) {
+                                        if (storeProductTemps.get(i).getIdProduct() == idProduct && storeProductTemps.get(i).getIdProduction() == idProduction) {
+                                            ex = true;
+                                            if (qtePro >= qteRest) {
+                                                storeProductTemps.get(i).setQte(storeProductTemps.get(i).getQte() + qteRest);
+                                                storeProducts.get(i).setQteConsumed(storeProducts.get(i).getQteConsumed() + qteRest);
+                                                qteRest -= qteRest;
+                                            } else {
+                                                storeProductTemps.get(i).setQte(storeProductTemps.get(i).getQte() + qtePro);
+                                                storeProducts.get(i).setQteConsumed(storeProducts.get(i).getQteConsumed() + qtePro);
+                                                qteRest -= qtePro;
+                                            }
+                                            break;
+                                        }
+                                    }
 
-                                    ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
-                                    componentStoreProductTemp.setIdProduct(idProduct);
-                                    componentStoreProductTemp.setIdProduction(idProduction);
+                                    if (!ex) {
+                                        ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
+                                        componentStoreProduct.setIdProduction(idProduction);
+                                        componentStoreProduct.setIdComponent(idProduct);
+                                        componentStoreProduct.setQteConsumed(qteProConsumed);
+                                        componentStoreProduct.setPriceHt(pricePro);
+
+                                        ComponentStoreProductTemp componentStoreProductTemp = new ComponentStoreProductTemp();
+                                        componentStoreProductTemp.setIdProduct(idProduct);
+                                        componentStoreProductTemp.setIdProduction(idProduction);
+
+
+                                        if (qtePro >= qteRest) {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
+                                            componentStoreProductTemp.setQte(qteRest);
+
+                                            storeProducts.add(componentStoreProduct);
+                                            storeProductTemps.add(componentStoreProductTemp);
+                                            qteRest -= qteRest;
+                                        } else {
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
+                                            componentStoreProductTemp.setQte(qtePro);
+
+                                            storeProducts.add(componentStoreProduct);
+                                            storeProductTemps.add(componentStoreProductTemp);
+                                            qteRest -= qtePro;
+                                        }
+                                    }
+
+                                    if (qteRest == 0 ) break;
+                                }
+
+                                /*
 
                                     boolean qteComplete = true ;
                                     boolean notEx = true;
-                                    for (ComponentStoreProductTemp productTemp : storeProductTemps_) {
+                                    int qteConsInit = 0;
+                                    for (ComponentStoreProductTemp productTemp : storeProductTempsInit) {
                                         if (productTemp.getIdProduct() == idProduct && productTemp.getIdProduction() == idProduction){
                                             notEx = false;
                                             if (productTemp.getQte() < qtePro){
                                                 qtePro -= productTemp.getQte();
+                                                qteConsInit = productTemp.getQte();
                                                 qteComplete = false;
                                             }
                                             break;
                                         }
                                     }
                                     if (notEx) {
-                                        if (qtePro >= qteRest) {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
-                                            componentStoreProductTemp.setQte(qteRest);
 
-                                            storeProducts_add.add(componentStoreProduct);
-                                            storeProductTemps_add.add(componentStoreProductTemp);
-                                            break;
-                                        } else {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
-                                            componentStoreProductTemp.setQte(qtePro);
-
-                                            storeProducts_add.add(componentStoreProduct);
-                                            storeProductTemps_add.add(componentStoreProductTemp);
-                                            qteRest -= qtePro;
-                                        }
                                     }else if (!qteComplete){
                                         if (qtePro >= qteRest) {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteRest);
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteConsInit + qteRest);
                                             componentStoreProductTemp.setQte(qteRest);
 
                                             storeProducts_add.add(componentStoreProduct);
                                             storeProductTemps_add.add(componentStoreProductTemp);
                                             break;
                                         } else {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qtePro);
+                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteConsInit + qtePro);
                                             componentStoreProductTemp.setQte(qtePro);
 
                                             storeProducts_add.add(componentStoreProduct);
@@ -213,11 +233,13 @@ public class UpdateSaleController implements Initializable {
                                 }
 
                                 if (storeProducts_add.size() != 0 ){
-                                    storeProducts_.addAll(storeProducts_add);
-                                    storeProductTemps_.addAll(storeProductTemps_add);
+                                    storeProducts.addAll(storeProducts_add);
+                                    storeProductTemps.addAll(storeProductTemps_add);
 
                                     UpdateFields(Integer.parseInt(stQte));
-                                }
+                                }*/
+
+                                UpdateFields(Integer.parseInt(stQte));
 
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -253,9 +275,9 @@ public class UpdateSaleController implements Initializable {
         try {
             double cost = 0.0;
             double price = 0.0;
-            for (int i = 0; i < storeProductTemps_.size(); i++) {
-                ComponentStoreProduct storeProduct = storeProducts_.get(i);
-                ComponentStoreProductTemp storeProductTemp = storeProductTemps_.get(i);
+            for (int i = 0; i < storeProductTemps.size(); i++) {
+                ComponentStoreProduct storeProduct = storeProducts.get(i);
+                ComponentStoreProductTemp storeProductTemp = storeProductTemps.get(i);
 
                 if (storeProduct.getIdProduction() == storeProductTemp.getIdProduction() && storeProduct.getIdComponent() == storeProductTemp.getIdProduct()) {
                     if (conn.isClosed()) conn = connectBD.connect();
@@ -314,7 +336,7 @@ public class UpdateSaleController implements Initializable {
     }
 
     @FXML
-    private void ActionAdd(){
+    private void ActionUpdate(){
         int qte = Integer.parseInt(tfQte.getText().trim());
         double PriceU = Double.parseDouble(tfPriceUnit.getText().trim());
 
@@ -322,10 +344,10 @@ public class UpdateSaleController implements Initializable {
         selectedComponentInvoice.setPrice(PriceU);
         selectedComponentInvoice.setQte(qte);
 
-        storeProducts.clear();
-        storeProducts.addAll(storeProducts_);
-        storeProductTemps.clear();
-        storeProductTemps.addAll(storeProductTemps_);
+        storeProductsInit.clear();
+        storeProductsInit.addAll(storeProducts);
+        storeProductTempsInit.clear();
+        storeProductTempsInit.addAll(storeProductTemps);
 
         ActionAnnul();
     }

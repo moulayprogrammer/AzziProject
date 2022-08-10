@@ -71,6 +71,23 @@ public class ComponentInvoiceOperation extends BDD<ComponentInvoice> {
         return del;
     }
 
+    public boolean deleteByInvoice(int idInvoice) {
+        connectDatabase();
+        boolean del = false;
+        String query = "DELETE FROM بيع_منتج WHERE معرف_الفاتورة = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,idInvoice);
+
+            int update = preparedStmt.executeUpdate();
+            if(update != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return del;
+    }
+
     @Override
     public boolean isExist(ComponentInvoice o) {
         return false;

@@ -381,7 +381,7 @@ public class AddController implements Initializable {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateSaleController controller = loader.getController();
-                controller.Init(product,componentInvoice,storeProducts.get(product.getId()),storeProductTemps.get(product.getId()),false);
+                controller.Init(product,componentInvoice,storeProducts.get(product.getId()),storeProductTemps.get(product.getId()));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
