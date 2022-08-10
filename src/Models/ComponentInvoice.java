@@ -11,6 +11,11 @@ public class ComponentInvoice {
     public ComponentInvoice() {
     }
 
+    public ComponentInvoice(int idInvoice, int idProduct) {
+        this.idInvoice = idInvoice;
+        this.idProduct = idProduct;
+    }
+
     public ComponentInvoice(int idInvoice, int idProduct, int qte, double price, double priceRoad) {
         this.idInvoice = idInvoice;
         this.idProduct = idProduct;

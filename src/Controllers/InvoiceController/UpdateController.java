@@ -69,6 +69,7 @@ public class UpdateController implements Initializable {
     private int selectedClient = 0;
     private double totalFacture = 0;
     private Invoice selectInvoice;
+    private double debt;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -196,25 +197,28 @@ public class UpdateController implements Initializable {
 
     private void setClientTransaction(int idClient) {
         try {
-            double debt;
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
             // Medication
             ArrayList<Invoice> invoices = operation.getAllByClient(idClient);
             invoices.forEach(invoice -> {
-                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentInvoices.forEach(componentInvoice -> {
-                    double pr = componentInvoice.getPrice() * componentInvoice.getQte();
-                    sumR.updateAndGet(v -> v + pr);
-                });
-                pay.updateAndGet(v -> v + invoice.getPaying());
-                trans.updateAndGet(v -> v + sumR.get());
+                if (invoice.getId() != this.selectInvoice.getId()) {
+                    ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
+                    AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+                    componentInvoices.forEach(componentInvoice -> {
+                        double pr = componentInvoice.getPrice() * componentInvoice.getQte();
+                        sumR.updateAndGet(v -> v + pr);
+                    });
+                    pay.updateAndGet(v -> v + invoice.getPaying());
+                    trans.updateAndGet(v -> v + sumR.get());
+                }
             });
 
-            debt = trans.get() - pay.get();
+            this.debt = trans.get() - pay.get();
+
             lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
             lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -278,6 +282,7 @@ public class UpdateController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -296,6 +301,7 @@ public class UpdateController implements Initializable {
         TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("التسديد");
+        dialog.initOwner(this.tfRecherche.getScene().getWindow());
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         dialog.setHeaderText("ادخل السعر المسدد ");
         dialog.setContentText("السعر :");
@@ -304,44 +310,49 @@ public class UpdateController implements Initializable {
 
         result.ifPresent(price -> {
 
-            if (!price.isEmpty() && !lbDebt.getText().equals("0.0")) {
+            if (!price.isEmpty() && this.debt != 0) {
                 double pr = Double.parseDouble(price);
-
-                ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
-                for (Invoice invoice : invoices) {
-                    ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-                    AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                    componentInvoices.forEach(componentInvoice -> {
-                        double pre = componentInvoice.getPrice() * componentInvoice.getQte();
-                        sumR.updateAndGet(v -> v + pre);
-                    });
-                    double debt = sumR.get() - invoice.getPaying();
-                    if (debt > 0) {
-                        if (pr <= debt) {
-                            double newPaying = pr + invoice.getPaying();
-                            pr = 0;
-                            PayDebtInvoice(invoice.getId(), newPaying);
-                            break;
-                        } else {
-                            double newPaying = debt + invoice.getPaying();
-                            pr = pr - debt;
-                            PayDebtInvoice(invoice.getId(), newPaying);
-                        }
-                    }
-                }
-                if (pr > 0 ){
-                    Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
-                    alertInformation.setHeaderText("المبلغ المتبقي ");
-                    alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
-                    alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
-                    okButton.setText("موافق");
-                    alertInformation.showAndWait();
-                }
+                payDebtClient(pr);
                 setClientTransaction(selectedClient);
             }
         });
     }
+
+    private void payDebtClient(double pr){
+        ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
+        for (Invoice invoice : invoices) {
+            ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
+            AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+            componentInvoices.forEach(componentInvoice -> {
+                double pre = componentInvoice.getPrice() * componentInvoice.getQte();
+                sumR.updateAndGet(v -> v + pre);
+            });
+            double debt = sumR.get() - invoice.getPaying();
+            if (debt > 0) {
+                if (pr <= debt) {
+                    double newPaying = pr + invoice.getPaying();
+                    pr = 0;
+                    PayDebtInvoice(invoice.getId(), newPaying);
+                    break;
+                } else {
+                    double newPaying = debt + invoice.getPaying();
+                    pr = pr - debt;
+                    PayDebtInvoice(invoice.getId(), newPaying);
+                }
+            }
+        }
+        if (pr > 0 ){
+            Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+            alertInformation.setHeaderText("المبلغ المتبقي ");
+            alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
+            alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
+            alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertInformation.showAndWait();
+        }
+    }
+
 
     private void PayDebtInvoice(int invoiceId , double price) {
         try {
@@ -384,6 +395,7 @@ public class UpdateController implements Initializable {
                    Dialog<ButtonType> dialog = new Dialog<>();
                    dialog.setDialogPane(temp);
                    dialog.resizableProperty().setValue(false);
+                   dialog.initOwner(this.tfRecherche.getScene().getWindow());
                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                    closeButton.setVisible(false);
@@ -449,6 +461,7 @@ public class UpdateController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.initOwner(this.tfRecherche.getScene().getWindow());
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);
@@ -479,13 +492,28 @@ public class UpdateController implements Initializable {
     private void ActionDeleteSales(){
         int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
-            storeProducts.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
-            storeProductTemps.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            List<ComponentStoreProduct> componentStoreProducts = storeProducts.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            List<ComponentStoreProductTemp> componentStoreProductTemps = storeProductTemps.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+
+            for (int i = 0; i < componentStoreProducts.size(); i++) {
+                ComponentStoreProduct componentStoreProduct = componentStoreProducts.get(i);
+                ComponentStoreProductTemp componentStoreProductTemp = componentStoreProductTemps.get(i);
+
+                componentStoreProduct.setQteConsumed(componentStoreProduct.getQteConsumed() - componentStoreProductTemp.getQte());
+                updateQteConsumedProductStore(componentStoreProduct);
+
+                componentStoreProductTempOperation.delete(componentStoreProductTemp);
+            }
+            storeProducts.remove(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            storeProductTemps.remove(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+
             dataTable.remove(compoSelectedIndex);
             priceList.remove(compoSelectedIndex);
             tableSales.setItems(dataTable);
 
+
             sumTotalTableSales();
+            refreshProduct();
         }
     }
     private void sumTotalTableSales(){
@@ -507,6 +535,7 @@ public class UpdateController implements Initializable {
         Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         alertConfirmation.setHeaderText("تاكيد الالغاء");
         alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
+        alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
         alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
         okButton.setText("موافق");
@@ -526,48 +555,64 @@ public class UpdateController implements Initializable {
 
     @FXML
     void ActionUpdate(ActionEvent event) {
-        TextInputDialog dialog = new TextInputDialog();
 
-        dialog.setTitle("الدفع ");
-        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        dialog.setHeaderText(" السعر المدفوع ");
-        dialog.setContentText("السعر :");
+        ArrayList<Double> doubles = new ArrayList<>();
+        doubles.add(0.0);
+        doubles.add(totalFacture);
+        doubles.add(debt);
+        doubles.add(0.0);
+        ArrayList<Boolean> booleans = new ArrayList<>();
+        booleans.add(false);
+        booleans.add(false);
+        booleans.add(false);
 
-        Optional<String> result = dialog.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/PayingView.fxml"));
+            DialogPane temp = loader.load();
+            PayingController controller = loader.getController();
+            controller.Init(doubles,booleans);
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(temp);
+            dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
+            dialog.showAndWait();
 
-        result.ifPresent(price -> {
-            if (!price.isEmpty()){
+            if (booleans.get(2)){
                 LocalDate date = dpDate.getValue();
-                double paying = Double.parseDouble(price);
 
-                if (date != null && selectedClient != 0) {
-                    if (paying <= totalFacture) {
+                if (date != null && selectedClient != 0 && dataTable.size() != 0) {
 
-                        Invoice invoice = new Invoice();
+                    double pay = doubles.get(0);
 
-                        invoice.setIdClient(selectedClient);
-                        invoice.setDate(date);
-                        invoice.setPaying(paying);
+                    Invoice invoice = new Invoice();
 
+                    invoice.setIdClient(selectedClient);
+                    invoice.setDate(date);
 
-                        boolean update = update(invoice);
-                        if (update) {
-                            deleteComponent(this.selectInvoice.getId());
-                            insertComponent(this.selectInvoice.getId(),false);
-                            closeDialog(this.btnUpdate);
-                        } else {
-                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                            alertWarning.setHeaderText("تحذير ");
-                            alertWarning.setContentText("خطأ غير معروف");
-                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                            okButton.setText("موافق");
-                            alertWarning.showAndWait();
-                        }
+                    if (pay <= totalFacture) {
+                        invoice.setPaying(pay);
                     }else {
+                        invoice.setPaying(totalFacture);
+                        double restPay = pay - totalFacture;
+                        payDebtClient(restPay);
+                    }
+
+                    boolean update = update(invoice);
+                    if (update) {
+                        deleteComponent(this.selectInvoice.getId());
+                        Thread.sleep(10);
+                        ArrayList<ComponentInvoice>  componentInvoices = insertComponent(this.selectInvoice.getId(), false);
+                        Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
+                        print.CreatePdf();
+                        closeDialog(this.btnUpdate);
+                    } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
-                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.setContentText("خطأ غير معروف");
+                        alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
@@ -577,21 +622,16 @@ public class UpdateController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
                 }
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
             }
-        });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -610,7 +650,7 @@ public class UpdateController implements Initializable {
                 LocalDate date = dpDate.getValue();
                 double paying = Double.parseDouble(price);
 
-                if (date != null && selectedClient != 0) {
+                if (date != null && selectedClient != 0 && dataTable.size() != 0) {
                     if (paying <= totalFacture) {
 
                         Invoice invoice = new Invoice();
@@ -628,6 +668,7 @@ public class UpdateController implements Initializable {
                             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                             alertWarning.setHeaderText("تحذير ");
                             alertWarning.setContentText("خطأ غير معروف");
+                            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                             okButton.setText("موافق");
@@ -637,6 +678,7 @@ public class UpdateController implements Initializable {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
                         alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
@@ -646,6 +688,7 @@ public class UpdateController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -655,6 +698,7 @@ public class UpdateController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -670,12 +714,15 @@ public class UpdateController implements Initializable {
             ComponentStoreProduct storeProduct = componentStoreProductOperation.get(storeProductTemp.getIdProduct(),storeProductTemp.getIdProduction());
             storeProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte());
             componentStoreProductOperation.updateQte(storeProduct);
+
+            deleteComponentInvoice(new ComponentInvoice(idInvoice,storeProductTemp.getIdProduct()));
         }
         componentStoreProductTempOperation.deleteByInvoice(idInvoice);
     }
 
-    private void insertComponent(int idInvoice ,boolean confirm) {
+    private ArrayList<ComponentInvoice> insertComponent(int idInvoice ,boolean confirm) {
 
+        ArrayList<ComponentInvoice> componentInvoices = new ArrayList<>();
         for (int i = 0; i < dataTable.size(); i++) {
 
             List<StringProperty> stringProperties = dataTable.get(i);
@@ -700,13 +747,15 @@ public class UpdateController implements Initializable {
             storeProducts.get(id).forEach(this::updateQteConsumedProductStore);
 
             insertComponentInvoice(componentInvoice);
+            componentInvoices.add(componentInvoice);
         }
+        return componentInvoices;
     }
 
-    private boolean update(Invoice receipt) {
+    private boolean update(Invoice invoice) {
         boolean update = false;
         try {
-            update = operation.update(receipt,this.selectInvoice);
+            update = operation.update(invoice,this.selectInvoice);
             return update;
         }catch (Exception e){
             e.printStackTrace();
@@ -722,6 +771,17 @@ public class UpdateController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
             return insert;
+        }
+    }
+
+    private boolean deleteComponentInvoice(ComponentInvoice componentInvoice){
+        boolean delete = false;
+        try {
+            delete = componentInvoiceOperation.delete(componentInvoice);
+            return delete;
+        }catch (Exception e){
+            e.printStackTrace();
+            return delete;
         }
     }
 

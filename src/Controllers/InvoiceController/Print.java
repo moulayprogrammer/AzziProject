@@ -27,50 +27,25 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Print {
 
-    private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
     private final ProductOperation productOperation = new ProductOperation();
-    private final InvoiceOperation operation = new InvoiceOperation();
     private final ClientOperation clientOperation = new ClientOperation();
 
     private final Invoice invoice;
     private final Client client;
     private final ArrayList<ComponentInvoice> componentInvoices;
     private double debt ;
+    private double pay ;
     private boolean fastPrint ;
     private boolean debtPrint ;
 
-    public Print(Invoice invoice,ArrayList<ComponentInvoice> componentInvoices ,boolean fastPrint, boolean debtPrint) {
+    public Print(Invoice invoice, ArrayList<ComponentInvoice> componentInvoices, double pay, double debt, boolean fastPrint, boolean debtPrint) {
         this.invoice = invoice;
         this.client = clientOperation.get(invoice.getIdClient());
         this.componentInvoices = componentInvoices;
-        debt = 0;
+        this.pay = pay;
+        this.debt = debt;
         this.fastPrint = fastPrint;
         this.debtPrint = debtPrint;
-        setClientTransaction(client.getId());
-    }
-
-
-    private void setClientTransaction(int idClient) {
-        try {
-            AtomicReference<Double> trans = new AtomicReference<>(0.0);
-            AtomicReference<Double> pay = new AtomicReference<>(0.0);
-
-            ArrayList<Invoice> invoices = operation.getAllByClient(idClient);
-            invoices.forEach(invoice -> {
-                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentInvoices.forEach(componentInvoice -> {
-                    double pr = componentInvoice.getPrice() * componentInvoice.getQte();
-                    sumR.updateAndGet(v -> v + pr);
-                });
-                pay.updateAndGet(v -> v + invoice.getPaying());
-                trans.updateAndGet(v -> v + sumR.get());
-            });
-
-            debt = trans.get() - pay.get();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
     }
 
     public void CreatePdf(){
@@ -118,7 +93,7 @@ public class Print {
                 double price = componentInvoice.getPrice();
                 int qte = componentInvoice.getQte();
 
-                totPrice+= (price * qte);
+                totPrice += (price * qte);
                 totQte += qte;
 
                 HTML.append("<tr>")
@@ -140,19 +115,19 @@ public class Print {
                         .append("<table>")
                         .append("<tr>")
                         .append("<td style=\"width: 150px;\">الدين</td>")
-                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", debt )).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", this.debt )).append("</td>")
                         .append(" </tr>")
                         .append("<tr>")
                         .append("<td style=\"width: 150px;\">المجموع الكلي</td>")
-                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", debt + totPrice )).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", this.debt + totPrice )).append("</td>")
                         .append(" </tr>")
                         .append("<tr>")
                         .append("<td style=\"width: 150px;\">المدفوع</td>")
-                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", invoice.getPaying() )).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f", this.pay )).append("</td>")
                         .append(" </tr>")
                         .append("<tr>")
                         .append("<td style=\"width: 150px;\">المتبقي</td>")
-                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f",  (invoice.getPaying() - debt - totPrice) * -1 )).append("</td>")
+                        .append("<td>").append(String.format(Locale.FRANCE, "%,.2f",  ( this.debt + totPrice) - this.pay )).append("</td>")
                         .append(" </tr>")
                         .append("</table>")
                         .append(" </div>");

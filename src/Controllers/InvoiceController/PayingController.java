@@ -3,9 +3,8 @@ package Controllers.InvoiceController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import javafx.geometry.NodeOrientation;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -60,14 +59,30 @@ public class PayingController implements Initializable {
     @FXML
     private void ActionPay(ActionEvent actionEvent) {
         String stPay = tfPaying.getText().trim();
-        fastPrint = cbFastPrint.isSelected();
-        debtPrint = cbDebtPrint.isSelected();
-        doubles.set(0,Double.parseDouble(stPay));
-        booleans.set(0,fastPrint);
-        booleans.set(1,debtPrint);
-        booleans.set(2,true);
+        if (!stPay.isEmpty()) {
+            double pay = Double.parseDouble(stPay);
+            if ((debt + tot) >= pay) {
+                fastPrint = cbFastPrint.isSelected();
+                debtPrint = cbDebtPrint.isSelected();
+                doubles.set(0, Double.parseDouble(stPay));
+                booleans.set(0, fastPrint);
+                booleans.set(1, debtPrint);
+                booleans.set(2, true);
 
-        if (!stPay.isEmpty()) closeDialog(this.btnPay);
+                closeDialog(this.btnPay);
+            }else {
+                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+                alertWarning.setHeaderText("خطأ ");
+                alertWarning.setContentText("المبلغ المدفوع أكبر من المطلوب");
+                alertWarning.initOwner(this.tfPaying.getScene().getWindow());
+                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+                okButton.setText("موافق");
+                alertWarning.showAndWait();
+            }
+
+
+        }
     }
 
     @FXML

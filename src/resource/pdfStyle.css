@@ -43,7 +43,7 @@ img {
     
 }
 
-#block_container {
+.block_container {
     display: flex;
     justify-content: center;
 }

@@ -169,7 +169,7 @@ public class AddSaleController implements Initializable {
 
     private void CountProfit(){
         String stQte = tfQte.getText().trim();
-        if (!stQte.equals("0")) {
+        if (!stQte.isEmpty() && !stQte.equals("0")) {
 
             try {
                 String stPriceNew = tfPriceUnit.getText().trim();
@@ -187,14 +187,20 @@ public class AddSaleController implements Initializable {
 
     @FXML
     private void ActionAdd(){
-        int qte = Integer.parseInt(tfQte.getText().trim());
-        double PriceU = Double.parseDouble(tfPriceUnit.getText().trim());
 
-        componentInvoice.setIdProduct(this.selectedProduct.getId());
-        componentInvoice.setPrice(PriceU);
-        componentInvoice.setQte(qte);
+        String stQte = tfQte.getText().trim();
+        String stPriceU = tfPriceUnit.getText().trim();
 
-        ActionAnnul();
+        if (!stQte.isEmpty() && !stQte.equals("0") && !stPriceU.isEmpty() && !stPriceU.equals("0")) {
+            int qte = Integer.parseInt(stQte);
+            double PriceU = Double.parseDouble(stPriceU);
+
+            componentInvoice.setIdProduct(this.selectedProduct.getId());
+            componentInvoice.setPrice(PriceU);
+            componentInvoice.setQte(qte);
+
+            ActionAnnul();
+        }
     }
 
     @FXML

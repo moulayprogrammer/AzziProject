@@ -39,7 +39,20 @@ public class ComponentStoreProductTempOperation extends BDD<ComponentStoreProduc
 
     @Override
     public boolean delete(ComponentStoreProductTemp o) {
-        return false;
+        connectDatabase();
+        boolean del = false;
+        String query = "DELETE FROM تخزين_منتجات_مؤقت_للبيع WHERE المعرف = ? ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            preparedStmt.setInt(1,o.getId());
+
+            int delete = preparedStmt.executeUpdate();
+            if(delete != -1) del = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return del;
     }
 
     public boolean deleteByInvoice(int idInvoice){

@@ -266,6 +266,8 @@ public class MainController implements Initializable {
                                 ComponentStoreProduct storeProduct = componentStoreProductOperation.get(storeProductTemp.getIdProduct(),storeProductTemp.getIdProduction());
                                 storeProduct.setQteConsumed(storeProduct.getQteConsumed() - storeProductTemp.getQte());
                                 componentStoreProductOperation.updateQte(storeProduct);
+
+                                deleteComponentInvoice(new ComponentInvoice(invoice.getId(), storeProductTemp.getIdProduct()));
                             }
                             componentStoreProductTempOperation.deleteByInvoice(invoice.getId());
                             operation.delete(invoice);
@@ -296,6 +298,17 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
+        }
+    }
+
+    private boolean deleteComponentInvoice(ComponentInvoice componentInvoice){
+        boolean insert = false;
+        try {
+            insert = componentInvoiceOperation.delete(componentInvoice);
+            return insert;
+        }catch (Exception e){
+            e.printStackTrace();
+            return insert;
         }
     }
 

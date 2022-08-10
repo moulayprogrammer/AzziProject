@@ -1,0 +1,123 @@
+@font-face {
+    font-family: HSDream-Regular;
+    src: url('HSDream-Regular.otf');
+}
+
+html {
+    font-family: 'HSDream-Regular';
+    background-color: white;
+    
+}
+
+body {
+    height: 14cm;
+    width: 10cm;
+    text-align: right; 
+}
+
+img {
+    width: 60px;
+    height: 60px;
+}
+
+#title{
+    text-align: center;
+    font-style: bold;
+    margin-top: -1px;
+}
+
+.sub_title{
+    text-align: center;
+}
+
+#info_div{
+    
+    margin-top: -15px;
+    margin-left: 170px;
+    height: 75px;
+    width: 200px;
+
+    border: solid 1px;
+    border-color: darkgrey;
+    border-radius: 10px;
+    background-color: lightgrey;
+
+    text-align: right;
+    padding-right: 5px;
+}
+
+.info{
+    margin-top: -45px;
+}
+
+.table_content{
+    border: 1px solid gray;
+    border-collapse: collapse;
+
+    min-width: 100%;
+    width: 100%;
+    direction: rtl;
+    text-align: center;
+    font-size: 9pt;
+}
+
+th{
+    background-color: lightgray;
+    border: solid gray;
+    border-width: 0px 0px 1px 1px ;
+}
+
+.td_content{
+    border: solid gray;
+    border-width: 0px 0px 0px 1px ;
+}
+
+.table_sum{
+    margin-top: 10px;
+    border: 1px solid gray;
+    border-collapse: collapse;
+
+    min-width: 100%;
+    width: 100%;
+    direction: rtl;
+    text-align: center;
+    font-size: 10pt;
+}
+
+.td_sum{
+    border: solid gray;
+    width: 50%;
+    border-width: 0px 0px 1px 0px ;
+    border-collapse: collapse;
+}
+
+.label {
+    display: inline-block;
+    
+}
+
+#block_container {
+    display: flex;
+}
+
+.bloc
+{
+    display:inline;
+    margin-right: 10px;
+}
+
+.fact {
+    height: 12cm;
+    width: 10cm;
+    min-width: 10cm;
+    min-height: 12cm;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 5px;
+}
+
+.vl {
+    border-left: 2px dotted darkred;
+
+    height: 12cm;
+  }

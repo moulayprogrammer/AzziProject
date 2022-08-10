@@ -207,6 +207,7 @@ public class AddController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -225,6 +226,7 @@ public class AddController implements Initializable {
         TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("التسديد");
+        dialog.initOwner(this.tfRecherche.getScene().getWindow());
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         dialog.setHeaderText("ادخل السعر المسدد ");
         dialog.setContentText("السعر :");
@@ -233,43 +235,47 @@ public class AddController implements Initializable {
 
         result.ifPresent(price -> {
 
-            if (!price.isEmpty() && !lbDebt.getText().equals("0.0")) {
+            if (!price.isEmpty() && this.debt != 0) {
                 double pr = Double.parseDouble(price);
-
-                ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
-                for (Invoice invoice : invoices) {
-                    ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-                    AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                    componentInvoices.forEach(componentInvoice -> {
-                        double pre = componentInvoice.getPrice() * componentInvoice.getQte();
-                        sumR.updateAndGet(v -> v + pre);
-                    });
-                    double debt = sumR.get() - invoice.getPaying();
-                    if (debt > 0) {
-                        if (pr <= debt) {
-                            double newPaying = pr + invoice.getPaying();
-                            pr = 0;
-                            PayDebtInvoice(invoice.getId(), newPaying);
-                            break;
-                        } else {
-                            double newPaying = debt + invoice.getPaying();
-                            pr = pr - debt;
-                            PayDebtInvoice(invoice.getId(), newPaying);
-                        }
-                    }
-                }
-                if (pr > 0 ){
-                    Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
-                    alertInformation.setHeaderText("المبلغ المتبقي ");
-                    alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
-                    alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                    Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
-                    okButton.setText("موافق");
-                    alertInformation.showAndWait();
-                }
+                payDebtClient(pr);
                 setClientTransaction(selectedClient);
             }
         });
+    }
+
+    private void payDebtClient(double pr){
+        ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
+        for (Invoice invoice : invoices) {
+            ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
+            AtomicReference<Double> sumR = new AtomicReference<>(0.0);
+            componentInvoices.forEach(componentInvoice -> {
+                double pre = componentInvoice.getPrice() * componentInvoice.getQte();
+                sumR.updateAndGet(v -> v + pre);
+            });
+            double debt = sumR.get() - invoice.getPaying();
+            if (debt > 0) {
+                if (pr <= debt) {
+                    double newPaying = pr + invoice.getPaying();
+                    pr = 0;
+                    PayDebtInvoice(invoice.getId(), newPaying);
+                    break;
+                } else {
+                    double newPaying = debt + invoice.getPaying();
+                    pr = pr - debt;
+                    PayDebtInvoice(invoice.getId(), newPaying);
+                }
+            }
+        }
+        if (pr > 0 ){
+            Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+            alertInformation.setHeaderText("المبلغ المتبقي ");
+            alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
+            alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
+            alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertInformation.showAndWait();
+        }
     }
 
     private void PayDebtInvoice(int invoiceId , double price) {
@@ -313,6 +319,7 @@ public class AddController implements Initializable {
                    Dialog<ButtonType> dialog = new Dialog<>();
                    dialog.setDialogPane(temp);
                    dialog.resizableProperty().setValue(false);
+                   dialog.initOwner(this.tfRecherche.getScene().getWindow());
                    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                    Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                    closeButton.setVisible(false);
@@ -378,6 +385,7 @@ public class AddController implements Initializable {
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
+                dialog.initOwner(this.tfRecherche.getScene().getWindow());
                 dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                 Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                 closeButton.setVisible(false);
@@ -408,8 +416,9 @@ public class AddController implements Initializable {
     private void ActionDeleteSales(){
         int compoSelectedIndex = tableSales.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
-            storeProducts.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
-            storeProductTemps.get(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            storeProducts.remove(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+            storeProductTemps.remove(Integer.parseInt(dataTable.get(compoSelectedIndex).get(0).getValue()));
+
             dataTable.remove(compoSelectedIndex);
             priceList.remove(compoSelectedIndex);
             tableSales.setItems(dataTable);
@@ -436,6 +445,7 @@ public class AddController implements Initializable {
         Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         alertConfirmation.setHeaderText("تاكيد الالغاء");
         alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
+        alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
         alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
         okButton.setText("موافق");
@@ -475,6 +485,7 @@ public class AddController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -486,7 +497,7 @@ public class AddController implements Initializable {
                 String lbFactTxt = lbFactureNbr.getText().trim();
                 int nbr = Integer.parseInt(lbFactTxt.substring(0, lbFactTxt.indexOf('/')));
 
-                if (date != null && selectedClient != 0) {
+                if (date != null && selectedClient != 0 && dataTable.size() != 0) {
 
                     double pay = doubles.get(0);
 
@@ -495,28 +506,25 @@ public class AddController implements Initializable {
                     invoice.setIdClient(selectedClient);
                     invoice.setDate(date);
 
-                /*System.out.println("pay = " + doubles.get(0));
-                System.out.println("tot = " + doubles.get(1));
-                System.out.println("debt = " + doubles.get(2));
-                System.out.println("rest = " + doubles.get(3));
-                System.out.println("fast = " + booleans.get(0));
-                System.out.println("fastD = " + booleans.get(1));*/
                     if (pay <= totalFacture) {
                         invoice.setPaying(pay);
                     }else {
                         invoice.setPaying(totalFacture);
+                        double restPay = pay - totalFacture;
+                        payDebtClient(restPay);
                     }
 
                     int ins = insert(invoice);
                     if (ins != -1) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(ins, false);
-                        Print print = new Print(invoice,componentInvoices,booleans.get(0),booleans.get(1));
+                        Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
                         print.CreatePdf();
                         closeDialog(this.btnInsert);
                     } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
                         alertWarning.setContentText("خطأ غير معروف");
+                        alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
@@ -527,6 +535,7 @@ public class AddController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -536,100 +545,90 @@ public class AddController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-
-        /*TextInputDialog dialog = new TextInputDialog();
-
-        dialog.setTitle("الدفع ");
-        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        dialog.setHeaderText(" السعر المدفوع ");
-        dialog.setContentText("السعر :");
-
-        Optional<String> result = dialog.showAndWait();
-
-        result.ifPresent(price -> {
-            if (!price.isEmpty()){
-
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
-            }
-        });*/
     }
 
     @FXML
     private void ActionConfirm(){
-        TextInputDialog dialog = new TextInputDialog();
 
-        dialog.setTitle("الدفع ");
-        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        dialog.setHeaderText(" السعر المدفوع ");
-        dialog.setContentText("السعر :");
+        ArrayList<Double> doubles = new ArrayList<>();
+        doubles.add(0.0);
+        doubles.add(totalFacture);
+        doubles.add(debt);
+        doubles.add(0.0);
+        ArrayList<Boolean> booleans = new ArrayList<>();
+        booleans.add(false);
+        booleans.add(false);
+        booleans.add(false);
 
-        Optional<String> result = dialog.showAndWait();
+        try {
 
-        result.ifPresent(price -> {
-            if (!price.isEmpty()){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/PayingView.fxml"));
+            DialogPane temp = loader.load();
+            PayingController controller = loader.getController();
+            controller.Init(doubles,booleans);
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(temp);
+            dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
+            dialog.showAndWait();
+
+            if (booleans.get(2)) {
+
                 LocalDate date = dpDate.getValue();
                 String lbFactTxt = lbFactureNbr.getText().trim();
-                int nbr = Integer.parseInt(lbFactTxt.substring(0,lbFactTxt.indexOf('/')));
-                double paying = Double.parseDouble(price);
+                int nbr = Integer.parseInt(lbFactTxt.substring(0, lbFactTxt.indexOf('/')));
 
-                if (date != null && selectedClient != 0) {
-                    if (paying <= totalFacture) {
+                if (date != null && selectedClient != 0 && dataTable.size() != 0) {
 
-                        Invoice invoice = new Invoice();
-                        invoice.setNumber(nbr);
-                        invoice.setIdClient(selectedClient);
-                        invoice.setDate(date);
-                        invoice.setPaying(paying);
+                    double pay = doubles.get(0);
 
+                    Invoice invoice = new Invoice();
+                    invoice.setNumber(nbr);
+                    invoice.setIdClient(selectedClient);
+                    invoice.setDate(date);
 
-                        int ins = insert(invoice);
-                        if (ins != -1) {
-                            insertComponent(ins,true);
-                            closeDialog(this.btnInsert);
-                        } else {
-                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                            alertWarning.setHeaderText("تحذير ");
-                            alertWarning.setContentText("خطأ غير معروف");
-                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                            okButton.setText("موافق");
-                            alertWarning.showAndWait();
-                        }
+                    if (pay <= totalFacture) {
+                        invoice.setPaying(pay);
                     }else {
+                        invoice.setPaying(totalFacture);
+                        double restPay = pay - totalFacture;
+                        payDebtClient(restPay);
+                    }
+
+                    int ins = insert(invoice);
+                    if (ins != -1) {
+                        ArrayList<ComponentInvoice>  componentInvoices = insertComponent(ins, true);
+                        Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
+                        print.CreatePdf();
+                        closeDialog(this.btnInsert);
+                    } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
-                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.setContentText("خطأ غير معروف");
+                        alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
                         alertWarning.showAndWait();
                     }
-                }else {
+
+                } else {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
                 }
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
             }
-        });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<ComponentInvoice> insertComponent(int idInvoice ,boolean confirm) {
