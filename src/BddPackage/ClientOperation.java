@@ -15,13 +15,15 @@ public class ClientOperation extends BDD<Client> {
     public boolean insert(Client o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO زبون (الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?)";
+        String query = "INSERT INTO زبون (المرجع, الاسم, العنوان, النشاط, الرقم_الوطني) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1,o.getName());
-            preparedStmt.setString(2,o.getAddress());
-            preparedStmt.setString(3,o.getActivity());
-            preparedStmt.setString(4,o.getNationalNumber());
+
+            preparedStmt.setString(1,o.getReference());
+            preparedStmt.setString(2,o.getName());
+            preparedStmt.setString(3,o.getAddress());
+            preparedStmt.setString(4,o.getActivity());
+            preparedStmt.setString(5,o.getNationalNumber());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -35,14 +37,15 @@ public class ClientOperation extends BDD<Client> {
     public boolean update(Client o1, Client o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE زبون SET الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
+        String query = "UPDATE زبون SET المرجع = ?, الاسم = ?, العنوان = ?, النشاط = ?, الرقم_الوطني = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setString(1,o1.getName());
-            preparedStmt.setString(2,o1.getAddress());
-            preparedStmt.setString(3,o1.getActivity());
-            preparedStmt.setString(4,o1.getNationalNumber());
-            preparedStmt.setInt(5,o2.getId());
+            preparedStmt.setString(1,o1.getReference());
+            preparedStmt.setString(2,o1.getName());
+            preparedStmt.setString(3,o1.getAddress());
+            preparedStmt.setString(4,o1.getActivity());
+            preparedStmt.setString(5,o1.getNationalNumber());
+            preparedStmt.setInt(6,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -74,6 +77,7 @@ public class ClientOperation extends BDD<Client> {
 
                 Client client = new Client();
                 client.setId(resultSet.getInt("المعرف"));
+                client.setReference(resultSet.getString("المرجع"));
                 client.setName(resultSet.getString("الاسم"));
                 client.setAddress(resultSet.getString("العنوان"));
                 client.setActivity(resultSet.getString("النشاط"));
@@ -99,6 +103,7 @@ public class ClientOperation extends BDD<Client> {
             if (resultSet.next()){
 
                 client.setId(resultSet.getInt("المعرف"));
+                client.setReference(resultSet.getString("المرجع"));
                 client.setName(resultSet.getString("الاسم"));
                 client.setAddress(resultSet.getString("العنوان"));
                 client.setActivity(resultSet.getString("النشاط"));
@@ -155,6 +160,7 @@ public class ClientOperation extends BDD<Client> {
 
                 Client client = new Client();
                 client.setId(resultSet.getInt("المعرف"));
+                client.setReference(resultSet.getString("المرجع"));
                 client.setName(resultSet.getString("الاسم"));
                 client.setAddress(resultSet.getString("العنوان"));
                 client.setActivity(resultSet.getString("النشاط"));

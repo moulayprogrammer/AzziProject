@@ -104,6 +104,9 @@ public class SerialController implements Initializable {
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else {
+            invalidLoginCredentials.setText("رقم التسجيل غالط ");
+            invalidLoginCredentials.setStyle(errorMessage);
         }
     }
 }

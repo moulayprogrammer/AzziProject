@@ -3,6 +3,7 @@ package Models;
 public class Client {
 
     private int id;
+    private String reference;
     private String name;
     private String address;
     private String activity;
@@ -25,12 +26,29 @@ public class Client {
         this.nationalNumber = nationalNumber;
     }
 
+    public Client(int id, String reference, String name, String address, String activity, String nationalNumber) {
+        this.id = id;
+        this.reference = reference;
+        this.name = name;
+        this.address = address;
+        this.activity = activity;
+        this.nationalNumber = nationalNumber;
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getReference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 
     public String getName() {

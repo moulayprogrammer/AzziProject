@@ -27,7 +27,7 @@ public class MainController implements Initializable {
     @FXML
     TableView<Client> table;
     @FXML
-    TableColumn<Client,String> clName,clAddress,clActivity,clNationalNumber;
+    TableColumn<Client,String> clReference,clName,clAddress,clActivity,clNationalNumber;
     @FXML
     TableColumn<Client,Integer> clId;
 
@@ -39,6 +39,7 @@ public class MainController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         clId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        clReference.setCellValueFactory(new PropertyValueFactory<>("reference"));
         clName.setCellValueFactory(new PropertyValueFactory<>("name"));
         clAddress.setCellValueFactory(new PropertyValueFactory<>("address"));
         clAddress.setCellValueFactory(new PropertyValueFactory<>("activity"));
@@ -193,7 +194,9 @@ public class MainController implements Initializable {
             if (txtRecherche.isEmpty()) {
                 //loadDataInTable();
                 return true;
-            } else if (client.getName().contains(txtRecherche)) {
+            } else if (client.getReference().contains(txtRecherche)) {
+                return true;
+            }else if (client.getName().contains(txtRecherche)) {
                 return true;
             }else if (client.getAddress().contains(txtRecherche)) {
                 return true;

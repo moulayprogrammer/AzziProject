@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
 public class AddController implements Initializable {
 
     @FXML
-    TextField tfName,tfAddress,tfActivity,tfNationalNumber;
+    TextField tfReference,tfName,tfAddress,tfActivity,tfNationalNumber;
     @FXML
     Button btnInsert;
 
@@ -41,15 +41,17 @@ public class AddController implements Initializable {
     @FXML
     void ActionInsert(ActionEvent event) {
 
+        String reference = tfReference.getText().trim();
         String name = tfName.getText().trim();
         String address = tfAddress.getText().trim();
         String activity = tfActivity.getText().trim();
         String nationalNumber = tfNationalNumber.getText().trim();
 
 
-        if (!name.isEmpty() && !address.isEmpty() & !activity.isEmpty() & !nationalNumber.isEmpty()){
+        if (!reference.isEmpty() && !name.isEmpty() && !address.isEmpty() & !activity.isEmpty() & !nationalNumber.isEmpty()){
 
             Client client =  new Client();
+            client.setReference(reference);
             client.setName(name);
             client.setAddress(address);
             client.setActivity(activity);

@@ -59,20 +59,18 @@ public class UpdateController implements Initializable {
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
     private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
     private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
-    private final HashMap<Integer,List<ComponentStoreProduct>> storeProductsInit = new HashMap<>();
-    private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTempsInit = new HashMap<>();
-
     private final HashMap<Integer,List<ComponentStoreProduct>> storeProducts = new HashMap<>();
     private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTemps = new HashMap<>();
-
+    private final HashMap<Integer,List<ComponentStoreProduct>> storeProductsInit = new HashMap<>();
+    private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTempsInit = new HashMap<>();
+    private List<ComponentInvoice> componentInvoicesInit;
     private final ObservableList<List<StringProperty>> dataTable = FXCollections.observableArrayList();
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboClientData = FXCollections.observableArrayList();
     private final List<Integer> idClientCombo = new ArrayList<>();
-    private List<ComponentInvoice> componentInvoicesInit;
     private int selectedClient = 0;
     private double totalFacture = 0;
-    private Invoice selectInvoice;
+    private Invoice selectInvoice ;
     private double debt;
 
     @Override
@@ -92,6 +90,9 @@ public class UpdateController implements Initializable {
 
         refreshProduct();
         refreshComboClient();
+
+        // set Date
+        dpDate.setValue(LocalDate.now());
 
         //set Combo Search
         cbClient.setEditable(true);
@@ -129,6 +130,7 @@ public class UpdateController implements Initializable {
         setClientTransaction(invoice.getIdClient());
         setFactureNumber(invoice.getNumber());
         InitSales();
+        deleteOldComponent();
     }
 
     private void InitSales(){
@@ -140,6 +142,9 @@ public class UpdateController implements Initializable {
                     List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>();
                     List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>();
 
+                    List<ComponentStoreProduct> componentStoreProductsInit = new ArrayList<>();
+                    List<ComponentStoreProductTemp> componentStoreProductTempsInit = new ArrayList<>();
+
                     String query = "SELECT تخزين_منتج.معرف_المنتج, تخزين_منتج.معرف_الانتاج, تخزين_منتج.سعر_البيع, تخزين_منتج.كمية_مخزنة, تخزين_منتج.كمية_مستهلكة, \n" +
                             "تخزين_منتجات_مؤقت_للبيع.المعرف, تخزين_منتجات_مؤقت_للبيع.الكمية,تخزين_منتجات_مؤقت_للبيع.معرف_فاتورة_البيع FROM تخزين_منتج, تخزين_منتجات_مؤقت_للبيع\n" +
                             "WHERE معرف_فاتورة_البيع = ? AND تخزين_منتج.معرف_المنتج = ? AND تخزين_منتج.معرف_المنتج = تخزين_منتجات_مؤقت_للبيع.معرف_المنتج AND تخزين_منتج.معرف_الانتاج = تخزين_منتجات_مؤقت_للبيع.معرف_الانتاج\n";
@@ -149,12 +154,20 @@ public class UpdateController implements Initializable {
                     ResultSet resultSet = preparedStmt.executeQuery();
 
                     while (resultSet.next()){
+
                         ComponentStoreProduct storeProduct = new ComponentStoreProduct();
                         storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
                         storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
                         storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
                         storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
                         storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+
+                        ComponentStoreProduct storeProductInit = new ComponentStoreProduct();
+                        storeProductInit.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                        storeProductInit.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                        storeProductInit.setPriceHt(resultSet.getDouble("سعر_البيع"));
+                        storeProductInit.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                        storeProductInit.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
 
                         ComponentStoreProductTemp storeProductTemp = new ComponentStoreProductTemp();
                         storeProductTemp.setId(resultSet.getInt("المعرف"));
@@ -163,9 +176,19 @@ public class UpdateController implements Initializable {
                         storeProductTemp.setIdInvoice(resultSet.getInt("معرف_فاتورة_البيع"));
                         storeProductTemp.setQte(resultSet.getInt("الكمية"));
 
+                        ComponentStoreProductTemp storeProductTempInit = new ComponentStoreProductTemp();
+                        storeProductTempInit.setId(resultSet.getInt("المعرف"));
+                        storeProductTempInit.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                        storeProductTempInit.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                        storeProductTempInit.setIdInvoice(resultSet.getInt("معرف_فاتورة_البيع"));
+                        storeProductTempInit.setQte(resultSet.getInt("الكمية"));
+
 
                         componentStoreProducts.add(storeProduct);
                         componentStoreProductTemps.add(storeProductTemp);
+
+                        componentStoreProductsInit.add(storeProductInit);
+                        componentStoreProductTempsInit.add(storeProductTempInit);
                     }
                     Product product = productOperation.get(componentInvoice.getIdProduct());
                     List<StringProperty> data = new ArrayList<>();
@@ -178,21 +201,60 @@ public class UpdateController implements Initializable {
                     priceList.add(componentInvoice.getPrice());
                     dataTable.add(data);
 
-                    storeProductsInit.put(componentInvoice.getIdProduct(),componentStoreProducts);
-                    storeProductTempsInit.put(componentInvoice.getIdProduct(),componentStoreProductTemps);
+                    storeProducts.put(componentInvoice.getIdProduct(),componentStoreProducts);
+                    storeProductTemps.put(componentInvoice.getIdProduct(), componentStoreProductTemps);
 
-                    storeProducts.put(componentInvoice.getIdProduct(),new ArrayList<>(componentStoreProducts));
-                    storeProductTemps.put(componentInvoice.getIdProduct(),new ArrayList<>(componentStoreProductTemps));
+                    storeProductsInit.put(componentInvoice.getIdProduct(), componentStoreProductsInit);
+                    storeProductTempsInit.put(componentInvoice.getIdProduct(), componentStoreProductTempsInit);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
             }
-            deleteComponent();
             tableSales.setItems(dataTable);
             sumTotalTableSales();
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void deleteOldComponent(){
+
+        storeProductTempsInit.forEach((integer, componentStoreProductTemps1) -> {
+            List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>(componentStoreProductTemps1);
+            List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>(storeProductsInit.get(integer));
+
+            for (int i = 0; i < componentStoreProductTemps.size(); i++) {
+
+
+                ComponentStoreProductTemp componentStoreProductTemp = componentStoreProductTemps.get(i);
+                ComponentStoreProduct componentStoreProduct = componentStoreProducts.get(i);
+
+                componentStoreProduct.setQteConsumed(componentStoreProduct.getQteConsumed() - componentStoreProductTemp.getQte());
+                componentStoreProductOperation.updateQte(componentStoreProduct);
+                componentStoreProductTempOperation.delete(componentStoreProductTemp);
+
+            }
+        });
+
+        componentInvoiceOperation.deleteByInvoice(this.selectInvoice.getId());
+    }
+
+    public void insertOldComponent(){
+
+        storeProductTempsInit.forEach((integer, componentStoreProductTemps) -> {
+            List<ComponentStoreProduct> componentStoreProducts = storeProductsInit.get(integer);
+
+            for (int i = 0; i < componentStoreProductTemps.size(); i++) {
+                ComponentStoreProductTemp componentStoreProductTemp = componentStoreProductTemps.get(i);
+                ComponentStoreProduct componentStoreProduct = componentStoreProducts.get(i);
+
+                componentStoreProduct.setQteConsumed(componentStoreProduct.getQteConsumed() + componentStoreProductTemp.getQte());
+                componentStoreProductOperation.updateQte(componentStoreProduct);
+                componentStoreProductTempOperation.insert(componentStoreProductTemp);
+
+            }
+        });
+        componentInvoicesInit.forEach(this::insertComponentInvoice);
     }
 
     @FXML
@@ -206,12 +268,13 @@ public class UpdateController implements Initializable {
 
     private void setClientTransaction(int idClient) {
         try {
+
             AtomicReference<Double> trans = new AtomicReference<>(0.0);
             AtomicReference<Double> pay = new AtomicReference<>(0.0);
             // Medication
             ArrayList<Invoice> invoices = operation.getAllByClient(idClient);
             invoices.forEach(invoice -> {
-                if (invoice.getId() != this.selectInvoice.getId()) {
+                if (selectInvoice.getId() != invoice.getId()) {
                     ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
                     AtomicReference<Double> sumR = new AtomicReference<>(0.0);
                     componentInvoices.forEach(componentInvoice -> {
@@ -222,12 +285,9 @@ public class UpdateController implements Initializable {
                     trans.updateAndGet(v -> v + sumR.get());
                 }
             });
-
-            this.debt = trans.get() - pay.get();
-
+            debt = trans.get() - pay.get();
             lbTransaction.setText(String.format(Locale.FRANCE, "%,.2f", (trans.get())));
             lbDebt.setText(String.format(Locale.FRANCE, "%,.2f", (debt)));
-
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -362,7 +422,6 @@ public class UpdateController implements Initializable {
         }
     }
 
-
     private void PayDebtInvoice(int invoiceId , double price) {
         try {
             Invoice invoice1 = new Invoice();
@@ -461,14 +520,12 @@ public class UpdateController implements Initializable {
             try {
                 Product product = productOperation.get(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(0).getValue()));
                 ComponentInvoice componentInvoice = new ComponentInvoice();
-                int qte = Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(3).getValue());
-                componentInvoice.setQte(qte);
-
+                componentInvoice.setQte(Integer.parseInt(tableSales.getSelectionModel().getSelectedItem().get(3).getValue()));
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/UpdateSaleView.fxml"));
                 DialogPane temp = loader.load();
                 UpdateSaleController controller = loader.getController();
-                controller.Init(product,componentInvoice, storeProducts.get(product.getId()), storeProductTemps.get(product.getId()));
+                controller.Init(product,componentInvoice,storeProducts.get(product.getId()),storeProductTemps.get(product.getId()));
                 Dialog<ButtonType> dialog = new Dialog<>();
                 dialog.setDialogPane(temp);
                 dialog.resizableProperty().setValue(false);
@@ -528,7 +585,7 @@ public class UpdateController implements Initializable {
         lbSumWeight.setText(String.valueOf(totalling));
     }
     @FXML
-    public void ActionAnnulledAdd(){
+    private void ActionAnnulledUpdate(){
         Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
         alertConfirmation.setHeaderText("تاكيد الالغاء");
         alertConfirmation.setContentText("هل انت متاكد من الغاء الفاتورة");
@@ -565,6 +622,7 @@ public class UpdateController implements Initializable {
         booleans.add(false);
 
         try {
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/PayingView.fxml"));
             DialogPane temp = loader.load();
             PayingController controller = loader.getController();
@@ -578,15 +636,19 @@ public class UpdateController implements Initializable {
             closeButton.setVisible(false);
             dialog.showAndWait();
 
-            if (booleans.get(2)){
+            if (booleans.get(2)) {
+
                 LocalDate date = dpDate.getValue();
+                String lbFactTxt = lbFactureNbr.getText().trim();
+                int nbr = Integer.parseInt(lbFactTxt.substring(0, lbFactTxt.indexOf('/')));
+
 
                 if (date != null && selectedClient != 0 && dataTable.size() != 0) {
 
                     double pay = doubles.get(0);
 
                     Invoice invoice = new Invoice();
-
+                    invoice.setNumber(nbr);
                     invoice.setIdClient(selectedClient);
                     invoice.setDate(date);
 
@@ -599,10 +661,11 @@ public class UpdateController implements Initializable {
                     }
 
                     boolean update = update(invoice);
-                    if (update) {
+                    if (update ) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(this.selectInvoice.getId(), false);
                         Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
-                        print.CreatePdf();
+                        print.CreatePdfFacture();
+                        print.CreatePdfBon();
                         closeDialog(this.btnUpdate);
                     } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
@@ -614,7 +677,8 @@ public class UpdateController implements Initializable {
                         okButton.setText("موافق");
                         alertWarning.showAndWait();
                     }
-                }else {
+
+                } else {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
@@ -632,54 +696,75 @@ public class UpdateController implements Initializable {
 
     @FXML
     private void ActionConfirm(){
-        TextInputDialog dialog = new TextInputDialog(String.valueOf(selectInvoice.getPaying()));
 
-        dialog.setTitle("الدفع ");
-        dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        dialog.setHeaderText(" السعر المدفوع ");
-        dialog.setContentText("السعر :");
+        ArrayList<Double> doubles = new ArrayList<>();
+        doubles.add(0.0);
+        doubles.add(totalFacture);
+        doubles.add(debt);
+        doubles.add(0.0);
+        ArrayList<Boolean> booleans = new ArrayList<>();
+        booleans.add(false);
+        booleans.add(false);
+        booleans.add(false);
 
-        Optional<String> result = dialog.showAndWait();
+        try {
 
-        result.ifPresent(price -> {
-            if (!price.isEmpty()){
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/InvoiceViews/PayingView.fxml"));
+            DialogPane temp = loader.load();
+            PayingController controller = loader.getController();
+            controller.Init(doubles,booleans);
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setDialogPane(temp);
+            dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+            closeButton.setVisible(false);
+            dialog.showAndWait();
+
+            if (booleans.get(2)) {
+
                 LocalDate date = dpDate.getValue();
-                double paying = Double.parseDouble(price);
+                String lbFactTxt = lbFactureNbr.getText().trim();
+                int nbr = Integer.parseInt(lbFactTxt.substring(0, lbFactTxt.indexOf('/')));
 
                 if (date != null && selectedClient != 0 && dataTable.size() != 0) {
-                    if (paying <= totalFacture) {
 
-                        Invoice invoice = new Invoice();
-                        invoice.setIdClient(selectedClient);
-                        invoice.setDate(date);
-                        invoice.setPaying(paying);
+                    double pay = doubles.get(0);
+
+                    Invoice invoice = new Invoice();
+                    invoice.setNumber(nbr);
+                    invoice.setIdClient(selectedClient);
+                    invoice.setDate(date);
 
 
-                        boolean update = update(invoice);
-                        if (update) {
-                            insertComponent(this.selectInvoice.getId(),true);
-                            closeDialog(this.btnUpdate);
-                        } else {
-                            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                            alertWarning.setHeaderText("تحذير ");
-                            alertWarning.setContentText("خطأ غير معروف");
-                            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
-                            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                            okButton.setText("موافق");
-                            alertWarning.showAndWait();
-                        }
+                    if (pay <= totalFacture) {
+                        invoice.setPaying(pay);
                     }else {
+                        invoice.setPaying(totalFacture);
+                        double restPay = pay - totalFacture;
+                        payDebtClient(restPay);
+                    }
+
+                    boolean update = update(invoice);
+                    if (update) {
+                        ArrayList<ComponentInvoice>  componentInvoices = insertComponent(this.selectInvoice.getId(), true);
+                        Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
+                        print.CreatePdfFacture();
+                        print.CreatePdfBon();
+                        closeDialog(this.btnUpdate);
+                    } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                         alertWarning.setHeaderText("تحذير ");
-                        alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
+                        alertWarning.setContentText("خطأ غير معروف");
                         alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
                         alertWarning.showAndWait();
                     }
-                }else {
+
+                } else {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
@@ -689,41 +774,10 @@ public class UpdateController implements Initializable {
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
                 }
-            }else {
-                Alert alertWarning = new Alert(Alert.AlertType.WARNING);
-                alertWarning.setHeaderText("تحذير ");
-                alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
-                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
-                alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
-                okButton.setText("موافق");
-                alertWarning.showAndWait();
             }
-        });
-    }
-
-    private void deleteComponent(){
-
-
-
-        storeProductTempsInit.forEach((integer, componentStoreProductTemps1) -> {
-            List<ComponentStoreProductTemp> componentStoreProductTemps = new ArrayList<>(componentStoreProductTemps1);
-            List<ComponentStoreProduct> componentStoreProducts = new ArrayList<>(storeProductsInit.get(integer));
-
-            for (int i = 0; i < componentStoreProductTemps.size(); i++) {
-
-
-                ComponentStoreProductTemp componentStoreProductTemp = componentStoreProductTemps.get(i);
-                ComponentStoreProduct componentStoreProduct = componentStoreProducts.get(i);
-
-                componentStoreProduct.setQteConsumed(componentStoreProduct.getQteConsumed() - componentStoreProductTemp.getQte());
-                componentStoreProductOperation.updateQte(componentStoreProduct);
-                componentStoreProductTempOperation.delete(componentStoreProductTemp);
-
-            }
-        });
-
-        componentInvoiceOperation.deleteByInvoice(this.selectInvoice.getId());
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private ArrayList<ComponentInvoice> insertComponent(int idInvoice ,boolean confirm) {
@@ -752,38 +806,20 @@ public class UpdateController implements Initializable {
             }
             storeProducts.get(id).forEach(this::updateQteConsumedProductStore);
 
-            insertComponentInvoice(componentInvoice);
             componentInvoices.add(componentInvoice);
+            insertComponentInvoice(componentInvoice);
         }
         return componentInvoices;
     }
 
-    public void insertOldComponent(){
-
-        storeProductTempsInit.forEach((integer, componentStoreProductTemps) -> {
-            List<ComponentStoreProduct> componentStoreProducts = storeProductsInit.get(integer);
-
-            for (int i = 0; i < componentStoreProductTemps.size(); i++) {
-                ComponentStoreProductTemp componentStoreProductTemp = componentStoreProductTemps.get(i);
-                ComponentStoreProduct componentStoreProduct = componentStoreProducts.get(i);
-
-                componentStoreProduct.setQteConsumed(componentStoreProduct.getQteConsumed() + componentStoreProductTemp.getQte());
-                componentStoreProductOperation.updateQte(componentStoreProduct);
-                componentStoreProductTempOperation.insert(componentStoreProductTemp);
-
-            }
-        });
-        componentInvoicesInit.forEach(this::insertComponentInvoice);
-    }
-
     private boolean update(Invoice invoice) {
-        boolean update = false;
+        boolean insert = false ;
         try {
-            update = operation.update(invoice,this.selectInvoice);
-            return update;
+            insert = operation.update(invoice, selectInvoice);
+            return insert;
         }catch (Exception e){
             e.printStackTrace();
-            return update;
+            return insert;
         }
     }
 
@@ -795,17 +831,6 @@ public class UpdateController implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
             return insert;
-        }
-    }
-
-    private boolean deleteComponentInvoice(ComponentInvoice componentInvoice){
-        boolean delete = false;
-        try {
-            delete = componentInvoiceOperation.delete(componentInvoice);
-            return delete;
-        }catch (Exception e){
-            e.printStackTrace();
-            return delete;
         }
     }
 

@@ -28,6 +28,11 @@
                <children>
                   <VBox prefWidth="200.0" spacing="20.0">
                      <children>
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الكود">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
                         <Label prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الإسم">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -52,8 +57,9 @@
                   </VBox>
                   <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0" HBox.hgrow="ALWAYS">
                      <children>
-                        <TextField fx:id="tfName" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="tfReference" layoutX="10.0" layoutY="59.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" />
                      <TextField fx:id="tfAddress" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
+                        <TextField fx:id="tfName" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
                         <TextField fx:id="tfActivity" layoutX="10.0" layoutY="56.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
                         <TextField fx:id="tfNationalNumber" layoutX="10.0" layoutY="102.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
                      </children>

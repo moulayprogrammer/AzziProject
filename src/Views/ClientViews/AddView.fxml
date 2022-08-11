@@ -22,12 +22,17 @@
       </AnchorPane>
    </header>
    <content>
-      <AnchorPane prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #FFF;" >
+      <AnchorPane prefHeight="400.0" prefWidth="450.0" style="-fx-background-color: #FFF;">
          <children>
             <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <VBox prefWidth="200.0" spacing="20.0">
                      <children>
+                        <Label layoutX="10.0" layoutY="10.0" prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الكود">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Label>
                         <Label prefHeight="25.0" style="-fx-font-size: 15; -fx-pref-height: 29;" text="الإسم">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -52,6 +57,7 @@
                   </VBox>
                   <VBox layoutX="10.0" layoutY="10.0" prefWidth="200.0" spacing="20.0" HBox.hgrow="ALWAYS">
                      <children>
+                        <TextField fx:id="tfReference" layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" />
                         <TextField fx:id="tfName" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
                      <TextField fx:id="tfAddress" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />
                         <TextField fx:id="tfActivity" layoutX="10.0" layoutY="56.0" maxWidth="1.7976931348623157E308" prefHeight="26.0" VBox.vgrow="ALWAYS" />

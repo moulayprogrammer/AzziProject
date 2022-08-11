@@ -518,7 +518,8 @@ public class AddController implements Initializable {
                     if (ins != -1) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(ins, false);
                         Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
-                        print.CreatePdf();
+                        print.CreatePdfFacture();
+                        print.CreatePdfBon();
                         closeDialog(this.btnInsert);
                     } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);
@@ -602,7 +603,8 @@ public class AddController implements Initializable {
                     if (ins != -1) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(ins, true);
                         Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
-                        print.CreatePdf();
+                        print.CreatePdfFacture();
+                        print.CreatePdfBon();
                         closeDialog(this.btnInsert);
                     } else {
                         Alert alertWarning = new Alert(Alert.AlertType.WARNING);

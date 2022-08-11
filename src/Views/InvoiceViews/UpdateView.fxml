@@ -37,7 +37,7 @@
                         <Font size="14.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton buttonType="RAISED" cancelButton="true" layoutX="130.0" layoutY="10.0" onAction="#ActionAnnulledAdd" prefWidth="120.0" ripplerFill="#0cc333" styleClass="danger" text="إلغاء" textFill="#e10bbd">
+                  <JFXButton buttonType="RAISED" cancelButton="true" layoutX="130.0" layoutY="10.0" onAction="#ActionAnnulledUpdate" prefWidth="120.0" ripplerFill="#0cc333" styleClass="danger" text="إلغاء" textFill="#e10bbd">
                      <font>
                         <Font size="14.0" />
                      </font>

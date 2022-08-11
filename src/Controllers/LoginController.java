@@ -8,7 +8,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -19,11 +18,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    protected
-    String successMessage = String.format("-fx-text-fill: GREEN;");
     String errorMessage = String.format("-fx-text-fill: RED;");
     String errorStyle = String.format("-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 5;");
-    String successStyle = String.format("-fx-border-color: #A9A9A9; -fx-border-width: 2; -fx-border-radius: 5;");
 
     // Import the application's controls
     @FXML
@@ -76,6 +72,9 @@ public class LoginController implements Initializable {
             }catch (Exception e){
                 e.printStackTrace();
             }
+        }else {
+            invalidLoginCredentials.setText("الرجاء التاكد من اسم المستخدم و كلمة السر ");
+            invalidLoginCredentials.setStyle(errorMessage);
         }
     }
 }
