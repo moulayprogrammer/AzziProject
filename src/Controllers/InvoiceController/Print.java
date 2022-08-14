@@ -131,17 +131,17 @@ public class Print {
 
                     // tables div
 
-                    .append("<div style=\"margin-top: 10px;\">" ).append(
-                            "<table class=\"table_content\">" ).append(
-                            "                <tr >" ).append(
-                            "                <th>المرجع</th>" ).append(
-                            "                <th>المنتج</th>" ).append(
-                            "                <th>سعر الوحدة</th>" ).append(
-                            "                <th>الكمية</th>" ).append(
-                            "                <th>المجموع</th>" ).append(
-                            "                </tr>" );
+                    .append("<div style=\"margin-top: 10px;\">" )
+                    .append("<table class=\"table_content\">" )
+                    .append("<tr >" )
+                    .append(" <th>المرجع</th>" )
+                    .append("<th>المنتج</th>" )
+                    .append(" <th>سعر الوحدة</th>" )
+                    .append("<th>الكمية</th>" )
+                    .append("<th>المجموع</th>" )
+                    .append("</tr>" );
+
             double totPrice = 0.0;
-            int totQte = 0;
 
             for (ComponentInvoice componentInvoice : this.componentInvoices){
                 Product product = productOperation.get(componentInvoice.getIdProduct());
@@ -149,7 +149,6 @@ public class Print {
                 int qte = componentInvoice.getQte();
 
                 totPrice += (price * qte);
-                totQte += qte;
 
                 HTMLFacture.append("<tr>")
                         .append("<td class=\"td_content\">").append(product.getReference()).append("</td>")
@@ -177,13 +176,17 @@ public class Print {
                         .append("<td class=\"td_sum\">").append(String.format(Locale.FRANCE, "%,.2f", totPrice + debt )).append("</td>" )
                         .append("</tr>" )
 
+                        .append("</table>")
+
+                        .append("<table class=\"table_sum\">" )
+
                         .append("<tr>" )
-                        .append("<td class=\"td_sum\"> المدفوع </td>" )
+                        .append("<td class=\"td_sum\" style=\"background-color: lightgray;\">المدفوع</td>" )
                         .append("<td class=\"td_sum\">").append(String.format(Locale.FRANCE, "%,.2f", pay )).append("</td>" )
                         .append("</tr>" )
 
                         .append("<tr>" )
-                        .append("<td class=\"td_sum\"> المتبقي </td>" )
+                        .append("<td class=\"td_sum\" style=\"background-color: lightgray;\">المتبقي </td>" )
                         .append("<td class=\"td_sum\">").append(String.format(Locale.FRANCE, "%,.2f",  (totPrice + debt) - pay )).append("</td>" )
                         .append("</tr>" );
             }

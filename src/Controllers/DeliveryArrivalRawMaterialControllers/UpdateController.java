@@ -275,6 +275,7 @@ public class UpdateController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.btnUpdate.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -423,6 +424,7 @@ public class UpdateController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.initOwner(this.btnUpdate.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -433,6 +435,7 @@ public class UpdateController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.initOwner(this.btnUpdate.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

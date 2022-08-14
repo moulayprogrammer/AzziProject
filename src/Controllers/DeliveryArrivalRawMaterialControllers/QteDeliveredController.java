@@ -67,6 +67,7 @@ public class QteDeliveredController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("تاكد من الكمية المدخلة ");
+                alertWarning.initOwner(this.tfQteDelivered.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");

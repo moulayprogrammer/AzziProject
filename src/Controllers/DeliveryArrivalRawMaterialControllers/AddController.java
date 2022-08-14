@@ -208,6 +208,7 @@ public class AddController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.btnInsert.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -354,6 +355,7 @@ public class AddController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.initOwner(this.btnInsert.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -364,6 +366,7 @@ public class AddController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.initOwner(this.btnInsert.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -398,6 +401,7 @@ public class AddController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
+                alertWarning.initOwner(this.btnInsert.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -408,6 +412,7 @@ public class AddController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
+            alertWarning.initOwner(this.btnInsert.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

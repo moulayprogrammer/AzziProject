@@ -86,6 +86,7 @@ public class SelectedReceiptRawMaterialController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار فاتورة");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

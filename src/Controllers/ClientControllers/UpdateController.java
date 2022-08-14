@@ -66,6 +66,7 @@ public class UpdateController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معرروف");
+                alertWarning.initOwner(this.btnUpdate.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -75,6 +76,7 @@ public class UpdateController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحفول الفارغة");
+            alertWarning.initOwner(this.btnUpdate.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

@@ -105,6 +105,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء تحديد تاريخ");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -125,6 +126,7 @@ public class MainController implements Initializable {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(temp));
                 stage.setMaximized(true);
+                stage.initOwner(this.tfRecherche.getScene().getWindow());
                 stage.getIcons().add(new Image("Images/logo.png"));
                 stage.setTitle("مزرعة الجنوب");
                 stage.showAndWait();
@@ -148,6 +150,7 @@ public class MainController implements Initializable {
             Dialog<Boolean> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -175,6 +178,7 @@ public class MainController implements Initializable {
                     Stage stage = new Stage();
                     stage.setScene(new Scene(temp));
                     stage.setMaximized(true);
+                    stage.initOwner(this.tfRecherche.getScene().getWindow());
                     stage.getIcons().add(new Image("Images/logo.png"));
                     stage.setTitle("مزرعة الجنوب");
                     stage.showAndWait();
@@ -189,6 +193,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار وصل من اجل التعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -205,6 +210,7 @@ public class MainController implements Initializable {
 
                     Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                     alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                     alertConfirmation.setHeaderText("تاكيد الوصل");
                     alertConfirmation.setContentText("هل انت متاكد من تأكيد الوصل \n" +
                             "\" لا يمكن تعديل أو حذف الوصل بعد التاكيد  \"");
@@ -232,6 +238,7 @@ public class MainController implements Initializable {
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 alertWarning.setHeaderText("تأكيد ");
                 alertWarning.setContentText("الوصل مؤكد بالفعل");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -241,6 +248,7 @@ public class MainController implements Initializable {
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار وصل لتأكيده");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
@@ -259,6 +267,7 @@ public class MainController implements Initializable {
                     alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     alertConfirmation.setHeaderText("حذف الوصل");
                     alertConfirmation.setContentText("هل انت متاكد من حذف الوصل ");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                     Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
 
@@ -283,6 +292,7 @@ public class MainController implements Initializable {
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 alertWarning.setHeaderText("الحذف ");
                 alertWarning.setContentText("الوصل مؤكد بالفعل لا يمكنك حذفه");
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -292,6 +302,7 @@ public class MainController implements Initializable {
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار وصل لتأكيده");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
