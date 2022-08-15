@@ -124,30 +124,41 @@ public class MainController implements Initializable {
         Product product = table.getSelectionModel().getSelectedItem();
 
         if (product != null){
-            try {
+            if (product.getQte() == 0) {
+                try {
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة المنتج" );
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الارشفة");
+                    alertConfirmation.setContentText("هل انت متاكد من ارشفة المنتج");
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.AddToArchive(product);
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا تستطيع الارشفة ");
+                alertInformation.setContentText("لا تستطيع ارشفة المنتج الحالي لانه متبقي في المخزن");
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(product);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);

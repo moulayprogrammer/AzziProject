@@ -119,31 +119,42 @@ public class MainController implements Initializable {
         List<StringProperty> data = table.getSelectionModel().getSelectedItem();
 
         if (data != null){
-            try {
-                Provider provider = operation.get(Integer.parseInt(data.get(0).getValue()));
+            if (data.get(5).getValue().equals("0,00")) {
+                try {
+                    Provider provider = operation.get(Integer.parseInt(data.get(0).getValue()));
 
-                Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
-                alertConfirmation.setHeaderText("تاكيد الارشفة");
-                alertConfirmation.setContentText("هل انت متاكد من ارشفة المورد" );
-                alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
-                alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-                Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+                    alertConfirmation.setHeaderText("تاكيد الارشفة");
+                    alertConfirmation.setContentText("هل انت متاكد من ارشفة المورد");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
+                    alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
+                    okButton.setText("موافق");
+
+                    Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
+                    cancel.setText("الغاء");
+
+                    alertConfirmation.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.CANCEL) {
+                            alertConfirmation.close();
+                        } else if (response == ButtonType.OK) {
+                            operation.AddToArchive(provider);
+                            refresh();
+                        }
+                    });
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else {
+                Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
+                alertInformation.setHeaderText("لا تستطيع الارشفة ");
+                alertInformation.setContentText("لا تستطيع ارشفة المورد الحالي لا يزال يملك دين");
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
+                alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
-
-                Button cancel = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.CANCEL);
-                cancel.setText("الغاء");
-
-                alertConfirmation.showAndWait().ifPresent(response -> {
-                    if (response == ButtonType.CANCEL) {
-                        alertConfirmation.close();
-                    } else if (response == ButtonType.OK) {
-                        operation.AddToArchive(provider);
-                        refresh();
-                    }
-                });
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                alertInformation.showAndWait();
             }
         }else {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
