@@ -18,7 +18,7 @@
    <header>
       <AnchorPane prefHeight="50.0" style="-fx-background-color: #EFF;">
          <children>
-            <Label layoutX="14.0" layoutY="19.0" style="-fx-font-size: 25;" text="الغاء ارشفة المواد الخام" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Label layoutX="14.0" layoutY="19.0" style="-fx-font-size: 25;" text="الغاء ارشفةالانتاج" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
@@ -62,7 +62,7 @@
             </VBox>
             <HBox spacing="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button  defaultButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="35.0" prefWidth="150.0" styleClass="info" text="الغاء الارشفة" textFill="#2005a8">
+                  <Button defaultButton="true" minHeight="35.0" minWidth="150.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="35.0" prefWidth="150.0" styleClass="info" text="الغاء الارشفة" textFill="#2005a8">
                      <font>
                         <Font name="System Bold" size="15.0" />
                      </font>

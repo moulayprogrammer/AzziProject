@@ -1,5 +1,6 @@
 package Controllers;
 
+import Controllers.DeliveryArrivalMedicationControllers.MainController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -201,18 +202,10 @@ public class PrincipalController implements Initializable {
     @FXML
     private void ShowAddDeliveryArrivalMedicationScreen(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalMedicationViews/AddView.fxml"));
-            BorderPane temp = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(temp));
-            stage.setMaximized(true);
-            stage.getIcons().add(new Image("Images/logo.png"));
-            stage.setTitle("مزرعة الجنوب");
-            stage.resizableProperty().set(true);
-            stage.initOwner(this.mainPane.getScene().getWindow());
-            stage.showAndWait();
+            MainController mainController = new MainController();
+            mainController.ActionAdd();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -232,18 +225,10 @@ public class PrincipalController implements Initializable {
     @FXML
     private void ShowAddDeliveryArrivalRawMaterialScreen(){
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/AddView.fxml"));
-            BorderPane temp = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(temp));
-            stage.setMaximized(true);
-            stage.getIcons().add(new Image("Images/logo.png"));
-            stage.setTitle("مزرعة الجنوب");
-            stage.resizableProperty().set(true);
-            stage.initOwner(this.mainPane.getScene().getWindow());
-            stage.showAndWait();
+            Controllers.DeliveryArrivalRawMaterialControllers.MainController mainController = new Controllers.DeliveryArrivalRawMaterialControllers.MainController();
+            mainController.ActionAdd();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

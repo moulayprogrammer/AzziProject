@@ -10,76 +10,67 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #FFF;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ClientControllers.ArchiveController">
+<DialogPane expanded="true" minHeight="-Infinity" minWidth="-Infinity" nodeOrientation="RIGHT_TO_LEFT" prefHeight="500.0" prefWidth="520.0" style="-fx-background-color: #FFF;" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ClientControllers.ArchiveController">
    <content>
       <BorderPane>
          <center>
-            <VBox prefHeight="400.0" prefWidth="600.0">
+            <VBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="420.0" prefWidth="500.0" spacing="20.0">
                <children>
-                   <AnchorPane prefHeight="50.0" prefWidth="600.0" style="-fx-background-color: #FFF;">
-                       <children>
-                           <ImageView fitHeight="26.0" fitWidth="29.0" layoutX="640.0" layoutY="11.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
-                               <image>
-                                   <Image url="@../../Icons/refresh.jpeg" />
-                               </image>
-                           </ImageView>
-                           <ImageView fitHeight="29.0" fitWidth="35.0" layoutX="594.0" layoutY="9.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
-                               <image>
-                                   <Image url="@../../Icons/recherche.png.png" />
-                               </image>
-                           </ImageView>
-                           <TextField fx:id="tfRecherche" layoutX="1.0" layoutY="8.0" prefHeight="30.0" prefWidth="564.0">
+                  <HBox spacing="20.0">
+                     <children>
+                           <TextField fx:id="tfRecherche" prefHeight="30.0" HBox.hgrow="ALWAYS">
                                <font>
                                    <Font name="System Bold" size="13.0" />
                                </font>
                            </TextField>
-                       </children>
-                   </AnchorPane>
-                   <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="450.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+                           <ImageView fitHeight="29.0" fitWidth="35.0" onMousePressed="#ActionSearch" pickOnBounds="true" preserveRatio="true">
+                               <image>
+                                   <Image url="@../../Icons/recherche.png.png" />
+                               </image>
+                           </ImageView>
+                           <ImageView fitHeight="26.0" fitWidth="29.0" onMousePressed="#ActionRefresh" pickOnBounds="true" preserveRatio="true">
+                               <image>
+                                   <Image url="@../../Icons/refresh.jpeg" />
+                               </image>
+                           </ImageView>
+                     </children>
+                  </HBox>
+                   <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="330.0" prefWidth="500.0" BorderPane.alignment="CENTER">
                        <columns>
-                           <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
-                           <TableColumn fx:id="clName" prefWidth="280.0" text="الاسم" />
-                           <TableColumn fx:id="clAddress" prefWidth="280.0" text="العنوان" />
-                           <TableColumn fx:id="clActivity" prefWidth="280.0" text="النشاط" />
-                           <TableColumn fx:id="clNationalNumber" prefWidth="280.0" text="الرقم الوطني" />
+                           <TableColumn fx:id="clId" text="المعرف" />
+                           <TableColumn fx:id="clName" prefWidth="170.0" text="الاسم" />
+                           <TableColumn fx:id="clAddress" prefWidth="170.0" text="العنوان" />
+                           <TableColumn fx:id="clActivity" prefWidth="160.0" text="النشاط" />
+                           <TableColumn fx:id="clNationalNumber" prefWidth="170.0" text="الرقم الوطني" />
                        </columns>
                    </TableView>
+                  <HBox alignment="CENTER_RIGHT" spacing="20.0">
+                     <children>
+                        <Button fx:id="btnInsert" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="34.0" prefWidth="140.0" styleClass="info" text="الغاء الارشفة" textFill="#2005a8">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Button>
+                        <Button mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefHeight="32.0" prefWidth="140.0" styleClass="warning" text="الغاء" textFill="#dd0000">
+                           <font>
+                              <Font name="System Bold" size="15.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </center>
       </BorderPane>
    </content>
    <header>
-      <AnchorPane prefHeight="60.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
+      <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;">
          <children>
-            <Button fx:id="btnInsert" layoutX="645.0" layoutY="13.0" mnemonicParsing="false" onMousePressed="#ActionDeleteFromArchive" prefHeight="34.0" prefWidth="163.0" style="-fx-background-color: #FFF; -fx-border-color: #2005a8;" text="الغاء الارشفة" textFill="#2005a8" AnchorPane.rightAnchor="192.0">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/Save.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button layoutX="833.0" layoutY="13.0" mnemonicParsing="false" onMousePressed="#ActionAnnuler" prefHeight="32.0" prefWidth="144.0" style="-fx-background-color: #FFF; -fx-border-color: #dd0000;" text="الغاء" textFill="#dd0000">
-               <font>
-                  <Font name="System Bold" size="15.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="22.0" fitWidth="33.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../Icons/delete.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label layoutX="14.0" layoutY="19.0" text="الغاء ارشفة الزبائن">
+            <Label layoutX="14.0" layoutY="19.0" style="-fx-font-size: 25;" text="الغاء ارشفة الزبائن" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

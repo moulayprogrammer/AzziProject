@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReceiptRawMaterialControllers.MainController">
+<BorderPane nodeOrientation="RIGHT_TO_LEFT" prefHeight="690.0" prefWidth="1280.0" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ReceiptRawMaterialControllers.MainController">
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
@@ -33,17 +33,17 @@
                         <TableColumn fx:id="clDebt" prefWidth="180.0" text="المبلغ المدين" />
                     </columns>
                   </TableView>
-                  <AnchorPane style="-fx-background-color: #FFF; -fx-border-color: GRAY; -fx-border-width: 0.5;" HBox.hgrow="NEVER">
+                  <AnchorPane minWidth="-Infinity" prefWidth="255.0" style="-fx-background-color: #FFF; -fx-border-color: GRAY; -fx-border-width: 0.5;" HBox.hgrow="NEVER">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                      <children>
-                        <Label layoutX="9.0" layoutY="15.0" text="مجموع الفواتير" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="20.0">
+                        <Label layoutX="9.0" layoutY="15.0" style="-fx-font-size: 20;" text="مجموع الفواتير" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="20.0">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lbSumAmount" layoutX="37.0" layoutY="50.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5;" text="مجموع الفواتير" textAlignment="CENTER" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="60.0">
+                        <Label fx:id="lbSumAmount" layoutX="37.0" layoutY="50.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5; -fx-font-size: 23;" text="مجموع الفواتير" textAlignment="CENTER" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="60.0">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -51,12 +51,12 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                            </padding>
                         </Label>
-                        <Label layoutX="6.0" layoutY="131.0" text="مجموع المسدد">
+                        <Label layoutX="6.0" layoutY="131.0" style="-fx-font-size: 20;" text="مجموع المسدد">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lbSumPaying" layoutX="6.0" layoutY="171.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5;" text="مجموع الفواتير" textAlignment="CENTER">
+                        <Label fx:id="lbSumPaying" layoutX="6.0" layoutY="171.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5; -fx-font-size: 23;" text="مجموع الفواتير" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -64,12 +64,12 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                            </padding>
                         </Label>
-                        <Label layoutX="6.0" layoutY="251.0" text="مجموع الديون">
+                        <Label layoutX="6.0" layoutY="251.0" style="-fx-font-size: 20;" text="مجموع الديون">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lbSumDebt" layoutX="6.0" layoutY="291.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5;" text="مجموع الفواتير" textAlignment="CENTER">
+                        <Label fx:id="lbSumDebt" layoutX="6.0" layoutY="291.0" prefHeight="40.0" prefWidth="240.0" style="-fx-border-color: GRAY; -fx-border-radius: 2; -fx-border-width: 0.5; -fx-font-size: 23;" text="مجموع الفواتير" textAlignment="CENTER">
                            <font>
                               <Font name="System Bold" size="18.0" />
                            </font>
@@ -91,37 +91,19 @@
                <children>
                   <VBox alignment="CENTER" spacing="20.0" HBox.hgrow="NEVER">
                      <children>
-                        <HBox spacing="25.0">
-                           <children>
-                              <ImageView fitHeight="22.0" fitWidth="27.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/add.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/config.jpg" />
-                                 </image>
-                                 <viewport>
-                                    <Rectangle2D />
-                                 </viewport>
-                              </ImageView>
-                           </children>
-                        </HBox>
-                        <HBox spacing="20.0">
-                           <children>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionAddToArchive" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/addArchive.png" />
-                                 </image>
-                              </ImageView>
-                              <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionDeleteFromArchive" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../Icons/deleteArchive.png" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </HBox>
+                        <ImageView fitHeight="22.0" fitWidth="27.0" onMousePressed="#ActionAdd" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/add.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="26.0" fitWidth="26.0" onMousePressed="#ActionUpdate" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../Icons/config.jpg" />
+                           </image>
+                           <viewport>
+                              <Rectangle2D />
+                           </viewport>
+                        </ImageView>
                      </children>
                   </VBox>
                   <Separator maxHeight="100.0" maxWidth="5.0" minHeight="100.0" minWidth="5.0" orientation="VERTICAL" prefHeight="100.0" prefWidth="5.0" />
@@ -129,7 +111,7 @@
                      <children>
                         <HBox spacing="20.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="التاريخ" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" style="-fx-font-size: 16;" text="التاريخ" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -148,7 +130,7 @@
                         </HBox>
                         <HBox alignment="CENTER" prefWidth="200.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="من" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" style="-fx-font-size: 16;" text="من" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -158,7 +140,7 @@
                         </HBox>
                         <HBox alignment="CENTER" layoutX="10.0" layoutY="50.0" prefWidth="200.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="الى" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" style="-fx-font-size: 16;" text="الى" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -173,7 +155,7 @@
                      <children>
                         <HBox spacing="20.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="المورد" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" style="-fx-font-size: 16;" text="المورد" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -194,7 +176,7 @@
                      <children>
                         <HBox spacing="25.0">
                            <children>
-                              <Label maxWidth="1.7976931348623157E308" text="البحث" HBox.hgrow="ALWAYS">
+                              <Label maxWidth="1.7976931348623157E308" style="-fx-font-size: 18;" text="البحث" HBox.hgrow="ALWAYS">
                                  <font>
                                     <Font name="System Bold" size="14.0" />
                                  </font>
@@ -211,15 +193,11 @@
                               </ImageView>
                            </children>
                         </HBox>
-                        <HBox spacing="20.0">
-                           <children>
-                              <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="250.0" prefHeight="26.0" prefWidth="250.0">
-                                 <font>
-                                    <Font name="System Bold" size="12.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </HBox>
+                        <TextField fx:id="tfRecherche" maxWidth="25.0" minWidth="-Infinity" prefHeight="26.0" prefWidth="240.0">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </TextField>
                      </children>
                   </VBox>
                </children>

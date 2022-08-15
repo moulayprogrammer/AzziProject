@@ -115,7 +115,7 @@ public class AddController implements Initializable {
     }
 
     @FXML
-    private void ActionComboProvider(){
+    private void ActionComboClient(){
         int index = cbClient.getSelectionModel().getSelectedIndex();
         if (index >= 0 ) {
             selectedClient = idClientCombo.get(index);

@@ -31,7 +31,7 @@
             </HBox>
             <HBox layoutX="20.0" layoutY="212.0" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                <children>
-                  <Button contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowAddDeliveryArrivalRawMaterialScreen" style="-fx-min-width: 150; -fx-pref-width: 150; -fx-max-width: 150; -fx-font-size: 25;" styleClass="success" text="التوصيل" HBox.hgrow="ALWAYS" />
+                  <!--<Button contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowAddDeliveryArrivalRawMaterialScreen" style="-fx-min-width: 150; -fx-pref-width: 150; -fx-max-width: 150; -fx-font-size: 25;" styleClass="success" text="التوصيل" HBox.hgrow="ALWAYS" />-->
                   <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowDeliveryArrivalRawMaterialScreen" style="-fx-font-size: 25;" styleClass="warning" text="وصول التوصيل" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
@@ -60,7 +60,7 @@
             </HBox>
             <HBox layoutX="20.0" layoutY="212.0" prefHeight="100.0" prefWidth="200.0" spacing="30.0">
                <children>
-                  <Button contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowAddDeliveryArrivalMedicationScreen" style="-fx-min-width: 150; -fx-pref-width: 150; -fx-max-width: 150; -fx-font-size: 25;" styleClass="success" text="التوصيل" HBox.hgrow="ALWAYS" />
+                  <!--<Button contentDisplay="TOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowAddDeliveryArrivalMedicationScreen" style="-fx-min-width: 150; -fx-pref-width: 150; -fx-max-width: 150; -fx-font-size: 25;" styleClass="success" text="التوصيل" HBox.hgrow="ALWAYS" />-->
                   <Button layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ShowDeliveryArrivalMedicationScreen" style="-fx-font-size: 25;" styleClass="warning" text="وصول التوصيل" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

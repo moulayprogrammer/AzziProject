@@ -55,6 +55,7 @@ public class ArchiveController implements Initializable {
                 Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                 alertConfirmation.setHeaderText("تاكيد الارشفة");
                 alertConfirmation.setContentText("هل انت متاكد من الغاء ارشفة  المورد" );
+                alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                 alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -78,6 +79,7 @@ public class ArchiveController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار مورد لالغاء أرشفته");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

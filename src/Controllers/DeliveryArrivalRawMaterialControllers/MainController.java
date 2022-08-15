@@ -112,7 +112,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionAdd(){
+    public void ActionAdd(){
         try {
             selectReceipt();
 
@@ -142,7 +142,7 @@ public class MainController implements Initializable {
         try {
             this.receipt = new Receipt();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/SelectedReceiptMedicationView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/DeliveryArrivalRawMaterialViews/SelectedReceiptRawMaterialView.fxml"));
             DialogPane temp = loader.load();
             SelectedReceiptRawMaterialController controller = loader.getController();
             controller.Init(this.receipt);

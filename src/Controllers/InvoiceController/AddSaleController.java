@@ -150,6 +150,7 @@ public class AddSaleController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("الكمية ");
                 alertWarning.setContentText("الكمية غير متوفرة");
+                alertWarning.initOwner(this.tfNetProfit.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");

@@ -113,7 +113,7 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionAdd(){
+    public void ActionAdd(){
         try {
             selectReceipt();
 

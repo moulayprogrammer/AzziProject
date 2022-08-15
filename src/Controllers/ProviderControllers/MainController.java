@@ -254,6 +254,7 @@ public class MainController implements Initializable {
                                 alertInformation.setHeaderText("المبلغ المتبقي ");
                                 alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
                                 alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                                 okButton.setText("موافق");
                                 alertInformation.showAndWait();
@@ -265,6 +266,7 @@ public class MainController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.INFORMATION);
                     alertWarning.setHeaderText("لا يوجد دين ");
                     alertWarning.setContentText("المورد المختار يملك 0.0 دج دين ");
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -278,6 +280,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء اختيار مورد ");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
