@@ -56,6 +56,13 @@
                         <MenuItem mnemonicParsing="false" onAction="#ShowSpendScreen" text="المصاريف" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="الاحصائيات">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="التقرير اليومي" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="التقرير الشهري" />
+                        <MenuItem mnemonicParsing="false" onAction="#ShowStatisticScreen" text="التقرير الكلي" />
+                     </items>
+                  </Menu>
               </menus>
             </MenuBar>
             <Label fx:id="lbWindowName" maxWidth="1.7976931348623157E308" prefHeight="32.0" style="-fx-font-size: 15; -fx-background-color: #FFF;" text="الرئيسية">

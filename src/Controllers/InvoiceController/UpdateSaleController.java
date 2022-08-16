@@ -197,49 +197,6 @@ public class UpdateSaleController implements Initializable {
                                     if (qteRest == 0 ) break;
                                 }
 
-                                /*
-
-                                    boolean qteComplete = true ;
-                                    boolean notEx = true;
-                                    int qteConsInit = 0;
-                                    for (ComponentStoreProductTemp productTemp : storeProductTempsInit) {
-                                        if (productTemp.getIdProduct() == idProduct && productTemp.getIdProduction() == idProduction){
-                                            notEx = false;
-                                            if (productTemp.getQte() < qtePro){
-                                                qtePro -= productTemp.getQte();
-                                                qteConsInit = productTemp.getQte();
-                                                qteComplete = false;
-                                            }
-                                            break;
-                                        }
-                                    }
-                                    if (notEx) {
-
-                                    }else if (!qteComplete){
-                                        if (qtePro >= qteRest) {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteConsInit + qteRest);
-                                            componentStoreProductTemp.setQte(qteRest);
-
-                                            storeProducts_add.add(componentStoreProduct);
-                                            storeProductTemps_add.add(componentStoreProductTemp);
-                                            break;
-                                        } else {
-                                            componentStoreProduct.setQteConsumed(qteProConsumed + qteConsInit + qtePro);
-                                            componentStoreProductTemp.setQte(qtePro);
-
-                                            storeProducts_add.add(componentStoreProduct);
-                                            storeProductTemps_add.add(componentStoreProductTemp);
-                                            qteRest -= qtePro;
-                                        }
-                                    }
-                                }
-
-                                if (storeProducts_add.size() != 0 ){
-                                    storeProducts.addAll(storeProducts_add);
-                                    storeProductTemps.addAll(storeProductTemps_add);
-
-                                    UpdateFields(Integer.parseInt(stQte));
-                                }*/
 
                                 UpdateFields(Integer.parseInt(stQte));
 
@@ -290,7 +247,7 @@ public class UpdateSaleController implements Initializable {
                         ResultSet resultSet = preparedStmt.executeQuery();
 
                         if (resultSet.next()) {
-                            double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
+                            double costPro = resultSet.getDouble("التكلفة") ;
                             cost += costPro * storeProductTemp.getQte();
                         }
                     } catch (Exception e) {

@@ -271,6 +271,18 @@ public class  MainController implements Initializable {
     }
 
     @FXML
+    private void ShowStatisticScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/StatisticViews/MainView.fxml"));
+            BorderPane temp = loader.load();
+            lbWindowName.setText("المصاريف");
+            mainPane.setCenter(temp);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void Logout(){
         try {
             ((Stage)this.mainPane.getScene().getWindow()).close();

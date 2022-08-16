@@ -95,7 +95,7 @@ public class AddSaleController implements Initializable {
                             int qteProConsumed = resultSet.getInt("كمية_مستهلكة");
                             int qtePro = resultSet.getInt("كمية_مخزنة") - qteProConsumed;
                             double pricePro = resultSet.getDouble("سعر_البيع");
-                            double costPro = resultSet.getDouble("التكلفة") / resultSet.getInt("الكمية_المنتجة");
+                            double costPro = resultSet.getDouble("التكلفة") ;
 
                             ComponentStoreProduct componentStoreProduct = new ComponentStoreProduct();
                             componentStoreProduct.setIdComponent(idProduct);
