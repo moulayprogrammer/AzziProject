@@ -124,44 +124,42 @@ public class AddController implements Initializable {
                     componentStoreMedication.clear();
                     componentStoreMaterial.clear();
 
-                    for (int i = 0; i < componentProductionsMedication.size(); i++) {
-                        ComponentProduction production = componentProductionsMedication.get(i);
+                    for (ComponentProduction production : componentProductionsMedication) {
                         ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
 
                         int qteNeed = production.getQte() * qteProduction;
-                        for (int j = 0; j < CSM.size(); j++) {
+                        for (ComponentStore store : CSM) {
 
-                            int qteStored = CSM.get(j).getQteStored();
-                            int qteConsumed = CSM.get(j).getQteConsumed();
-                            double price = CSM.get(j).getPrice();
+                            int qteStored = store.getQteStored();
+                            int qteConsumed = store.getQteConsumed();
+                            double price = store.getPrice();
 
                             ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
-                            componentStoreTemp.setIdComponent(CSM.get(j).getIdComponent());
-                            componentStoreTemp.setIdDeliveryArrival(CSM.get(j).getIdDeliveryArrival());
+                            componentStoreTemp.setIdComponent(store.getIdComponent());
+                            componentStoreTemp.setIdDeliveryArrival(store.getIdDeliveryArrival());
 
-                            if ((qteStored - qteConsumed) >= qteNeed){
+                            if ((qteStored - qteConsumed) >= qteNeed) {
 
-                                priceProduction +=  qteNeed * price;
+                                priceProduction += qteNeed * price;
                                 componentStoreTemp.setQte(qteNeed);
                                 componentStoreMedicationTemp.add(componentStoreTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteNeed);
-                                componentStoreMedication.add(CSM.get(j));
+                                store.setQteConsumed(qteConsumed + qteNeed);
+                                componentStoreMedication.add(store);
                                 break;
 
-                            }else {
+                            } else {
 
                                 int qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
                                 componentStoreTemp.setQte(qteRest);
                                 componentStoreMedicationTemp.add(componentStoreTemp);
-                                CSM.get(j).setQteConsumed(qteConsumed + qteRest);
-                                componentStoreMedication.add(CSM.get(j));
+                                store.setQteConsumed(qteConsumed + qteRest);
+                                componentStoreMedication.add(store);
                             }
                         }
                     }
-                    for (int i = 0; i < componentProductionsMaterial.size(); i++) {
-                        ComponentProduction production = componentProductionsMaterial.get(i);
+                    for (ComponentProduction production : componentProductionsMaterial) {
                         ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
 
                         int qteNeed = production.getQte() * qteProduction;
@@ -224,41 +222,39 @@ public class AddController implements Initializable {
         boolean ex = true;
         try {
             if (conn.isClosed()) conn = connectBD.connect();
-            for (int i = 0; i < componentProductionsMedication.size(); i++) {
-                ComponentProduction componentProduction = componentProductionsMedication.get(i);
+            for (ComponentProduction componentProduction : componentProductionsMedication) {
                 try {
                     String query = "SELECT sum(كمية_مخزنة - كمية_مستهلكة) as كمية FROM تخزين_الادوية WHERE معرف_الدواء = ? ;";
                     PreparedStatement preparedStmt = conn.prepareStatement(query);
-                    preparedStmt.setInt(1,componentProduction.getIdComponent());
+                    preparedStmt.setInt(1, componentProduction.getIdComponent());
                     ResultSet resultSet = preparedStmt.executeQuery();
-                    int qteComponent = 0 ;
-                    if (resultSet.next()){
+                    int qteComponent = 0;
+                    if (resultSet.next()) {
                         qteComponent = resultSet.getInt("كمية");
                     }
                     if (qteComponent < (qte * componentProduction.getQte())) {
                         ex = false;
                         break;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            for (int i = 0; i < componentProductionsMaterial.size(); i++) {
-                ComponentProduction componentProduction = componentProductionsMaterial.get(i);
+            for (ComponentProduction componentProduction : componentProductionsMaterial) {
                 try {
                     String query = "SELECT sum(كمية_مخزنة - كمية_مستهلكة) as كمية FROM تخزين_المواد_الخام WHERE معرف_المادة_الخام = ? ;";
                     PreparedStatement preparedStmt = conn.prepareStatement(query);
-                    preparedStmt.setInt(1,componentProduction.getIdComponent());
+                    preparedStmt.setInt(1, componentProduction.getIdComponent());
                     ResultSet resultSet = preparedStmt.executeQuery();
-                    int qteComponent = 0 ;
-                    if (resultSet.next()){
+                    int qteComponent = 0;
+                    if (resultSet.next()) {
                         qteComponent = resultSet.getInt("كمية");
                     }
                     if (qteComponent < (qte * componentProduction.getQte())) {
                         ex = false;
                         break;
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
