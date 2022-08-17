@@ -249,6 +249,8 @@ public class MainController implements Initializable {
                             okButton.setText("موافق");
                             alertInformation.showAndWait();
                         }
+
+                        refresh();
                     }
                 });
 
