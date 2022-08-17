@@ -1,28 +1,16 @@
 package Controllers.StatisticControllers;
 
-import BddPackage.ClientOperation;
-import BddPackage.ComponentInvoiceOperation;
-import BddPackage.ConnectBD;
-import BddPackage.InvoiceOperation;
-import Models.Client;
-import Models.ComponentInvoice;
-import Models.Invoice;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import BddPackage.*;
+import Models.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
 import java.net.URL;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MainController implements Initializable {
 
@@ -33,44 +21,73 @@ public class MainController implements Initializable {
     @FXML
     Label lbSumDebtSales,lbSumPaySales,lbSumSales;
     @FXML
-    Label lbSumDebtSalesC,lbSumPaySalesC,lbSumSalesC;
-    @FXML
     Label lbQteStoreRM,lbSumStoreRM;
-    /*  @FXML
+    @FXML
+    Label lbQteStoreRMND,lbSumStoreRMND;
+    @FXML
     Label lbQteStoreM,lbSumStoreM;
     @FXML
-    Label lbQteStorePr,lbSumStorePr;*/
+    Label lbQteStoreMND,lbSumStoreMND;
+    @FXML
+    Label lbQteStorePr,lbSumStorePr;
     @FXML
     Label lbQteDamageRM,lbSumDamageRM;
     @FXML
     Label lbQteDamageM,lbSumDamageM;
     @FXML
     Label lbQteDamagePr,lbSumDamagePr;
-
-
-    private final ConnectBD connectBD = new ConnectBD();
-    private Connection conn;
+    @FXML
+    Label lbSumSpend;
+    @FXML
+    Label lbFund;
+    @FXML
+    Label lbCapital;
 
     private final InvoiceOperation invoiceOperation = new InvoiceOperation();
-    private final ClientOperation clientOperation = new ClientOperation();
+    private final ReceiptRawMaterialOperation receiptRawMaterialOperation = new ReceiptRawMaterialOperation();
+    private final ReceiptMedicationOperation receiptMedicationOperation = new ReceiptMedicationOperation();
+    private final DeliveryArrivalRawMaterialOperation deliveryArrivalRawMaterialOperation = new DeliveryArrivalRawMaterialOperation();
+    private final DeliveryArrivalMedicationOperation deliveryArrivalMedicationOperation = new DeliveryArrivalMedicationOperation();
+
+    private final DamageRawMaterialOperation damageRawMaterialOperation = new DamageRawMaterialOperation();
+    private final DamageMedicationOperation damageMedicationOperation = new DamageMedicationOperation();
+    private final DamageProductOperation damageProductOperation = new DamageProductOperation();
+    private final SpendOperation spendOperation = new SpendOperation();
+    private final ProductionOperation productionOperation = new ProductionOperation();
+
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
+    private final ComponentReceiptRawMaterialOperation componentReceiptRawMaterialOperation = new ComponentReceiptRawMaterialOperation();
+    private final ComponentReceiptMedicationOperation componentReceiptMedicationOperation = new ComponentReceiptMedicationOperation();
+    private final ComponentDeliveryArrivalRawMaterialOperation componentDeliveryArrivalRawMaterialOperation = new ComponentDeliveryArrivalRawMaterialOperation();
+    private final ComponentDeliveryArrivalMedicationOperation componentDeliveryArrivalMedicationOperation = new ComponentDeliveryArrivalMedicationOperation();
+    private final ComponentDamageRawMaterialOperation componentDamageRawMaterialOperation = new ComponentDamageRawMaterialOperation();
+    private final ComponentDamageMedicationOperation componentDamageMedicationOperation = new ComponentDamageMedicationOperation();
+    private final ComponentDamageProductOperation componentDamageProductOperation = new ComponentDamageProductOperation();
+    private final ComponentStoreRawMaterialOperation componentStoreRawMaterialOperation = new ComponentStoreRawMaterialOperation();
+    private final ComponentStoreRawMaterialTempOperation componentStoreRawMaterialTempOperation = new ComponentStoreRawMaterialTempOperation();
+    private final ComponentStoreMedicationOperation componentStoreMedicationOperation = new ComponentStoreMedicationOperation();
+    private final ComponentStoreMedicationTempOperation componentStoreMedicationTempOperation = new ComponentStoreMedicationTempOperation();
+    private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
+    private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+
 
     private double sumDebtPorchesRM = 0.0, sumPayPorchesRM = 0.0, sumPorchesRM = 0.0;
     private double sumDebtPorchesM = 0.0, sumPayPorchesM = 0.0, sumPorchesM = 0.0;
-    private double sumDebtSales = 0.0, sumPaySales = 0.0, sumSales = 0.0;
-    private double sumDebtSalesC = 0.0, sumPaySalesC = 0.0, sumSalesC = 0.0;
+    private double sumDebtSales, sumPaySales = 0.0, sumSales = 0.0;
     private double sumQteStoreRM = 0.0, sumStoreRM = 0.0;
+    private double sumQteStoreRMND = 0.0, sumStoreRMND = 0.0;
     private double sumQteStoreM = 0.0, sumStoreM = 0.0;
+    private double sumQteStoreMND = 0.0, sumStoreMND = 0.0;
     private double sumQteStorePr = 0.0, sumStorePr = 0.0;
 
     private double sumQteDamageRM = 0.0, sumDamageRM = 0.0;
     private double sumQteDamageM = 0.0, sumDamageM = 0.0;
     private double sumQteDamagePr = 0.0, sumDamagePr = 0.0;
+    private double sumSpend;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        conn = connectBD.connect();
 
         porchesRM();
         porchesM();
@@ -81,28 +98,29 @@ public class MainController implements Initializable {
         DamageRM();
         DamageM();
         DamagePr();
+        Spend();
+
+        sumFund();
+        sumCapital();
     }
 
     private void porchesRM(){
         try {
-            if (conn.isClosed()) conn = connectBD.connect();
-
-            String query = "SELECT  sum(فاتورة_شراء_المواد_الخام.الدفع)  AS payment, (SELECT sum(مشتريات_مواد_خام.سعر_الوحدة * مشتريات_مواد_خام.الكمية) FROM مشتريات_مواد_خام)  AS totalSum FROM فاتورة_شراء_المواد_الخام; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumPayPorchesRM = resultSet.getDouble("payment");
-                    sumPorchesRM = resultSet.getDouble("totalSum");
-                    sumDebtPorchesRM = sumPorchesRM - sumPayPorchesRM;
+            ArrayList<Receipt> receipts = receiptRawMaterialOperation.getAll();
+            for (Receipt receipt : receipts){
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAllByReceipt(receipt.getId());
+                double sumR = 0.0;
+                for (ComponentReceipt componentReceipt : componentReceipts){
+                    sumR += (componentReceipt.getQte() * componentReceipt.getPrice());
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                this.sumPorchesRM += sumR;
+                this.sumPayPorchesRM += receipt.getPaying();
             }
+            this.sumDebtPorchesRM = this.sumPorchesRM - this.sumPayPorchesRM;
+
             lbSumPorchesRM.setText(String.format(Locale.FRANCE, "%,.2f", sumPorchesRM));
             lbSumPayPorchesRM.setText(String.format(Locale.FRANCE, "%,.2f", sumPayPorchesRM));
             lbSumDebtPorchesRM.setText(String.format(Locale.FRANCE, "%,.2f", sumDebtPorchesRM));
-            conn.close();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -110,24 +128,22 @@ public class MainController implements Initializable {
 
     private void porchesM(){
         try {
-            if (conn.isClosed()) conn = connectBD.connect();
-
-            String query = "SELECT  sum(فاتورة_شراء_الدواء.الدفع)  AS payment, (SELECT sum(مشتريات_الدواء.سعر_الوحدة * مشتريات_الدواء.الكمية) FROM مشتريات_الدواء)  AS totalSum FROM فاتورة_شراء_الدواء; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumPayPorchesM = resultSet.getDouble("payment");
-                    sumPorchesM = resultSet.getDouble("totalSum");
-                    sumDebtPorchesM = sumPorchesM - sumPayPorchesM;
+            ArrayList<Receipt> receipts = receiptMedicationOperation.getAll();
+            for (Receipt receipt : receipts){
+                ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAllByReceipt(receipt.getId());
+                double sumR = 0.0;
+                for (ComponentReceipt componentReceipt : componentReceipts){
+                    sumR += (componentReceipt.getQte() * componentReceipt.getPrice());
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                this.sumPorchesM += sumR;
+                this.sumPayPorchesM += receipt.getPaying();
             }
+            this.sumDebtPorchesM = this.sumPorchesM - this.sumPayPorchesM;
+
             lbSumPorchesM.setText(String.format(Locale.FRANCE, "%,.2f", sumPorchesM));
             lbSumPayPorchesM.setText(String.format(Locale.FRANCE, "%,.2f", sumPayPorchesM));
             lbSumDebtPorchesM.setText(String.format(Locale.FRANCE, "%,.2f", sumDebtPorchesM));
-            conn.close();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -137,49 +153,24 @@ public class MainController implements Initializable {
         try {
             ArrayList<Invoice> invoices = invoiceOperation.getAll();
 
-            AtomicReference<Double> sumAmount = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPaying = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebt = new AtomicReference<>(0.0);
-
-            AtomicReference<Double> sumAmountC = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumPayingC = new AtomicReference<>(0.0);
-            AtomicReference<Double> sumDebtC = new AtomicReference<>(0.0);
-
-            invoices.forEach(invoice -> {
-
-                ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-                AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-                componentInvoices.forEach(componentInvoice -> {
-                    double pr = componentInvoice.getPrice() * componentInvoice.getQte();
-                    sumR.updateAndGet(v -> (double) (v + pr));
-                });
-
-                if (invoice.getConfirmation().equals("مأكد")){
-                    sumAmount.updateAndGet(v -> v + sumR.get());
-                    sumPaying.updateAndGet(v -> v + invoice.getPaying());
-                    sumDebt.updateAndGet(v -> v + (sumR.get() - invoice.getPaying()));
-                }else {
-                    sumAmountC.updateAndGet(v -> v + sumR.get());
-                    sumPayingC.updateAndGet(v -> v + invoice.getPaying());
-                    sumDebtC.updateAndGet(v -> v + (sumR.get() - invoice.getPaying()));
+            for (Invoice invoice : invoices){
+                if (invoice.getConfirmation().equals("مأكد")) {
+                    ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
+                    double sumR = 0.0;
+                    for (ComponentInvoice componentInvoice : componentInvoices) {
+                        sumR += (componentInvoice.getPrice() * componentInvoice.getQte());
+                    }
+                    this.sumSales += sumR;
+                    this.sumPaySales += invoice.getPaying();
                 }
-            });
+            }
 
-            this.sumSales = sumAmount.get();
-            this.sumDebtSales = sumDebt.get();
-            this.sumPaySales = sumPaying.get();
-
-            this.sumSalesC = sumAmountC.get();
-            this.sumDebtSalesC = sumDebtC.get();
-            this.sumPaySalesC = sumPayingC.get();
+            this.sumDebtSales = this.sumSales - this.sumPaySales;
 
             lbSumSales.setText(String.format(Locale.FRANCE, "%,.2f", sumSales));
             lbSumDebtSales.setText(String.format(Locale.FRANCE, "%,.2f", sumDebtSales));
             lbSumPaySales.setText(String.format(Locale.FRANCE, "%,.2f", sumPaySales));
 
-            lbSumSalesC.setText(String.format(Locale.FRANCE, "%,.2f", sumSalesC));
-            lbSumDebtSalesC.setText(String.format(Locale.FRANCE, "%,.2f", sumDebtSalesC));
-            lbSumPaySalesC.setText(String.format(Locale.FRANCE, "%,.2f", sumPaySalesC));
 
         }catch (Exception e){
             e.printStackTrace();
@@ -188,108 +179,141 @@ public class MainController implements Initializable {
 
     private void StoreRM(){
         try {
-            if (conn.isClosed()) conn = connectBD.connect();
-
-            String query = "SELECT sum((تخزين_المواد_الخام.كمية_مخزنة - تخزين_المواد_الخام.كمية_مستهلكة) *  تخزين_المواد_الخام.سعر_الوحدة ) AS  sumTotal , sum(تخزين_المواد_الخام.كمية_مخزنة - تخزين_المواد_الخام.كمية_مستهلكة) AS qteReste  FROM تخزين_المواد_الخام; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumStoreRM = resultSet.getDouble("sumTotal");
-                    sumQteStoreRM = resultSet.getDouble("qteReste");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            ArrayList<ComponentStore> componentStores = componentStoreRawMaterialOperation.getAll();
+            for (ComponentStore componentStore : componentStores){
+                int qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
+                this.sumStoreRM += (qte * componentStore.getPrice());
+                this.sumQteStoreRM += qte;
             }
 
-            query = "SELECT sum((تخزين_المواد_الخام.كمية_مخزنة - تخزين_المواد_الخام.كمية_مستهلكة) *  تخزين_المواد_الخام.سعر_الوحدة ) AS  sumTotal , sum(تخزين_المواد_الخام.كمية_مخزنة - تخزين_المواد_الخام.كمية_مستهلكة) AS qteReste  FROM تخزين_المواد_الخام; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumStoreRM = resultSet.getDouble("sumTotal");
-                    sumQteStoreRM = resultSet.getDouble("qteReste");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            ArrayList<ComponentStoreTemp> componentStoreTemps = componentStoreRawMaterialTempOperation.getAll();
+            for (ComponentStoreTemp componentStoreTemp : componentStoreTemps){
+                ComponentStore componentStore = componentStoreRawMaterialOperation.get(componentStoreTemp.getIdComponent(), componentStoreTemp.getIdDeliveryArrival());
+
+                this.sumStoreRM += (componentStoreTemp.getQte() * componentStore.getPrice());
+                this.sumQteStoreRM += componentStoreTemp.getQte();
             }
-
-            conn.close();
-
-
-
 
             lbSumStoreRM.setText(String.format(Locale.FRANCE, "%,.2f", sumStoreRM));
             lbQteStoreRM.setText(String.valueOf(sumQteStoreRM));
+
+            ArrayList<ComponentReceipt> componentReceipts = componentReceiptRawMaterialOperation.getAll();
+            for (ComponentReceipt componentReceipt : componentReceipts) {
+                int qteF = 0;
+
+                ArrayList<DeliveryArrival> deliveryArrivals = deliveryArrivalRawMaterialOperation.getAllByReceipt(componentReceipt.getIdReceipt());
+                for (DeliveryArrival deliveryArrival : deliveryArrivals){
+                    ComponentStore store = componentStoreRawMaterialOperation.get(componentReceipt.getIdComponent() , deliveryArrival.getId());
+                    ComponentDeliveryArrival componentDeliveryArrival = componentDeliveryArrivalRawMaterialOperation.getByDeliveryArrivalAndRawMaterial(deliveryArrival.getId(),componentReceipt.getIdComponent());
+
+                    if (store.getIdDeliveryArrival() != 0){
+                        qteF += componentDeliveryArrival.getQteReceipt();
+                    }
+                }
+
+                int qte = componentReceipt.getQte() - qteF;
+                sumQteStoreRMND += qte;
+                sumStoreRMND += (qte * componentReceipt.getPrice());
+            }
+
+            lbSumStoreRMND.setText(String.format(Locale.FRANCE, "%,.2f", sumStoreRMND));
+            lbQteStoreRMND.setText(String.valueOf(sumQteStoreRMND));
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     private void StoreM(){
-        /*try {
-            if (conn.isClosed()) conn = connectBD.connect();
-
-            String query = "SELECT sum((تخزين_الادوية.كمية_مخزنة - تخزين_الادوية.كمية_مستهلكة) *  تخزين_الادوية.سعر_الوحدة ) AS  sumTotal , sum(تخزين_الادوية.كمية_مخزنة - تخزين_الادوية.كمية_مستهلكة) AS qteReste  FROM تخزين_الادوية; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumStoreM = resultSet.getDouble("sumTotal");
-                    sumQteStoreM = resultSet.getDouble("qteReste");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try {
+            ArrayList<ComponentStore> componentStores = componentStoreMedicationOperation.getAll();
+            for (ComponentStore componentStore : componentStores){
+                int qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
+                this.sumStoreM += (qte * componentStore.getPrice());
+                this.sumQteStoreM += qte;
             }
+
+            ArrayList<ComponentStoreTemp> componentStoreTemps = componentStoreMedicationTempOperation.getAll();
+            for (ComponentStoreTemp componentStoreTemp : componentStoreTemps){
+                ComponentStore componentStore = componentStoreMedicationOperation.get(componentStoreTemp.getIdComponent(), componentStoreTemp.getIdDeliveryArrival());
+
+                this.sumStoreM += (componentStoreTemp.getQte() * componentStore.getPrice());
+                this.sumQteStoreM += componentStoreTemp.getQte();
+            }
+
             lbSumStoreM.setText(String.format(Locale.FRANCE, "%,.2f", sumStoreM));
             lbQteStoreM.setText(String.valueOf(sumQteStoreM));
-            conn.close();
+
+            ArrayList<ComponentReceipt> componentReceipts = componentReceiptMedicationOperation.getAll();
+            for (ComponentReceipt componentReceipt : componentReceipts) {
+                int qteF = 0;
+
+                ArrayList<DeliveryArrival> deliveryArrivals = deliveryArrivalMedicationOperation.getAllByReceipt(componentReceipt.getIdReceipt());
+                for (DeliveryArrival deliveryArrival : deliveryArrivals){
+                    ComponentStore store = componentStoreMedicationOperation.get(componentReceipt.getIdComponent() , deliveryArrival.getId());
+                    ComponentDeliveryArrival componentDeliveryArrival = componentDeliveryArrivalMedicationOperation.getByDeliveryArrivalAndMedication(deliveryArrival.getId(),componentReceipt.getIdComponent());
+
+                    if (store.getIdDeliveryArrival() != 0){
+                        qteF += componentDeliveryArrival.getQteReceipt();
+                    }
+                }
+
+                int qte = componentReceipt.getQte() - qteF;
+                sumQteStoreMND += qte;
+                sumStoreMND += (qte * componentReceipt.getPrice());
+            }
+
+            lbSumStoreMND.setText(String.format(Locale.FRANCE, "%,.2f", sumStoreMND));
+            lbQteStoreMND.setText(String.valueOf(sumQteStoreMND));
+
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void StorePr(){
-        /*try {
-            if (conn.isClosed()) conn = connectBD.connect();
+        try {
+            ArrayList<ComponentStoreProduct> componentStoreProducts = componentStoreProductOperation.getAll();
+            for (ComponentStoreProduct componentStoreProduct : componentStoreProducts){
+                Production production = productionOperation.get(componentStoreProduct.getIdProduction());
 
-            String query = "SELECT sum((كمية_مخزنة - كمية_مستهلكة) * التكلفة) AS sumTotal , sum(كمية_مخزنة - كمية_مستهلكة) AS qteReste FROM تخزين_منتج, الانتاج WHERE تخزين_منتج.معرف_الانتاج = الانتاج.المعرف ; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumQteStorePr = resultSet.getDouble("sumTotal");
-                    sumStorePr = resultSet.getDouble("qteReste");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                this.sumStorePr += ((componentStoreProduct.getQteStored() - componentStoreProduct.getQteConsumed()) * production.getPrice());
+                this.sumQteStorePr += (componentStoreProduct.getQteStored() - componentStoreProduct.getQteConsumed());
             }
-            lbSumStorePr.setText(String.format(Locale.FRANCE, "%,.2f", sumQteStorePr));
-            lbQteStorePr.setText(String.valueOf(sumStorePr));
-            conn.close();
+
+            ArrayList<ComponentStoreProductTemp> componentStoreProductTemps = componentStoreProductTempOperation.getAll();
+            for (ComponentStoreProductTemp componentStoreProductTemp : componentStoreProductTemps){
+                Production production = productionOperation.get(componentStoreProductTemp.getIdProduction());
+
+                this.sumStorePr += (componentStoreProductTemp.getQte()  * production.getPrice());
+                this.sumQteStorePr += componentStoreProductTemp.getQte();
+            }
+
+            lbSumStorePr.setText(String.format(Locale.FRANCE, "%,.2f", sumStorePr));
+            lbQteStorePr.setText(String.valueOf(sumQteStorePr));
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
+
     }
 
     private void DamageRM(){
         try {
-            if (conn.isClosed()) conn = connectBD.connect();
+            ArrayList<Damage> damages = damageRawMaterialOperation.getAll();
 
-            String query = "SELECT sum(الكمية * سعر_الوحدة) AS sumTotal , الكمية  FROM المواد_الخام_التالفة, تخزين_المواد_الخام WHERE المواد_الخام_التالفة.معرف_المادة = تخزين_المواد_الخام.معرف_المادة_الخام AND المواد_الخام_التالفة.معرف_التوصيل = تخزين_المواد_الخام.معرف_وصل_التوصيل";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumDamageRM = resultSet.getDouble("sumTotal");
-                    sumQteDamageRM = resultSet.getDouble("الكمية");
+            for (Damage damage : damages){
+                ArrayList<ComponentDamage> componentDamages = componentDamageRawMaterialOperation.getAllByDamage(damage.getId());
+
+                for (ComponentDamage componentDamage : componentDamages){
+                    ComponentStore store = componentStoreRawMaterialOperation.get(componentDamage.getIdComponent(), componentDamage.getIdReference());
+                    this.sumDamageRM += (componentDamage.getQte() * store.getPrice());
+                    this.sumQteDamageRM += componentDamage.getQte();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+
             lbSumDamageRM.setText(String.format(Locale.FRANCE, "%,.2f", sumDamageRM));
             lbQteDamageRM.setText(String.valueOf(sumQteDamageRM));
-            conn.close();
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -297,48 +321,84 @@ public class MainController implements Initializable {
 
     private void DamageM(){
         try {
-            if (conn.isClosed()) conn = connectBD.connect();
+            ArrayList<Damage> damages = damageMedicationOperation.getAll();
 
-            String query = "SELECT sum(الكمية * سعر_الوحدة) AS sumTotal , الكمية  FROM الادوية_التالفة, تخزين_الادوية WHERE الادوية_التالفة.معرف_الدواء = تخزين_الادوية.معرف_الدواء AND الادوية_التالفة.معرف_التوصيل = تخزين_الادوية.معرف_وصل_التوصيل ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumDamageM = resultSet.getDouble("sumTotal");
-                    sumQteDamageM = resultSet.getDouble("الكمية");
+            for (Damage damage : damages){
+                ArrayList<ComponentDamage> componentDamages = componentDamageMedicationOperation.getAllByDamage(damage.getId());
+
+                for (ComponentDamage componentDamage : componentDamages){
+                    ComponentStore store = componentStoreMedicationOperation.get(componentDamage.getIdComponent(), componentDamage.getIdReference());
+                    this.sumDamageM += (componentDamage.getQte() * store.getPrice());
+                    this.sumQteDamageM += componentDamage.getQte();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
+
             lbSumDamageM.setText(String.format(Locale.FRANCE, "%,.2f", sumDamageM));
             lbQteDamageM.setText(String.valueOf(sumQteDamageM));
-            conn.close();
+
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     private void DamagePr(){
-        /*try {
-            if (conn.isClosed()) conn = connectBD.connect();
+        try {
+            ArrayList<Damage> damages = damageProductOperation.getAll();
 
-            String query = "SELECT sum((كمية_مخزنة - كمية_مستهلكة) * التكلفة) AS sumTotal , sum(كمية_مخزنة - كمية_مستهلكة) AS qteReste FROM تخزين_منتج, الانتاج WHERE تخزين_منتج.معرف_الانتاج = الانتاج.المعرف ; ";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                if (resultSet.next()){
-                    sumQteStorePr = resultSet.getDouble("sumTotal");
-                    sumStorePr = resultSet.getDouble("qteReste");
+            for (Damage damage : damages){
+                ArrayList<ComponentDamage> componentDamages = componentDamageProductOperation.getAllByDamage(damage.getId());
+
+                for (ComponentDamage componentDamage : componentDamages){
+                    Production production = productionOperation.get(componentDamage.getIdReference());
+
+                    this.sumDamagePr += (componentDamage.getQte() * production.getPrice());
+                    this.sumQteDamagePr += componentDamage.getQte();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-            lbSumStorePr.setText(String.format(Locale.FRANCE, "%,.2f", sumQteStorePr));
-            lbQteStorePr.setText(String.valueOf(sumStorePr));
-            conn.close();
+
+            lbSumDamagePr.setText(String.format(Locale.FRANCE, "%,.2f", sumDamagePr));
+            lbQteDamagePr.setText(String.valueOf(sumQteDamagePr));
+
         }catch (Exception e){
             e.printStackTrace();
-        }*/
+        }
+    }
+
+    private void Spend(){
+        try {
+            ArrayList<Spend> spends = spendOperation.getAll();
+
+            for (Spend spend : spends){
+                this.sumSpend += spend.getPrice();
+            }
+
+            lbSumSpend.setText(String.format(Locale.FRANCE, "%,.2f", sumSpend));
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void sumFund(){
+        double stores = sumStoreRM + sumStoreM + sumStorePr + sumStoreRMND + sumStoreMND ;
+        double sales = sumSales;
+        double debtSales = sumDebtSales;
+        double porches = sumPorchesRM + sumPorchesM;
+        double debtPorches = sumDebtPorchesRM + sumDebtPorchesM;
+        double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
+
+        double fund = stores + sales + debtPorches - porches - debtSales - spends;
+        lbFund.setText(String.format(Locale.FRANCE, "%,.2f", fund));
+    }
+
+    private void sumCapital(){
+        double stores = sumStoreRM + sumStoreM + sumStorePr + sumStoreRMND + sumStoreMND ;
+        double sales = sumSales;
+        double porches = sumPorchesRM + sumPorchesM;
+        double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
+
+        double capital = stores + sales - porches - spends;
+        lbCapital.setText(String.format(Locale.FRANCE, "%,.2f", capital));
     }
 
 }

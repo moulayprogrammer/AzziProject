@@ -69,7 +69,25 @@ public class ComponentReceiptRawMaterialOperation extends BDD<ComponentReceipt> 
 
     @Override
     public ArrayList<ComponentReceipt> getAll() {
-        return null;
+        ArrayList<ComponentReceipt> list = new ArrayList<>();
+        String query = "SELECT * FROM مشتريات_مواد_خام ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentReceipt componentReceipt = new ComponentReceipt();
+                componentReceipt.setIdReceipt(resultSet.getInt("معرف_الفاتورة"));
+                componentReceipt.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
+                componentReceipt.setQte(resultSet.getInt("الكمية"));
+                componentReceipt.setPrice(resultSet.getDouble("سعر_الوحدة"));
+
+                list.add(componentReceipt);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public ArrayList<ComponentReceipt> getAllByReceipt(int idReceipt) {

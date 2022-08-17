@@ -100,10 +100,10 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
     }
 
 
-    public ArrayList<ComponentDeliveryArrival> getAllByDeliveryArrivalAndMedication(int idDeliveryArrival , int idMedication) {
+    public ComponentDeliveryArrival getByDeliveryArrivalAndMedication(int idDeliveryArrival , int idMedication) {
         connectDatabase();
-        ArrayList<ComponentDeliveryArrival> list = new ArrayList<>();
-        String query = "SELECT * FROM توصيل_الدواء WHERE ارشيف = 0 AND معرف_الوصل = ? AND  معرف_الدواء = ?";
+        ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
+        String query = "SELECT * FROM توصيل_الدواء WHERE  معرف_الوصل = ? AND  معرف_الدواء = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idDeliveryArrival);
@@ -111,19 +111,18 @@ public class ComponentDeliveryArrivalMedicationOperation extends BDD<ComponentDe
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 
-                ComponentDeliveryArrival componentDeliveryArrival = new ComponentDeliveryArrival();
+
                 componentDeliveryArrival.setIdDeliveryArrival(resultSet.getInt("معرف_الوصل"));
                 componentDeliveryArrival.setIdComponent(resultSet.getInt("معرف_الدواء"));
                 componentDeliveryArrival.setQteReceipt(resultSet.getInt("الكمية_المفوترة"));
                 componentDeliveryArrival.setQteReal(resultSet.getInt("الكمية_الموصلة"));
 
-                list.add(componentDeliveryArrival);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         closeDatabase();
-        return list;
+        return componentDeliveryArrival;
     }
 
 }

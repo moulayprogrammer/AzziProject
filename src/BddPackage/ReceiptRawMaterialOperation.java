@@ -79,7 +79,7 @@ public class ReceiptRawMaterialOperation extends BDD<Receipt> {
     @Override
     public ArrayList<Receipt> getAll() {
         ArrayList<Receipt> list = new ArrayList<>();
-        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام WHERE ارشيف = 0";
+        String query = "SELECT * FROM فاتورة_شراء_المواد_الخام ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();

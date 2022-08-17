@@ -59,7 +59,29 @@ public class ComponentStoreMedicationTempOperation extends BDD<ComponentStoreTem
 
     @Override
     public ArrayList<ComponentStoreTemp> getAll() {
-        return null;
+        connectDatabase();
+        ArrayList<ComponentStoreTemp> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_الادوية_مؤقت_للانتاج ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
+
+                componentStoreTemp.setId(resultSet.getInt("المعرف"));
+                componentStoreTemp.setIdComponent(resultSet.getInt("معرف_الدواء"));
+                componentStoreTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
+                componentStoreTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                componentStoreTemp.setQte(resultSet.getInt("الكمية"));
+
+                list.add(componentStoreTemp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
     }
 
     public ArrayList<ComponentStoreTemp> getAllByProduction(int idProduction) {

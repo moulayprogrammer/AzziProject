@@ -202,6 +202,7 @@ public class AddController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -219,6 +220,7 @@ public class AddController implements Initializable {
         TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("التسديد");
+        dialog.initOwner(this.tfRecherche.getScene().getWindow());
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
         dialog.setHeaderText("ادخل السعر المسدد ");
         dialog.setContentText("السعر :");
@@ -301,6 +303,7 @@ public class AddController implements Initializable {
                     TextInputDialog dialog = new TextInputDialog();
 
                     dialog.setTitle("السعر");
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     dialog.setHeaderText("ادخل سعر الشراء ");
                     dialog.setContentText("السعر :");
@@ -346,6 +349,7 @@ public class AddController implements Initializable {
             TextInputDialog dialog = new TextInputDialog();
 
             dialog.setTitle("الكمية");
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             dialog.setHeaderText("تعديل الكمية ");
             dialog.setContentText("الكمية :");
@@ -371,6 +375,7 @@ public class AddController implements Initializable {
             TextInputDialog dialog = new TextInputDialog();
 
             dialog.setTitle("السعر");
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             dialog.setHeaderText("تعديل السعر ");
             dialog.setContentText("السعر :");

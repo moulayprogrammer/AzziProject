@@ -79,7 +79,28 @@ public class ComponentStoreProductTempOperation extends BDD<ComponentStoreProduc
 
     @Override
     public ArrayList<ComponentStoreProductTemp> getAll() {
-        return null;
+        connectDatabase();
+        ArrayList<ComponentStoreProductTemp> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_منتجات_مؤقت_للبيع  ;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreProductTemp storeProductTemp = new ComponentStoreProductTemp();
+                storeProductTemp.setId(resultSet.getInt("المعرف"));
+                storeProductTemp.setIdInvoice(resultSet.getInt("معرف_فاتورة_البيع"));
+                storeProductTemp.setIdProduct(resultSet.getInt("معرف_المنتج"));
+                storeProductTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                storeProductTemp.setQte(resultSet.getInt("الكمية"));
+
+                list.add(storeProductTemp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
     }
 
     public ArrayList<ComponentStoreProductTemp> getAllByInvoice(int idInvoice){

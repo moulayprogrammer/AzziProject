@@ -123,17 +123,6 @@ public class  MainController implements Initializable {
     }
 
     @FXML
-    private void ShowStoreScreen(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/StoreViews/MainView.fxml"));
-            BorderPane temp = loader.load();
-            mainPane.setCenter(temp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     private void ShowReceiptMedicationScreen(){
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptMedicationViews/MainView.fxml"));
@@ -152,23 +141,6 @@ public class  MainController implements Initializable {
             BorderPane temp = loader.load();
             lbWindowName.setText("فواتير شراء المواد الخام");
             mainPane.setCenter(temp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void ShowAddReceiptRawMaterialScreen(){
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ReceiptRawMaterialViews/AddView.fxml"));
-            BorderPane temp = loader.load();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(temp));
-            stage.setMaximized(true);
-            stage.getIcons().add(new Image("Images/logo.png"));
-            stage.setTitle("مزرعة الجنوب");
-            stage.initOwner(this.mainPane.getScene().getWindow());
-            stage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -275,7 +247,7 @@ public class  MainController implements Initializable {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/StatisticViews/MainView.fxml"));
             BorderPane temp = loader.load();
-            lbWindowName.setText("المصاريف");
+            lbWindowName.setText("الاحصائيات الكلية");
             mainPane.setCenter(temp);
         } catch (IOException e) {
             e.printStackTrace();

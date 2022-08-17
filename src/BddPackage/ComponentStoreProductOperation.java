@@ -71,7 +71,29 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
 
     @Override
     public ArrayList<ComponentStoreProduct> getAll() {
-        return null;
+        connectDatabase();
+        ArrayList<ComponentStoreProduct> list = new ArrayList<>();
+        String query = "SELECT * FROM تخزين_منتج WHERE (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين DESC;";
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(query);
+            ResultSet resultSet = preparedStmt.executeQuery();
+            while (resultSet.next()){
+
+                ComponentStoreProduct storeProduct = new ComponentStoreProduct();
+                storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
+                storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
+                storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
+                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
+
+                list.add(storeProduct);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        closeDatabase();
+        return list;
     }
 
     public ComponentStoreProduct get(int idProduct , int idProduction) {
