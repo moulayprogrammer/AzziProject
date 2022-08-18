@@ -58,8 +58,6 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="الاحصائيات">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#ShowProviderScreen" text="التقرير اليومي" />
-                        <MenuItem mnemonicParsing="false" onAction="#ShowDeliveryScreen" text="التقرير الشهري" />
                         <MenuItem mnemonicParsing="false" onAction="#ShowStatisticScreen" text="التقرير الكلي" />
                      </items>
                   </Menu>

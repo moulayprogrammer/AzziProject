@@ -9,6 +9,24 @@
         <element id="library" level="project" name="controlsfx-8.40.11" />
         <element id="library" level="project" name="jfoenix-8.1.8" />
         <element id="library" level="project" name="sqlite-jdbc-3.30.1" />
+        <element id="library" level="project" name="barcodes-7.2.3" />
+        <element id="library" level="project" name="commons-7.2.3" />
+        <element id="library" level="project" name="commons-io-2.9.0" />
+        <element id="library" level="project" name="forms-7.2.3" />
+        <element id="library" level="project" name="html2pdf-4.0.3" />
+        <element id="library" level="project" name="hyph-7.2.3" />
+        <element id="library" level="project" name="io-7.2.3" />
+        <element id="library" level="project" name="jfoenix-8.0.2" />
+        <element id="library" level="project" name="kernel-7.2.3" />
+        <element id="library" level="project" name="layout-7.2.3" />
+        <element id="library" level="project" name="pdfa-7.2.3" />
+        <element id="library" level="project" name="pdftest-7.2.3" />
+        <element id="library" level="project" name="slf4j-api-1.7.31" />
+        <element id="library" level="project" name="slf4j-simple-1.7.9" />
+        <element id="library" level="project" name="sqlite-jdbc-3.20.1" />
+        <element id="library" level="project" name="styled-xml-parser-7.2.3" />
+        <element id="library" level="project" name="svg-7.2.3" />
+        <element id="library" level="project" name="typography-3.0.1" />
       </element>
       <element id="directory" name="src">
         <element id="directory" name="Database">

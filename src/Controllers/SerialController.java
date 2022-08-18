@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,15 +54,15 @@ public class SerialController implements Initializable {
             if (loginPasswordPasswordField.getText().isEmpty()) {
                 loginPasswordPasswordField.setStyle(errorStyle);
             }
-        } else if (loginPasswordPasswordField.getText().equals("M")){
+        } else if (loginPasswordPasswordField.getText().equals("MOULAYzine<3ACHORAholwa")){
 
             try {
-                String FileFolder = System.getenv("APPDATA") + File.separator + "Production" ;
+                String FileFolder = System.getenv("APPDATA") + File.separator + "TSP" ;
 
                 File directory = new File(FileFolder);
 
                 if (!directory.exists()) {
-                    directory.mkdir();
+                    FileUtils.forceMkdir(directory);
                 }
 
                 File file = new File(directory.getAbsolutePath() + File.separator + "data.ml");
@@ -73,14 +74,20 @@ public class SerialController implements Initializable {
                     Process SerialNumberProcess = Runtime.getRuntime().exec(command);
                     InputStreamReader ISR = new InputStreamReader(SerialNumberProcess.getInputStream());
                     BufferedReader br = new BufferedReader(ISR);
-                    String serialNumber = br.readLine().trim();
+                    String serialNumber = "";
+                    for (String line = br.readLine(); line != null; line = br.readLine()) {
+                        if (line.length() < 1 || line.startsWith("SerialNumber")) {
+                            continue;
+                        }
+                        serialNumber = line;
+                        break;
+                    }
                     SerialNumberProcess.waitFor();
                     br.close();
 
                     // write the serial and the code to the file
                     FileWriter writer = new FileWriter(file);
-                    String code = "moulay + achoura = lalla soltana " + serialNumber;
-                    System.out.println(String.valueOf(code.hashCode()));
+                    String code = "moulay + achoura = lalla soltana <3 " + serialNumber;
                     writer.write( String.valueOf(code.hashCode()));
                     writer.close();
 
@@ -105,7 +112,7 @@ public class SerialController implements Initializable {
                 e.printStackTrace();
             }
         }else {
-            invalidLoginCredentials.setText("رقم التسجيل غالط ");
+            invalidLoginCredentials.setText("رقم التسجيل خطأ ");
             invalidLoginCredentials.setStyle(errorMessage);
         }
     }

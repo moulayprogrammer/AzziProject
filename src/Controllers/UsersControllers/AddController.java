@@ -48,6 +48,7 @@ public class AddController implements Initializable {
         String passwordConfirm = tfPasswordConfirm.getText().trim();
 
 
+
         if (!username.isEmpty() && !password.isEmpty() && !passwordConfirm.isEmpty() ){
 
             if (password.equals(passwordConfirm)) {

@@ -22,9 +22,9 @@ public class ConnectBD {
 
         try {
             conn = DriverManager.getConnection(url);
-            if (conn != null) {
+            /*if (conn != null) {
                 System.out.println("Connected to the database");
-            }
+            }*/
         } catch (SQLException ex) {
             System.out.println("An error occurred. Maybe user/password is invalid");
             ex.printStackTrace();
