@@ -159,7 +159,7 @@ public class AddController implements Initializable {
         try {
             ArrayList<Client> clients = clientOperation.getAll();
             clients.forEach(client -> {
-                comboClientData.add(client.getName());
+                comboClientData.add(client.getName()  + " " + client.getReference());
                 idClientCombo.add(client.getId());
             });
             cbClient.setItems(comboClientData);

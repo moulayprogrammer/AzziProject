@@ -358,18 +358,12 @@ public class MainController implements Initializable {
         comboClientData.clear();
         idClientCombo.clear();
         try {
-            String query = "SELECT * FROM زبون  WHERE ارشيف = 0;";
-            try {
-                PreparedStatement preparedStmt = conn.prepareStatement(query);
-                ResultSet resultSet = preparedStmt.executeQuery();
-                while (resultSet.next()){
-                    comboClientData.add(resultSet.getString("الاسم"));
-                    idClientCombo.add(resultSet.getInt("المعرف"));
-                }
-                cbClient.setItems(comboClientData);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            ArrayList<Client> clients = clientOperation.getAll();
+            clients.forEach(client -> {
+                comboClientData.add(client.getName()  + " " + client.getReference());
+                idClientCombo.add(client.getId());
+            });
+            cbClient.setItems(comboClientData);
         }catch (Exception e){
             e.printStackTrace();
         }
