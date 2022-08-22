@@ -85,6 +85,11 @@ public class MainController implements Initializable {
     private double sumQteDamagePr = 0.0, sumDamagePr = 0.0;
     private double sumSpend;
 
+    private double capitalPrincipal = 48870000.0;
+    private double fundPrincipal = 19370000.0;
+
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -380,14 +385,15 @@ public class MainController implements Initializable {
     }
 
     private void sumFund(){
-        double stores = sumStoreRM + sumStoreM + sumStorePr + sumStoreRMND + sumStoreMND ;
+//        double stores = sumStoreRM + sumStoreM + sumStorePr + sumStoreRMND + sumStoreMND ;
         double sales = sumSales;
         double debtSales = sumDebtSales;
-        double porches = sumPorchesRM + sumPorchesM;
+        double payPorches = sumPayPorchesRM + sumPayPorchesM;
         double debtPorches = sumDebtPorchesRM + sumDebtPorchesM;
-        double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
 
-        double fund = stores + sales + debtPorches - porches - debtSales - spends;
+//        double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
+
+        double fund = fundPrincipal + 14710000 + sumPaySales - payPorches ;
         lbFund.setText(String.format(Locale.FRANCE, "%,.2f", fund));
     }
 
@@ -397,7 +403,7 @@ public class MainController implements Initializable {
         double porches = sumPorchesRM + sumPorchesM;
         double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
 
-        double capital = stores + sales - porches - spends;
+        double capital = capitalPrincipal +  stores + sales - porches - spends;
         lbCapital.setText(String.format(Locale.FRANCE, "%,.2f", capital));
     }
 
