@@ -69,9 +69,9 @@ public class Print {
                     .append("<div class=\"sub_title\" style=\"margin-top: -45px;\" >")
 
                     .append("<h6 class=\"label\">usinesud@gmail.com</h6>")
-                    .append("<h6 class=\"label\" style=\"margin-right: 20px;\">  البريد الالكتروني : </h6>")
+                    .append("<h6 class=\"label\" style=\"margin-right: 5px;\">  البريد الالكتروني : </h6>")
                     .append("<h6 class=\"label\">0660764614</h6>")
-                    .append("<h6 class=\"label\">  رقم الهاتف : </h6>")
+                    .append("<h6 class=\"label\"> رقم الهاتف : </h6>")
 
                     .append("</div>")
                     .append("</div>")
@@ -271,7 +271,7 @@ public class Print {
                     .append("<div class=\"sub_title\" style=\"margin-top: -45px;\" >")
 
                     .append("<h6 class=\"label\">usinesud@gmail.com</h6>")
-                    .append("<h6 class=\"label\" style=\"margin-right: 20px;\">  البريد الالكتروني : </h6>")
+                    .append("<h6 class=\"label\" style=\"margin-right: 5px;\">  البريد الالكتروني : </h6>")
                     .append("<h6 class=\"label\">0660764614</h6>")
                     .append("<h6 class=\"label\">  رقم الهاتف : </h6>")
 
