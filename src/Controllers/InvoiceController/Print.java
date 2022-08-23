@@ -77,7 +77,8 @@ public class Print {
                     .append("</div>")
                     .append("<div class=\"bloc\" style=\"margin-top: -10px;\" >")
                     .append("<img src=")
-                    .append("src/Images/logoN.jpeg \">")
+                    .append(System.getProperty("user.dir"))
+                    .append("/src/Images/logoN.jpeg \">")
                     .append("</div>")
                     .append("</div>")
 
@@ -223,7 +224,7 @@ public class Print {
 
                     ConverterProperties converterProperties = new ConverterProperties();
 
-                    final String FONT = "src/resource/HSDream-Regular.otf";
+                    final String FONT = System.getProperty("user.dir") + "/src/resource/HSDream-Regular.otf";
                     FontProvider fontProvider = new DefaultFontProvider(true, true, true);
                     FontProgram fontProgram = FontProgramFactory.createFont(FONT);
                     fontProvider.addFont(fontProgram, "HSDream-Regular");
@@ -279,33 +280,11 @@ public class Print {
                     .append("</div>")
                     .append("<div class=\"bloc\" style=\"margin-top: -10px;\" >")
                     .append("<img src=")
-                    .append("src/Images/logoN.jpeg \">")
+                    .append(System.getProperty("user.dir"))
+                    .append("/src/Images/logoN.jpeg \">")
                     .append("</div>")
                     .append("</div>")
 
-                    /*.append("<div id=\"block_container\" style=\"margin-left: 15px;\" >")
-                    .append("<div class=\"bloc\" style=\"margin-right: 10px; margin-top: 10px;\" >")
-                    .append("<h1 id=\"title\">")
-                    .append("وصــــــل المخـــــــــزن")
-                    .append("</h1>")
-                    .append("<h6 class=\"sub_title\" style=\"margin-top: 0px;\" >")
-                    .append("العنوان : طريق الوزن الثقيل تبركات - تمنراست")
-                    .append("</h6>")
-                    .append("<div class=\"sub_title\" style=\"margin-top: -30px;\" >")
-
-                    .append("<h6 class=\"label\">usinesud@gmail.com</h6>")
-                    .append("<h6 class=\"label\" style=\"margin-right: 5px;\">  البريد الالكتروني : </h6>")
-                    .append("<h6 class=\"label\">0660764614</h6>")
-                    .append("<h6 class=\"label\">  رقم الهاتف : </h6>")
-
-                    .append("</div>")
-                    .append("</div>")
-                    .append("<div class=\"bloc\" style=\"margin-top: 5px;\" >")
-                    .append("<img src=")
-                    .append("src/Images/logoN.jpeg \">")
-                    .append("</div>")
-                    .append("</div>")
-*/
                     // end header div
 
                     // info div
@@ -408,7 +387,7 @@ public class Print {
 
                     ConverterProperties converterProperties = new ConverterProperties();
 
-                    final String FONT = "src/resource/HSDream-Regular.otf";
+                    final String FONT = System.getProperty("user.dir") + "/src/resource/HSDream-Regular.otf";
                     FontProvider fontProvider = new DefaultFontProvider(true, true, true);
                     FontProgram fontProgram = FontProgramFactory.createFont(FONT);
                     fontProvider.addFont(fontProgram, "HSDream-Regular");
