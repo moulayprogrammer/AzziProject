@@ -20,7 +20,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
             preparedStmt.setInt(1,o.getIdDamage());
             preparedStmt.setInt(2,o.getIdComponent());
             preparedStmt.setInt(3,o.getIdReference());
-            preparedStmt.setInt(4,o.getQte());
+            preparedStmt.setDouble(4,o.getQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -41,7 +41,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
         String query = "UPDATE المواد_الخام_التالفة SET   الكمية = ? WHERE معرف_التلف = ? AND معرف_المادة = ? AND معرف_التوصيل = ? ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o.getQte());
+            preparedStmt.setDouble(1,o.getQte());
             preparedStmt.setInt(2,o.getIdDamage());
             preparedStmt.setInt(3,o.getIdComponent());
             preparedStmt.setInt(4,o.getIdReference());
@@ -94,7 +94,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
                 componentDamage.setIdDamage(resultSet.getInt("معرف_التلف"));
                 componentDamage.setIdComponent(resultSet.getInt("معرف_المادة"));
                 componentDamage.setIdReference(resultSet.getInt("معرف_التوصيل"));
-                componentDamage.setQte(resultSet.getInt("الكمية"));
+                componentDamage.setQte(resultSet.getDouble("الكمية"));
 
                 list.add(componentDamage);
             }
@@ -119,7 +119,7 @@ public class ComponentDamageRawMaterialOperation extends BDD<ComponentDamage> {
                 componentDamage.setIdDamage(resultSet.getInt("معرف_التلف"));
                 componentDamage.setIdComponent(resultSet.getInt("معرف_المادة"));
                 componentDamage.setIdReference(resultSet.getInt("معرف_التوصيل"));
-                componentDamage.setQte(resultSet.getInt("الكمية"));
+                componentDamage.setQte(resultSet.getDouble("الكمية"));
 
                 list.add(componentDamage);
             }

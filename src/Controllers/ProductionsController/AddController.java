@@ -127,11 +127,11 @@ public class AddController implements Initializable {
                     for (ComponentProduction production : componentProductionsMedication) {
                         ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(production.getIdComponent());
 
-                        int qteNeed = production.getQte() * qteProduction;
+                        double qteNeed = production.getQte() * qteProduction;
                         for (ComponentStore store : CSM) {
 
-                            int qteStored = store.getQteStored();
-                            int qteConsumed = store.getQteConsumed();
+                            double qteStored = store.getQteStored();
+                            double qteConsumed = store.getQteConsumed();
                             double price = store.getPrice();
 
                             ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
@@ -149,7 +149,7 @@ public class AddController implements Initializable {
 
                             } else {
 
-                                int qteRest = qteStored - qteConsumed;
+                                double qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
                                 componentStoreTemp.setQte(qteRest);
@@ -162,11 +162,11 @@ public class AddController implements Initializable {
                     for (ComponentProduction production : componentProductionsMaterial) {
                         ArrayList<ComponentStore> CSM = componentStoreMaterialOperation.getAllByMaterialOrderByDate(production.getIdComponent());
 
-                        int qteNeed = production.getQte() * qteProduction;
+                        double qteNeed = production.getQte() * qteProduction;
                         for (ComponentStore store : CSM) {
 
-                            int qteStored = store.getQteStored();
-                            int qteConsumed = store.getQteConsumed();
+                            double qteStored = store.getQteStored();
+                            double qteConsumed = store.getQteConsumed();
                             double price = store.getPrice();
 
                             ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
@@ -184,7 +184,7 @@ public class AddController implements Initializable {
 
                             } else {
 
-                                int qteRest = qteStored - qteConsumed;
+                                double qteRest = qteStored - qteConsumed;
                                 qteNeed -= qteRest;
                                 priceProduction += qteRest * price;
                                 componentStoreTemp.setQte(qteRest);

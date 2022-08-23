@@ -17,7 +17,7 @@ public class ComponentProductionRawMaterialOperation extends BDD<ComponentProduc
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o.getIdProduct());
             preparedStmt.setInt(2,o.getIdComponent());
-            preparedStmt.setInt(3,o.getQte());
+            preparedStmt.setDouble(3,o.getQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -32,7 +32,7 @@ public class ComponentProductionRawMaterialOperation extends BDD<ComponentProduc
         String query = "UPDATE خلطة_المواد_الخام SET الكمية= ? WHERE معرف_المنتج = ? AND معرف_المادة_الخام = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o1.getQte());
+            preparedStmt.setDouble(1,o1.getQte());
             preparedStmt.setInt(2,o2.getIdProduct());
             preparedStmt.setInt(3,o2.getIdComponent());
 
@@ -83,7 +83,7 @@ public class ComponentProductionRawMaterialOperation extends BDD<ComponentProduc
                 ComponentProduction component = new ComponentProduction();
                 component.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
                 component.setIdProduct(resultSet.getInt("معرف_المنتج"));
-                component.setQte(resultSet.getInt("الكمية"));
+                component.setQte(resultSet.getDouble("الكمية"));
 
                 list.add(component);
             }

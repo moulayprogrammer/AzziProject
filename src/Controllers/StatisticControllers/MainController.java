@@ -184,7 +184,7 @@ public class MainController implements Initializable {
         try {
             ArrayList<ComponentStore> componentStores = componentStoreRawMaterialOperation.getAll();
             for (ComponentStore componentStore : componentStores){
-                int qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
+                double qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
                 this.sumStoreRM += (qte * componentStore.getPrice());
                 this.sumQteStoreRM += qte;
             }
@@ -231,7 +231,7 @@ public class MainController implements Initializable {
         try {
             ArrayList<ComponentStore> componentStores = componentStoreMedicationOperation.getAll();
             for (ComponentStore componentStore : componentStores){
-                int qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
+                double qte = (componentStore.getQteStored() - componentStore.getQteConsumed());
                 this.sumStoreM += (qte * componentStore.getPrice());
                 this.sumQteStoreM += qte;
             }

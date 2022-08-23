@@ -162,7 +162,7 @@ public class UpdateController implements Initializable {
                 data.add(new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add(new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add(new SimpleStringProperty(resultSet.getString("المرجع")));
-                data.add(new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية"))));
+                data.add(new SimpleStringProperty(String.valueOf(resultSet.getDouble("الكمية"))));
 
                 dataTable.add(data);
             }
@@ -185,7 +185,7 @@ public class UpdateController implements Initializable {
                 data.add(new SimpleStringProperty(String.valueOf(resultSet.getInt("المعرف"))));
                 data.add(new SimpleStringProperty(resultSet.getString("الاسم")));
                 data.add(new SimpleStringProperty(resultSet.getString("المرجع")));
-                data.add(new SimpleStringProperty(String.valueOf(resultSet.getInt("الكمية"))));
+                data.add(new SimpleStringProperty(String.valueOf(resultSet.getDouble("الكمية"))));
 
                 dataTable.add(data);
             }
@@ -210,7 +210,7 @@ public class UpdateController implements Initializable {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
                 try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
+                    double val = Double.parseDouble(dataTable.get(ex).get(4).getValue());
 //                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
 
                     ComponentProduction componentProduction = new ComponentProduction();
@@ -241,7 +241,7 @@ public class UpdateController implements Initializable {
                     ComponentProduction componentProduction = new ComponentProduction();
                     componentProduction.setIdComponent(Integer.parseInt(dataSelected.get(1).getValue()));
                     componentProduction.setIdProduct(productUpdated.getId());
-                    componentProduction.setQte(1);
+                    componentProduction.setQte(1.0);
                     switch (dataSelected.get(0).getValue()){
                         case "med":
                             insertComponentMedication(componentProduction);
@@ -294,7 +294,7 @@ public class UpdateController implements Initializable {
                         ComponentProduction componentProduction = new ComponentProduction();
                         componentProduction.setIdComponent(Integer.parseInt(dataTable.get(ex).get(1).getValue()));
                         componentProduction.setIdProduct(productUpdated.getId());
-                        componentProduction.setQte(Integer.parseInt(qte));
+                        componentProduction.setQte(Double.parseDouble(qte));
                         switch (dataTable.get(ex).get(0).getValue()) {
                             case "med":
                                 updateComponentMedication(componentProduction);
@@ -330,7 +330,7 @@ public class UpdateController implements Initializable {
                         ComponentProduction componentProduction = new ComponentProduction();
                         componentProduction.setIdComponent(Integer.parseInt(dataSelected.get(1).getValue()));
                         componentProduction.setIdProduct(productUpdated.getId());
-                        componentProduction.setQte(Integer.parseInt(qte));
+                        componentProduction.setQte(Double.parseDouble(qte));
                         switch (dataSelected.get(0).getValue()){
                             case "med":
                                 insertComponentMedication(componentProduction);
@@ -377,7 +377,7 @@ public class UpdateController implements Initializable {
                 ComponentProduction componentProduction = new ComponentProduction();
                 componentProduction.setIdComponent(Integer.parseInt(dataTable.get(compoSelectedIndex).get(1).getValue()));
                 componentProduction.setIdProduct(productUpdated.getId());
-                componentProduction.setQte(Integer.parseInt(qte));
+                componentProduction.setQte(Double.parseDouble(qte));
                 switch (dataTable.get(compoSelectedIndex).get(0).getValue()) {
                     case "med":
                         updateComponentMedication(componentProduction);

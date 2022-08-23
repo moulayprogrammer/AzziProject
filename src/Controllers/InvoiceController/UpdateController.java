@@ -59,6 +59,7 @@ public class UpdateController implements Initializable {
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
     private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
     private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+    private final PaymentsClientOperation paymentsClientOperation = new PaymentsClientOperation();
     private final HashMap<Integer,List<ComponentStoreProduct>> storeProducts = new HashMap<>();
     private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTemps = new HashMap<>();
     private final HashMap<Integer,List<ComponentStoreProduct>> storeProductsInit = new HashMap<>();
@@ -258,7 +259,7 @@ public class UpdateController implements Initializable {
     }
 
     @FXML
-    private void ActionComboProvider(){
+    private void ActionComboClient(){
         int index = cbClient.getSelectionModel().getSelectedIndex();
         if (index >= 0 ) {
             selectedClient = idClientCombo.get(index);
@@ -389,6 +390,7 @@ public class UpdateController implements Initializable {
 
     private void payDebtClient(double pr){
         ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
+        double pri = pr;
         for (Invoice invoice : invoices) {
             ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
             AtomicReference<Double> sumR = new AtomicReference<>(0.0);
@@ -410,6 +412,16 @@ public class UpdateController implements Initializable {
                 }
             }
         }
+
+        // insert payment
+        pri = pri - pr;
+        Payments payments = new Payments();
+        payments.setIdPayer(selectedClient);
+        payments.setDate(LocalDate.now());
+        payments.setPay(pri);
+        payments.setRest(debt - pri);
+        paymentsClientOperation.insert(payments);
+
         if (pr > 0 ){
             Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
             alertInformation.setHeaderText("المبلغ المتبقي ");

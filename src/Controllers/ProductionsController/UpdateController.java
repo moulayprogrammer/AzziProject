@@ -136,8 +136,8 @@ public class UpdateController implements Initializable {
 
                     for (ComponentStore componentStore : CSM) {
 
-                        int qteStored = componentStore.getQteStored();
-                        int qteConsumed = componentStore.getQteConsumed();
+                        double qteStored = componentStore.getQteStored();
+                        double qteConsumed = componentStore.getQteConsumed();
                         double price = componentStore.getPrice();
 
                         ComponentStoreTemp componentStoreTemp = new ComponentStoreTemp();
@@ -155,7 +155,7 @@ public class UpdateController implements Initializable {
 
                         } else {
 
-                            int qteRest = qteStored - qteConsumed;
+                            double qteRest = qteStored - qteConsumed;
                             qteNeed -= qteRest;
                             priceProduction += qteRest * price;
                             componentStoreTemp.setQte(qteRest);

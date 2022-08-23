@@ -6,7 +6,7 @@ public class ComponentStoreTemp {
     private int idComponent;
     private int idDeliveryArrival;
     private int idProduction;
-    private int qte;
+    private double qte;
 
     public ComponentStoreTemp() {
     }
@@ -15,15 +15,15 @@ public class ComponentStoreTemp {
         this.idProduction = idProduction;
     }
 
-    public ComponentStoreTemp(int id, int idComponent, int idDeliveryArrival, int qte) {
+    public ComponentStoreTemp(int id, int idComponent, int idDeliveryArrival, int idProduction, double qte) {
         this.id = id;
         this.idComponent = idComponent;
         this.idDeliveryArrival = idDeliveryArrival;
+        this.idProduction = idProduction;
         this.qte = qte;
     }
 
-    public ComponentStoreTemp(int id, int idComponent, int idDeliveryArrival, int idProduction, int qte) {
-        this.id = id;
+    public ComponentStoreTemp(int idComponent, int idDeliveryArrival, int idProduction, double qte) {
         this.idComponent = idComponent;
         this.idDeliveryArrival = idDeliveryArrival;
         this.idProduction = idProduction;
@@ -62,11 +62,11 @@ public class ComponentStoreTemp {
         this.idProduction = idProduction;
     }
 
-    public int getQte() {
+    public double getQte() {
         return qte;
     }
 
-    public void setQte(int qte) {
+    public void setQte(double qte) {
         this.qte = qte;
     }
 }

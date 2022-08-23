@@ -8,8 +8,8 @@ public class ComponentStoreProduct {
     private int idProduction;
     private LocalDate dateStore;
     private double priceHt;
-    private int qteStored;
-    private int qteConsumed;
+    private double qteStored;
+    private double qteConsumed;
 
     public ComponentStoreProduct() {
     }
@@ -63,19 +63,19 @@ public class ComponentStoreProduct {
         this.priceHt = priceHt;
     }
 
-    public int getQteStored() {
+    public double getQteStored() {
         return qteStored;
     }
 
-    public void setQteStored(int qteStored) {
+    public void setQteStored(double qteStored) {
         this.qteStored = qteStored;
     }
 
-    public int getQteConsumed() {
+    public double getQteConsumed() {
         return qteConsumed;
     }
 
-    public void setQteConsumed(int qteConsumed) {
+    public void setQteConsumed(double qteConsumed) {
         this.qteConsumed = qteConsumed;
     }
 }

@@ -142,7 +142,7 @@ public class AddController implements Initializable {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
                 try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
+                    double val = Double.parseDouble(dataTable.get(ex).get(4).getValue());
                     dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
                 }catch (Exception e){
                     e.printStackTrace();
@@ -184,7 +184,7 @@ public class AddController implements Initializable {
             int ex = exist(dataSelected);
             if ( ex != -1 ){
                 try {
-                    int val = Integer.parseInt(dataTable.get(ex).get(4).getValue());
+                    double val = Double.parseDouble(dataTable.get(ex).get(4).getValue());
                     dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
                 }catch (Exception e){
                     e.printStackTrace();
@@ -306,7 +306,7 @@ public class AddController implements Initializable {
         dataTable.forEach(stringProperties -> {
             String type =  stringProperties.get(0).getValue();
             int id = Integer.parseInt(stringProperties.get(1).getValue());
-            int qte = Integer.parseInt(stringProperties.get(4).getValue());
+            double qte = Double.parseDouble(stringProperties.get(4).getValue());
 
             ComponentProduction componentProduction = new ComponentProduction();
             componentProduction.setIdComponent(id);

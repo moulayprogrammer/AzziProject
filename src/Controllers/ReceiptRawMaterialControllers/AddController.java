@@ -400,6 +400,7 @@ public class AddController implements Initializable {
         int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();
         if (compoSelectedIndex != -1){
             dataTable.remove(compoSelectedIndex);
+            priceList.remove(compoSelectedIndex);
             tablePurchases.setItems(dataTable);
 
             sumTotalTablePorches();

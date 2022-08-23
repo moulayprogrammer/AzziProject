@@ -185,8 +185,8 @@ public class UpdateController implements Initializable {
                     ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(idMedication);
 
                     for (ComponentStore store : CSM) {
-                        int qteStored = store.getQteStored();
-                        int qteConsumed = store.getQteConsumed();
+                        double qteStored = store.getQteStored();
+                        double qteConsumed = store.getQteConsumed();
 
                         ComponentDamage damage = new ComponentDamage();
                         damage.setIdDamage(this.selectDamage.getId());
@@ -203,7 +203,7 @@ public class UpdateController implements Initializable {
 
                         } else {
 
-                            int qteRestPr = qteStored - qteConsumed;
+                            double qteRestPr = qteStored - qteConsumed;
                             qteRest -= qteRestPr;
                             damage.setQte(qteRestPr);
                             insertComponentDamage(damage);

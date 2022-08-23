@@ -5,12 +5,12 @@ public class ComponentDamage {
     private int idDamage;
     private int idComponent;
     private int idReference;
-    private int qte;
+    private double qte;
 
     public ComponentDamage() {
     }
 
-    public ComponentDamage(int idDamage, int idComponent, int idReference, int qte) {
+    public ComponentDamage(int idDamage, int idComponent, int idReference, double qte) {
         this.idDamage = idDamage;
         this.idComponent = idComponent;
         this.idReference = idReference;
@@ -41,11 +41,11 @@ public class ComponentDamage {
         this.idReference = idReference;
     }
 
-    public int getQte() {
+    public double getQte() {
         return qte;
     }
 
-    public void setQte(int qte) {
+    public void setQte(double qte) {
         this.qte = qte;
     }
 }

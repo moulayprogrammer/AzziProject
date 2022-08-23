@@ -1,9 +1,7 @@
 package BddPackage;
 
 
-import Models.ComponentStore;
 import Models.ComponentStoreProduct;
-import Models.ComponentStoreProductTemp;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -24,8 +22,8 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
             preparedStmt.setInt(2,o.getIdComponent());
             preparedStmt.setDate(3, Date.valueOf(o.getDateStore()));
             preparedStmt.setDouble(4,o.getPriceHt());
-            preparedStmt.setInt(5,o.getQteStored());
-            preparedStmt.setInt(6,o.getQteConsumed());
+            preparedStmt.setDouble(5,o.getQteStored());
+            preparedStmt.setDouble(6,o.getQteConsumed());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -46,7 +44,7 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
         String query = "UPDATE تخزين_منتج SET كمية_مستهلكة = ? WHERE معرف_الانتاج = ? AND معرف_المنتج = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o.getQteConsumed());
+            preparedStmt.setDouble(1,o.getQteConsumed());
             preparedStmt.setInt(2,o.getIdProduction());
             preparedStmt.setInt(3,o.getIdComponent());
 
@@ -83,8 +81,8 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
                 storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
                 storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
                 storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
-                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
                 storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
 
                 list.add(storeProduct);
@@ -110,8 +108,8 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
                 storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
                 storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
                 storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
-                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
                 storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
             }
         } catch (SQLException e) {
@@ -135,8 +133,8 @@ public class ComponentStoreProductOperation extends BDD<ComponentStoreProduct> {
                 storeProduct.setIdProduction(resultSet.getInt("معرف_الانتاج"));
                 storeProduct.setIdComponent(resultSet.getInt("معرف_المنتج"));
                 storeProduct.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
-                storeProduct.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                storeProduct.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                storeProduct.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                storeProduct.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
                 storeProduct.setPriceHt(resultSet.getDouble("سعر_البيع"));
 
                 list.add(storeProduct);

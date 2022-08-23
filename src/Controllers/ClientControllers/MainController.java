@@ -3,9 +3,11 @@ package Controllers.ClientControllers;
 import BddPackage.ClientOperation;
 import BddPackage.ComponentInvoiceOperation;
 import BddPackage.InvoiceOperation;
+import BddPackage.PaymentsClientOperation;
 import Models.Client;
 import Models.ComponentInvoice;
 import Models.Invoice;
+import Models.Payments;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -18,11 +20,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 
-import javax.swing.text.rtf.RTFEditorKit;
+
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
@@ -41,8 +43,9 @@ public class MainController implements Initializable {
     private final ClientOperation operation = new ClientOperation();
     private final InvoiceOperation invoiceOperation = new InvoiceOperation();
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
+    private final PaymentsClientOperation paymentsClientOperation = new PaymentsClientOperation();
 
-
+    private final ArrayList<Double> debtList = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -198,6 +201,7 @@ public class MainController implements Initializable {
 
     @FXML
     private void ActionPayDebtClient(){
+        int index = table.getSelectionModel().getSelectedIndex();
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null) {
             try {
@@ -239,6 +243,17 @@ public class MainController implements Initializable {
                                 }
                             }
                         }
+
+                        // insert payment
+                        double pri = Double.parseDouble(price) - pr;
+                        Payments payments = new Payments();
+                        payments.setIdPayer(client.getId());
+                        payments.setDate(LocalDate.now());
+                        payments.setPay(pri);
+                        payments.setRest(this.debtList.get(index) - pri);
+                        paymentsClientOperation.insert(payments);
+
+
                         if (pr > 0 ){
                             Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                             alertInformation.setHeaderText("المبلغ المتبقي ");
@@ -267,9 +282,6 @@ public class MainController implements Initializable {
             okButton.setText("موافق");
             alertWarning.showAndWait();
         }
-
-
-
     }
 
     private void PayDebtInvoice(int invoiceId , double price) {
@@ -287,8 +299,46 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    private void ActionPayDebtList(){
+        List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
+
+        if (data != null){
+            try {
+                Client client = operation.get(Integer.parseInt(data.get(0).getValue()));
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/Views/ClientViews/PaymentClientView.fxml"));
+                DialogPane temp = loader.load();
+                PaymentClientController controller = loader.getController();
+                controller.Init(client);
+                Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setDialogPane(temp);
+                dialog.resizableProperty().setValue(false);
+                dialog.initOwner(this.tfRecherche.getScene().getWindow());
+                dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+                Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+                closeButton.setVisible(false);
+                dialog.showAndWait();
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            Alert alertWarning = new Alert(Alert.AlertType.WARNING);
+            alertWarning.setHeaderText("تحذير");
+            alertWarning.setContentText("الرجاء اختيار زبون من اجل رؤية المدفوعات");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
+            alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setText("موافق");
+            alertWarning.showAndWait();
+        }
+    }
+
     private void refresh(){
         dataTable.clear();
+        debtList.clear();
         try {
             ArrayList<Client> clients = operation.getAll();
             clients.forEach(client -> {
@@ -320,6 +370,7 @@ public class MainController implements Initializable {
                 data.add(7, new SimpleStringProperty(client.getActivity()));
                 data.add(8, new SimpleStringProperty(client.getNationalNumber()));
 
+                debtList.add(debt);
                 dataTable.add(data);
             });
             table.setItems(dataTable);

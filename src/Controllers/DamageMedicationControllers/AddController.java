@@ -142,8 +142,8 @@ public class AddController implements Initializable {
             ArrayList<ComponentStore> CSM = componentStoreMedicationOperation.getAllByMedicationOrderByDate(idMedication);
 
             for (ComponentStore store : CSM) {
-                int qteStored = store.getQteStored();
-                int qteConsumed = store.getQteConsumed();
+                double qteStored = store.getQteStored();
+                double qteConsumed = store.getQteConsumed();
 
                 ComponentDamage damage = new ComponentDamage();
                 damage.setIdDamage(idDamage);
@@ -160,7 +160,7 @@ public class AddController implements Initializable {
 
                 } else {
 
-                    int qteRest = qteStored - qteConsumed;
+                    double qteRest = qteStored - qteConsumed;
                     qte -= qteRest;
                     damage.setQte(qteRest);
                     insertComponentDamage(damage);

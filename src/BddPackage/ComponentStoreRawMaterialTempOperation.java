@@ -19,7 +19,7 @@ public class ComponentStoreRawMaterialTempOperation extends BDD<ComponentStoreTe
             preparedStmt.setInt(1,o.getIdComponent());
             preparedStmt.setInt(2,o.getIdDeliveryArrival());
             preparedStmt.setInt(3, o.getIdProduction());
-            preparedStmt.setInt(4,o.getQte());
+            preparedStmt.setDouble(4,o.getQte());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -73,7 +73,7 @@ public class ComponentStoreRawMaterialTempOperation extends BDD<ComponentStoreTe
                 componentStoreTemp.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
                 componentStoreTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStoreTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
-                componentStoreTemp.setQte(resultSet.getInt("الكمية"));
+                componentStoreTemp.setQte(resultSet.getDouble("الكمية"));
 
                 list.add(componentStoreTemp);
             }
@@ -100,7 +100,7 @@ public class ComponentStoreRawMaterialTempOperation extends BDD<ComponentStoreTe
                 componentStoreTemp.setIdComponent(resultSet.getInt("معرف_المادة_الخام"));
                 componentStoreTemp.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStoreTemp.setIdProduction(resultSet.getInt("معرف_الانتاج"));
-                componentStoreTemp.setQte(resultSet.getInt("الكمية"));
+                componentStoreTemp.setQte(resultSet.getDouble("الكمية"));
 
                 list.add(componentStoreTemp);
             }

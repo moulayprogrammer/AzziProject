@@ -54,6 +54,7 @@ public class AddController implements Initializable {
     private final ComponentInvoiceOperation componentInvoiceOperation = new ComponentInvoiceOperation();
     private final ComponentStoreProductOperation componentStoreProductOperation = new ComponentStoreProductOperation();
     private final ComponentStoreProductTempOperation componentStoreProductTempOperation = new ComponentStoreProductTempOperation();
+    private final PaymentsClientOperation paymentsClientOperation = new PaymentsClientOperation();
     private final HashMap<Integer,List<ComponentStoreProduct>> storeProducts = new HashMap<>();
     private final HashMap<Integer,List<ComponentStoreProductTemp>> storeProductTemps = new HashMap<>();
 
@@ -61,6 +62,8 @@ public class AddController implements Initializable {
     private final List<Double> priceList = new ArrayList<>();
     private final ObservableList<String> comboClientData = FXCollections.observableArrayList();
     private final List<Integer> idClientCombo = new ArrayList<>();
+
+
     private int selectedClient = 0;
     private double totalFacture = 0;
     private double debt;
@@ -245,6 +248,7 @@ public class AddController implements Initializable {
 
     private void payDebtClient(double pr){
         ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
+        double pri = pr;
         for (Invoice invoice : invoices) {
             ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
             AtomicReference<Double> sumR = new AtomicReference<>(0.0);
@@ -266,6 +270,16 @@ public class AddController implements Initializable {
                 }
             }
         }
+
+        // insert payment
+        pri = pri - pr;
+        Payments payments = new Payments();
+        payments.setIdPayer(selectedClient);
+        payments.setDate(LocalDate.now());
+        payments.setPay(pri);
+        payments.setRest(debt - pri);
+        paymentsClientOperation.insert(payments);
+
         if (pr > 0 ){
             Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
             alertInformation.setHeaderText("المبلغ المتبقي ");

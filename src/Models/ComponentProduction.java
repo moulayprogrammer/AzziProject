@@ -4,12 +4,12 @@ public class ComponentProduction {
 
     private int idProduct;
     private int idComponent;
-    private int qte;
+    private double qte;
 
     public ComponentProduction() {
     }
 
-    public ComponentProduction(int idProduct, int idComponent, int qte) {
+    public ComponentProduction(int idProduct, int idComponent, double qte) {
         this.idProduct = idProduct;
         this.idComponent = idComponent;
         this.qte = qte;
@@ -31,11 +31,11 @@ public class ComponentProduction {
         this.idComponent = idComponent;
     }
 
-    public int getQte() {
+    public double getQte() {
         return qte;
     }
 
-    public void setQte(int qte) {
+    public void setQte(double qte) {
         this.qte = qte;
     }
 }

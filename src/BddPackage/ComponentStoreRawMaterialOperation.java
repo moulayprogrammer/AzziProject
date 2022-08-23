@@ -22,8 +22,8 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
             preparedStmt.setInt(2,o.getIdDeliveryArrival());
             preparedStmt.setDate(3, Date.valueOf(LocalDate.now()));
             preparedStmt.setDouble(4,o.getPrice());
-            preparedStmt.setInt(5,o.getQteStored());
-            preparedStmt.setInt(6,o.getQteConsumed());
+            preparedStmt.setDouble(5,o.getQteStored());
+            preparedStmt.setDouble(6,o.getQteConsumed());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
         } catch (SQLException e) {
@@ -41,8 +41,8 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setDouble(1,o1.getPrice());
-            preparedStmt.setInt(2,o1.getQteStored());
-            preparedStmt.setInt(3,o1.getQteConsumed());
+            preparedStmt.setDouble(2,o1.getQteStored());
+            preparedStmt.setDouble(3,o1.getQteConsumed());
             preparedStmt.setInt(4,o2.getIdComponent());
             preparedStmt.setInt(5,o2.getIdDeliveryArrival());
 
@@ -61,7 +61,7 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
         String query = "UPDATE تخزين_المواد_الخام SET   كمية_مستهلكة = ? WHERE معرف_المادة_الخام = ? AND معرف_وصل_التوصيل = ?";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setInt(1,o.getQteConsumed());
+            preparedStmt.setDouble(1,o.getQteConsumed());
             preparedStmt.setInt(2,o.getIdComponent());
             preparedStmt.setInt(3,o.getIdDeliveryArrival());
 
@@ -113,8 +113,8 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
                 componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStore.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
                 componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
-                componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                componentStore.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                componentStore.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
 
                 list.add(componentStore);
             }
@@ -140,8 +140,8 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
                 componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStore.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
                 componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
-                componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                componentStore.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                componentStore.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
 
             }
         } catch (SQLException e) {
@@ -166,8 +166,8 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
                 componentStore.setIdDeliveryArrival(resultSet.getInt("معرف_وصل_التوصيل"));
                 componentStore.setDateStore(resultSet.getDate("تاريخ_التخزين").toLocalDate());
                 componentStore.setPrice(resultSet.getDouble("سعر_الوحدة"));
-                componentStore.setQteStored(resultSet.getInt("كمية_مخزنة"));
-                componentStore.setQteConsumed(resultSet.getInt("كمية_مستهلكة"));
+                componentStore.setQteStored(resultSet.getDouble("كمية_مخزنة"));
+                componentStore.setQteConsumed(resultSet.getDouble("كمية_مستهلكة"));
 
                 list.add(componentStore);
             }

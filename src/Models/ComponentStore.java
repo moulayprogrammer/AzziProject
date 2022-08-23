@@ -8,21 +8,21 @@ public class ComponentStore {
     private int idDeliveryArrival;
     private LocalDate dateStore;
     private double price;
-    private int qteStored;
-    private int qteConsumed;
+    private double qteStored;
+    private double qteConsumed;
 
     public ComponentStore() {
     }
 
-    public ComponentStore(int idComponent, int idDeliveryArrival, double price, int qteStored, int qteConsumed) {
-        this.idComponent = idComponent;
+    public ComponentStore(int idDeliveryArrival, LocalDate dateStore, double price, double qteStored, double qteConsumed) {
         this.idDeliveryArrival = idDeliveryArrival;
+        this.dateStore = dateStore;
         this.price = price;
         this.qteStored = qteStored;
         this.qteConsumed = qteConsumed;
     }
 
-    public ComponentStore(int idComponent, int idDeliveryArrival, LocalDate dateStore, double price, int qteStored, int qteConsumed) {
+    public ComponentStore(int idComponent, int idDeliveryArrival, LocalDate dateStore, double price, double qteStored, double qteConsumed) {
         this.idComponent = idComponent;
         this.idDeliveryArrival = idDeliveryArrival;
         this.dateStore = dateStore;
@@ -31,7 +31,7 @@ public class ComponentStore {
         this.qteConsumed = qteConsumed;
     }
 
-    public ComponentStore(int idComponent, int idDeliveryArrival, int qteConsumed) {
+    public ComponentStore(int idComponent, int idDeliveryArrival, double qteConsumed) {
         this.idComponent = idComponent;
         this.idDeliveryArrival = idDeliveryArrival;
         this.qteConsumed = qteConsumed;
@@ -61,19 +61,19 @@ public class ComponentStore {
         this.price = price;
     }
 
-    public int getQteStored() {
+    public double getQteStored() {
         return qteStored;
     }
 
-    public void setQteStored(int qteStored) {
+    public void setQteStored(double qteStored) {
         this.qteStored = qteStored;
     }
 
-    public int getQteConsumed() {
+    public double getQteConsumed() {
         return qteConsumed;
     }
 
-    public void setQteConsumed(int qteConsumed) {
+    public void setQteConsumed(double qteConsumed) {
         this.qteConsumed = qteConsumed;
     }
 
