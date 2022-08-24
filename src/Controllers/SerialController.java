@@ -97,7 +97,7 @@ public class SerialController implements Initializable {
 
                         Stage primaryStage = new Stage();
                         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/UsersViews/AddView.fxml")));
-                        primaryStage.setTitle("مزرعة الجنوب");
+                        primaryStage.setTitle("مجمع مزرعة الجنوب");
                         primaryStage.setScene(new Scene(root));
                         primaryStage.getIcons().add(new Image("Images/logo.png"));
                         primaryStage.setResizable(false);

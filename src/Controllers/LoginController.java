@@ -63,7 +63,7 @@ public class LoginController implements Initializable {
 
                 Stage primaryStage = new Stage();
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/MainView.fxml")));
-                primaryStage.setTitle("مزرعة الجنوب");
+                primaryStage.setTitle("مجمع مزرعة الجنوب");
                 primaryStage.setScene(new Scene(root));
                 primaryStage.getIcons().add(new Image("Images/logo.png"));
 
