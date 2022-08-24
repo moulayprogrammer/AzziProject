@@ -20,7 +20,7 @@
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <TableView fx:id="table" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
+            <TableView fx:id="table" onMouseClicked="#tableClick" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="clId" text="المعرف" visible="false" />
                 <TableColumn fx:id="clDelivery" prefWidth="286.0" text="الموصل" />

@@ -391,7 +391,7 @@ public class MainController implements Initializable {
 
 //        double spends = sumDamageRM + sumDamageM + sumDamagePr + sumSpend;
 
-        double fund = capitalPrincipal + 19599900.0 + sumPaySales - payPorches - sumSpend ;
+        double fund = capitalPrincipal + sumPaySales - payPorches - sumSpend ;
         lbFund.setText(String.format(Locale.FRANCE, "%,.2f", fund));
     }
 

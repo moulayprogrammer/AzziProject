@@ -15,7 +15,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane nodeOrientation="RIGHT_TO_LEFT" stylesheets="@../../resource/bootstrap3.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.InvoiceController.AddController">
    <top>
       <AnchorPane prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #EFF;" styleClass="bar" BorderPane.alignment="CENTER">
@@ -109,7 +108,7 @@
                                     <Font name="System Bold" size="14.0" />
                                  </font>
                               </Label>
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionPayDebtClient" text="تسديد" HBox.hgrow="ALWAYS" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionPayDebtClient" text="تسديد" visible="false" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">

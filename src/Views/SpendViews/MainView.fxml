@@ -92,7 +92,7 @@
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <TableView fx:id="table" BorderPane.alignment="CENTER">
+            <TableView fx:id="table" onMouseClicked="#tableClick" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="clId" prefWidth="158.0" text="المعرف" />
                 <TableColumn fx:id="clPrice" prefWidth="280.0" text="المبلغ" />

@@ -17,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -67,6 +69,13 @@ public class SelectedReceiptMedicationController implements Initializable {
         this.receipt = receipt;
     }
 
+    @FXML
+    private void tableClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
+
+            ActionSelectReceipt();
+        }
+    }
     @FXML
     private void ActionSelectReceipt(){
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();

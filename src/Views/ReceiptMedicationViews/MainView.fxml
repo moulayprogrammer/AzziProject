@@ -23,7 +23,7 @@
          <center>
             <HBox spacing="15.0" BorderPane.alignment="CENTER">
                <children>
-                  <TableView fx:id="table" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+                  <TableView fx:id="table" onMouseClicked="#tableClick" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
                     <columns>
                       <TableColumn fx:id="clId" text="المعرف" />
                       <TableColumn fx:id="clProvider" prefWidth="250.0" text="المورد" />

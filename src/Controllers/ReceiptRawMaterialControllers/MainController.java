@@ -19,6 +19,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
@@ -130,7 +132,13 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void tableClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionUpdate();
+        }
+    }
     @FXML
     private void ActionUpdate(){
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();

@@ -42,6 +42,8 @@ public class AddController implements Initializable {
     TableColumn<List<StringProperty>,String> tcType,tcId,tcName,tcReference,tcQte;
     @FXML
     Button btnInsert;
+    @FXML
+    Label lbSumQte;
 
     private final ProductOperation operation = new ProductOperation();
     private final RawMaterialOperation materialOperation = new RawMaterialOperation();
@@ -128,55 +130,14 @@ public class AddController implements Initializable {
         rawMedTable.setItems(componentDataTable);
 
     }
+
     @FXML
     private void tableMaterialMedClick(MouseEvent mouseEvent) {
         if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
-            ActionAddToCompositionDefault();
+            ActionAddToComposition();
         }
     }
-    @FXML
-    private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
-        if (dataSelected != null) {
-            int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    double val = Double.parseDouble(dataTable.get(ex).get(4).getValue());
-                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    List<StringProperty> data = new ArrayList<>();
-                    data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                    data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                    data.add(2, new SimpleStringProperty(dataSelected.get(2).getValue()));
-                    data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
-                    data.add(4, new SimpleStringProperty(String.valueOf(1)));
-
-
-                    dataTable.add(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            tableComposition.setItems(dataTable);
-        }
-    }
-
-    private int exist(List<StringProperty> dataSelected){
-        AtomicInteger ex = new AtomicInteger(-1);
-            for (int i = 0 ; i < dataTable.size() ; i++) {
-                if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) && dataTable.get(i).get(1).getValue().equals(dataSelected.get(1).getValue()) ){
-                    ex.set(i);
-                    break;
-                }
-            }
-        return ex.get();
-    }
-
     @FXML
     private void ActionAddToComposition(){
         List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
@@ -216,7 +177,19 @@ public class AddController implements Initializable {
                 }
             }
             tableComposition.setItems(dataTable);
+            sumQte();
         }
+    }
+
+    private int exist(List<StringProperty> dataSelected){
+        AtomicInteger ex = new AtomicInteger(-1);
+        for (int i = 0 ; i < dataTable.size() ; i++) {
+            if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) && dataTable.get(i).get(1).getValue().equals(dataSelected.get(1).getValue()) ){
+                ex.set(i);
+                break;
+            }
+        }
+        return ex.get();
     }
 
     @FXML
@@ -244,6 +217,7 @@ public class AddController implements Initializable {
             result.ifPresent(qte -> {
                 dataTable.get(compoSelectedIndex).get(4).setValue(qte);
                 tableComposition.setItems(dataTable);
+                sumQte();
             });
         }
     }
@@ -253,7 +227,16 @@ public class AddController implements Initializable {
         if (compoSelectedIndex != -1){
             dataTable.remove(compoSelectedIndex);
             tableComposition.setItems(dataTable);
+            sumQte();
         }
+    }
+
+    private void sumQte(){
+        double sum = 0.0;
+        for (List<StringProperty> data : dataTable){
+            sum += Double.parseDouble(data.get(4).getValue());
+        }
+        lbSumQte.setText(String.valueOf(sum));
     }
     @FXML
     private void ActionAnnulledAdd(){
@@ -389,6 +372,7 @@ public class AddController implements Initializable {
     private void ActionRefresh(){
         clearRecherche();
         tableComposition.setItems(dataTable);
+        sumQte();
     }
 
     private void clearRecherche(){
@@ -418,5 +402,6 @@ public class AddController implements Initializable {
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(tableComposition.comparatorProperty());
         tableComposition.setItems(sortedList);
+        sumQte();
     }
 }

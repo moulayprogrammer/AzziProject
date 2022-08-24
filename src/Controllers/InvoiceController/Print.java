@@ -34,6 +34,7 @@ public class Print {
     private double pay ;
     private boolean fastPrint ;
     private boolean debtPrint ;
+    private final String IMAGE_PATH = System.getProperty("user.dir") + File.separator + "src" + File.separator + "Images" + File.separator +  "logoN.jpeg";
 
     public Print(Invoice invoice, ArrayList<ComponentInvoice> componentInvoices, double pay, double debt, boolean fastPrint, boolean debtPrint) {
         this.invoice = invoice;
@@ -76,9 +77,10 @@ public class Print {
                     .append("</div>")
                     .append("</div>")
                     .append("<div class=\"bloc\" style=\"margin-top: -10px;\" >")
-                    .append("<img src=")
-                    .append(System.getProperty("user.dir"))
-                    .append("/src/Images/logoN.jpeg \">")
+                    .append("<img src =")
+                    .append("\"")
+                    .append(IMAGE_PATH)
+                    .append("\"")
                     .append("</div>")
                     .append("</div>")
 
@@ -280,8 +282,9 @@ public class Print {
                     .append("</div>")
                     .append("<div class=\"bloc\" style=\"margin-top: -10px;\" >")
                     .append("<img src=")
-                    .append(System.getProperty("user.dir"))
-                    .append("/src/Images/logoN.jpeg \">")
+                    .append("\"")
+                    .append(IMAGE_PATH)
+                    .append("\"")
                     .append("</div>")
                     .append("</div>")
 

@@ -88,7 +88,7 @@
                            </font>
                         </Label>
                         <TextField fx:id="tfRechercheRawMad" minHeight="32.0" prefHeight="26.0" prefWidth="141.0" promptText="بحث" />
-                        <TableView onMouseClicked="#tableMaterialMedClick" fx:id="rawMedTable" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="rawMedTable" onMouseClicked="#tableMaterialMedClick" VBox.vgrow="ALWAYS">
                           <columns>
                               <TableColumn fx:id="tcTypeComponent" prefWidth="54.0" text="النوع" visible="false" />
                               <TableColumn fx:id="tcIdComponent" prefWidth="54.0" text="المعرف" visible="false" />
@@ -98,8 +98,7 @@
                         </TableView>
                         <HBox spacing="15.0">
                            <children>
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToCompositionDefault" prefHeight="25.0" prefWidth="85.0" styleClass="info" text="اضافة" />
-                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToComposition" prefHeight="25.0" styleClass="success" text="  اضافة بالكمية" HBox.hgrow="ALWAYS" />
+                              <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#ActionAddToComposition" prefHeight="25.0" styleClass="success" text="  اضافة" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                      </children>
@@ -121,7 +120,7 @@
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView onMouseClicked="#tableProductClick" fx:id="tableComposition" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tableComposition" maxWidth="1.7976931348623157E308" onMouseClicked="#tableProductClick" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tcType" prefWidth="75.0" text="النوع" visible="false" />
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
@@ -130,7 +129,25 @@
                               <TableColumn fx:id="tcQte" prefWidth="170.0" text="الكمية (كغ)" />
                            </columns>
                         </TableView>
-                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="اضافة" visible="false" />
+                        <HBox>
+                           <children>
+                              <Label prefHeight="30.0" prefWidth="335.0" style="-fx-font-size: 18;" text="المرجع" visible="false">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="240.0" style="-fx-font-size: 18;" text="المجموع">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lbSumQte" layoutX="140.0" layoutY="10.0" maxWidth="1.7976931348623157E308" prefHeight="30.0" style="-fx-font-size: 18;" text="مج" HBox.hgrow="ALWAYS">
+                                 <font>
+                                    <Font name="System Bold" size="14.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
                      </children>
                   </VBox>
                </children>

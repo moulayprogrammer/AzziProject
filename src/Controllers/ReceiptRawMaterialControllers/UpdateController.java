@@ -18,6 +18,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.NodeOrientation;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.controlsfx.control.textfield.TextFields;
 
@@ -129,7 +131,7 @@ public class UpdateController implements Initializable {
         priceList.clear();
         try {
             String query = "SELECT مشتريات_مواد_خام.معرف_المادة_الخام , مشتريات_مواد_خام.معرف_الفاتورة , مشتريات_مواد_خام.الكمية , مشتريات_مواد_خام.سعر_الوحدة , المواد_الخام.المعرف , المواد_الخام.الاسم " +
-                    "FROM مشتريات_مواد_خام , المواد_الخام WHERE المواد_الخام.ارشيف = 0 AND مشتريات_مواد_خام.معرف_الفاتورة = ? AND المواد_الخام.المعرف = مشتريات_مواد_خام.معرف_المادة_الخام ;" ;
+                    "FROM مشتريات_مواد_خام , المواد_الخام WHERE مشتريات_مواد_خام.معرف_الفاتورة = ? AND المواد_الخام.المعرف = مشتريات_مواد_خام.معرف_المادة_الخام ;" ;
             try {
                 PreparedStatement preparedStmt = conn.prepareStatement(query);
                 preparedStmt.setInt(1,this.receiptSelected.getId());
@@ -321,7 +323,13 @@ public class UpdateController implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void tableMaterialClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionAddToCompositionDefault();
+        }
+    }
     @FXML
     private void ActionAddToCompositionDefault(){
         List<StringProperty> dataSelected = tableMaterial.getSelectionModel().getSelectedItem();
@@ -383,7 +391,13 @@ public class UpdateController implements Initializable {
             }
         return ex.get();
     }
+    @FXML
+    private void tablePurchasesClick(MouseEvent mouseEvent) {
+        if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
+            ActionModifiedQte();
+        }
+    }
     @FXML
     private void ActionModifiedQte(){
         int compoSelectedIndex = tablePurchases.getSelectionModel().getSelectedIndex();

@@ -137,7 +137,7 @@
                               <Insets />
                            </VBox.margin>
                         </TextField>
-                        <TableView fx:id="tablePurchases" maxHeight="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tablePurchases" onMouseClicked="#tablePurchasesClick" maxHeight="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
                           <columns>
                               <TableColumn fx:id="tcIdPurchases" prefWidth="54.0" text="المعرف" visible="false" />
                               <TableColumn fx:id="tcNamePurchases" prefWidth="100.0" text="الاسم" />
@@ -170,7 +170,7 @@
                               <Button mnemonicParsing="false" onAction="#ActionRefresh" text="تحديث" />
                            </children>
                         </HBox>
-                        <TableView fx:id="tableDeliveryComponent" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tableDeliveryComponent" onMouseClicked="#tableDeliveryComponentClick" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="390.0" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="tcId" prefWidth="75.0" text="المعرف" />
                               <TableColumn fx:id="tcName" prefWidth="371.0" text="الاسم" />

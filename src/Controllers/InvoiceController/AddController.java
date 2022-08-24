@@ -271,15 +271,6 @@ public class AddController implements Initializable {
             }
         }
 
-        // insert payment
-        pri = pri - pr;
-        Payments payments = new Payments();
-        payments.setIdPayer(selectedClient);
-        payments.setDate(LocalDate.now());
-        payments.setPay(pri);
-        payments.setRest(debt - pri);
-        paymentsClientOperation.insert(payments);
-
         if (pr > 0 ){
             Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
             alertInformation.setHeaderText("المبلغ المتبقي ");

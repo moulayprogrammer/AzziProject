@@ -40,7 +40,7 @@
                            </ImageView>
                      </children>
                   </HBox>
-                  <TableView fx:id="table" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0">
+                  <TableView fx:id="table" onMouseClicked="#tableClick" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="500.0">
                      <columns>
                         <TableColumn fx:id="clId" prefWidth="70.0" text="المعرف" />
                         <TableColumn fx:id="clProvider" prefWidth="180.0" text="المورد" />

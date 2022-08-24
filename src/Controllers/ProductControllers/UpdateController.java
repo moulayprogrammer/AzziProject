@@ -44,6 +44,8 @@ public class UpdateController implements Initializable {
     TableColumn<List<StringProperty>,String> tcType,tcId,tcName,tcReference,tcQte;
     @FXML
     Button btnUpdate;
+    @FXML
+    Label lbSumQte;
 
     private final ConnectBD connectBD = new ConnectBD();
     private Connection conn;
@@ -195,82 +197,17 @@ public class UpdateController implements Initializable {
         }
 
         tableComposition.setItems(dataTable);
+        sumQte();
     }
+
+
     @FXML
     private void tableMaterialMedClick(MouseEvent mouseEvent) {
         if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
 
-            ActionAddToCompositionDefault();
+            ActionAddToComposition();
         }
     }
-    @FXML
-    private void ActionAddToCompositionDefault(){
-        List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
-        if (dataSelected != null) {
-            int ex = exist(dataSelected);
-            if ( ex != -1 ){
-                try {
-                    double val = Double.parseDouble(dataTable.get(ex).get(4).getValue());
-//                    dataTable.get(ex).get(4).setValue(String.valueOf(val+1));
-
-                    ComponentProduction componentProduction = new ComponentProduction();
-                    componentProduction.setIdComponent(Integer.parseInt(dataTable.get(ex).get(1).getValue()));
-                    componentProduction.setIdProduct(productUpdated.getId());
-                    componentProduction.setQte(val+1);
-                    switch (dataTable.get(ex).get(0).getValue()){
-                        case "med":
-                            updateComponentMedication(componentProduction);
-                            break;
-                        case "raw":
-                            updateComponentRawMaterial(componentProduction);
-                    }
-                    refreshComposition();
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
-                try {
-                    List<StringProperty> data = new ArrayList<>();
-                    data.add(0, new SimpleStringProperty(dataSelected.get(0).getValue()));
-                    data.add(1, new SimpleStringProperty(dataSelected.get(1).getValue()));
-                    data.add(2, new SimpleStringProperty(dataSelected.get(2).getValue()));
-                    data.add(3, new SimpleStringProperty(dataSelected.get(3).getValue()));
-                    data.add(4, new SimpleStringProperty(String.valueOf(1)));
-
-                    ComponentProduction componentProduction = new ComponentProduction();
-                    componentProduction.setIdComponent(Integer.parseInt(dataSelected.get(1).getValue()));
-                    componentProduction.setIdProduct(productUpdated.getId());
-                    componentProduction.setQte(1.0);
-                    switch (dataSelected.get(0).getValue()){
-                        case "med":
-                            insertComponentMedication(componentProduction);
-                            break;
-                        case "raw":
-                            insertComponentRawMaterial(componentProduction);
-                    }
-                    refreshComposition();
-
-//                    dataTable.add(data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-//            tableComposition.setItems(dataTable);
-        }
-    }
-
-    private int exist(List<StringProperty> dataSelected){
-        AtomicInteger ex = new AtomicInteger(-1);
-            for (int i = 0 ; i < dataTable.size() ; i++) {
-                if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) && dataTable.get(i).get(1).getValue().equals(dataSelected.get(1).getValue()) ){
-                    ex.set(i);
-                    break;
-                }
-            }
-        return ex.get();
-    }
-
     @FXML
     private void ActionAddToComposition(){
         List<StringProperty> dataSelected = rawMedTable.getSelectionModel().getSelectedItem();
@@ -350,6 +287,17 @@ public class UpdateController implements Initializable {
         }
     }
 
+    private int exist(List<StringProperty> dataSelected){
+        AtomicInteger ex = new AtomicInteger(-1);
+        for (int i = 0 ; i < dataTable.size() ; i++) {
+            if (dataTable.get(i).get(0).getValue().equals(dataSelected.get(0).getValue()) && dataTable.get(i).get(1).getValue().equals(dataSelected.get(1).getValue()) ){
+                ex.set(i);
+                break;
+            }
+        }
+        return ex.get();
+    }
+
     @FXML
     private void tableProductClick(MouseEvent mouseEvent) {
         if ( mouseEvent.getClickCount() == 2 && mouseEvent.getButton().equals(MouseButton.PRIMARY) ){
@@ -412,6 +360,14 @@ public class UpdateController implements Initializable {
 //            dataTable.remove(compoSelectedIndex);
 //            tableComposition.setItems(dataTable);
         }
+    }
+
+    private void sumQte(){
+        double sum = 0.0;
+        for (List<StringProperty> data : dataTable){
+            sum += Double.parseDouble(data.get(4).getValue());
+        }
+        lbSumQte.setText(String.valueOf(sum));
     }
     @FXML
     private void ActionAnnulledUpdate(){
@@ -571,5 +527,6 @@ public class UpdateController implements Initializable {
         SortedList<List<StringProperty>> sortedList = new SortedList<>(filteredData);
         sortedList.comparatorProperty().bind(tableComposition.comparatorProperty());
         tableComposition.setItems(sortedList);
+        sumQte();
     }
 }
