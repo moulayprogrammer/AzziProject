@@ -85,7 +85,7 @@ public class MainController implements Initializable {
     private double sumQteDamagePr = 0.0, sumDamagePr = 0.0;
     private double sumSpend;
 
-    private double capitalPrincipal = 48870000.0;
+    private double capitalPrincipal = 49173710.0;
 
 
 

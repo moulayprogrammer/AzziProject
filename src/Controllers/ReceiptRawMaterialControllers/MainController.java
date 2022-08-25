@@ -106,6 +106,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء تحديد تاريخ");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -122,7 +123,8 @@ public class MainController implements Initializable {
             stage.setScene(new Scene(temp));
             stage.setMaximized(true);
             stage.getIcons().add(new Image("Images/logo.png"));
-            stage.setTitle("مزرعة الجنوب");
+            stage.setTitle("مجموع مزرعة الجنوب");
+
             stage.initOwner(this.tfRecherche.getScene().getWindow());
             stage.showAndWait();
 
@@ -154,6 +156,7 @@ public class MainController implements Initializable {
                 stage.setMaximized(true);
                 stage.getIcons().add(new Image("Images/logo.png"));
                 stage.setTitle("مزرعة الجنوب");
+                stage.initOwner(this.tfRecherche.getScene().getWindow());
                 stage.showAndWait();
 
                 refresh();
@@ -165,6 +168,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار فاتورة من اجل التعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

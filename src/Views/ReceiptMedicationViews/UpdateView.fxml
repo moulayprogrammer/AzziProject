@@ -116,7 +116,7 @@
                <children>
                   <VBox prefWidth="200.0" spacing="10.0">
                      <children>
-                        <Label prefHeight="25.0" prefWidth="130.0" style="-fx-font-size: 20;" text="الادوية">
+                        <Label prefHeight="25.0" prefWidth="130.0" style="-fx-font-size: 20;" text="الادوية" textFill="aqua">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>

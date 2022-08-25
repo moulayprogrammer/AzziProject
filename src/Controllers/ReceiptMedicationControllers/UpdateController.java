@@ -241,6 +241,7 @@ public class UpdateController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -259,6 +260,7 @@ public class UpdateController implements Initializable {
 
         dialog.setTitle("التسديد");
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        dialog.initOwner(this.tfRecherche.getScene().getWindow());
         dialog.setHeaderText("ادخل السعر المسدد ");
         dialog.setContentText("السعر :");
 
@@ -295,6 +297,7 @@ public class UpdateController implements Initializable {
                 if (pr > 0 ){
                     Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                     alertInformation.setHeaderText("المبلغ المتبقي ");
+                    alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                     alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
                     alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
@@ -350,6 +353,7 @@ public class UpdateController implements Initializable {
 
                     dialog.setTitle("السعر");
                     dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.setHeaderText("ادخل سعر الشراء ");
                     dialog.setContentText("السعر :");
 
@@ -403,6 +407,7 @@ public class UpdateController implements Initializable {
 
             dialog.setTitle("الكمية");
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.setHeaderText("تعديل الكمية ");
             dialog.setContentText("الكمية :");
 
@@ -429,6 +434,7 @@ public class UpdateController implements Initializable {
 
             dialog.setTitle("السعر");
             dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.setHeaderText("تعديل السعر ");
             dialog.setContentText("السعر :");
 
@@ -486,6 +492,7 @@ public class UpdateController implements Initializable {
 
         dialog.setTitle("الدفع ");
         dialog.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        dialog.initOwner(this.tfRecherche.getScene().getWindow());
         dialog.setHeaderText(" السعر المدفوع ");
         dialog.setContentText("السعر :");
 
@@ -514,6 +521,7 @@ public class UpdateController implements Initializable {
                             alertWarning.setHeaderText("تحذير ");
                             alertWarning.setContentText("خطأ غير معروف");
                             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                             okButton.setText("موافق");
                             alertWarning.showAndWait();
@@ -523,6 +531,7 @@ public class UpdateController implements Initializable {
                         alertWarning.setHeaderText("تحذير ");
                         alertWarning.setContentText("السعر المدفوع اكبر من سعر الفاتورة");
                         alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                        alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                         Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                         okButton.setText("موافق");
                         alertWarning.showAndWait();
@@ -532,6 +541,7 @@ public class UpdateController implements Initializable {
                     alertWarning.setHeaderText("تحذير ");
                     alertWarning.setContentText("الرجاء ملأ جميع الحقول");
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                    alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
                     alertWarning.showAndWait();
@@ -541,6 +551,7 @@ public class UpdateController implements Initializable {
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("الرجاء ملأ السعر المدفوع");
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
