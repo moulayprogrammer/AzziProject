@@ -72,6 +72,7 @@ public class MainController implements Initializable {
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setDialogPane(temp);
             dialog.resizableProperty().setValue(false);
+            dialog.initOwner(this.tfRecherche.getScene().getWindow());
             dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
             Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
             closeButton.setVisible(false);
@@ -106,6 +107,7 @@ public class MainController implements Initializable {
                     Dialog<ButtonType> dialog = new Dialog<>();
                     dialog.setDialogPane(temp);
                     dialog.resizableProperty().setValue(false);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                     Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                     closeButton.setVisible(false);
@@ -120,6 +122,7 @@ public class MainController implements Initializable {
                 Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                 alertInformation.setHeaderText("لا يمكن التعديل");
                 alertInformation.setContentText("تم تـأكبد الانتاج بالفعل فلا يمكن تعديله" );
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                 alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -129,6 +132,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار منتج من اجل التعديل");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -152,6 +156,7 @@ public class MainController implements Initializable {
                     Dialog<ButtonType> dialog = new Dialog<>();
                     dialog.setDialogPane(temp);
                     dialog.resizableProperty().setValue(false);
+                    dialog.initOwner(this.tfRecherche.getScene().getWindow());
                     dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
                     Node closeButton = dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
                     closeButton.setVisible(false);
@@ -166,6 +171,7 @@ public class MainController implements Initializable {
                 Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                 alertInformation.setHeaderText("التاكيد");
                 alertInformation.setContentText("تم تـأكبد الانتاج بالفعل" );
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                 alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -175,6 +181,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار إنتاج من اجل التأكيد");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
@@ -194,6 +201,7 @@ public class MainController implements Initializable {
                     Alert alertConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
                     alertConfirmation.setHeaderText("تاكيد الحذف");
                     alertConfirmation.setContentText("هل انت متاكد من حذف هذا الانتاج");
+                    alertConfirmation.initOwner(this.tfRecherche.getScene().getWindow());
                     alertConfirmation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertConfirmation.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -277,6 +285,7 @@ public class MainController implements Initializable {
                 Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
                 alertInformation.setHeaderText("لا يمكن الحذف");
                 alertInformation.setContentText("تم تـأكبد الانتاج بالفعل فلا يمكن حذفه" );
+                alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
                 alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -286,6 +295,7 @@ public class MainController implements Initializable {
             Alert alertWarning = new Alert(Alert.AlertType.WARNING);
             alertWarning.setHeaderText("تحذير");
             alertWarning.setContentText("الرجاء اختيار إنتاج من اجل الحذف");
+            alertWarning.initOwner(this.tfRecherche.getScene().getWindow());
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");

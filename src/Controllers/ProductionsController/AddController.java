@@ -199,6 +199,7 @@ public class AddController implements Initializable {
                     Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                     alertWarning.setHeaderText("الكمية كبيرة ");
                     alertWarning.setContentText("كمية المواد الاولية المتوفرة لا تكفي لانتاج هذه الكمية");
+                    alertWarning.initOwner(this.btnInsert.getScene().getWindow());
                     alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                     Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                     okButton.setText("موافق");
@@ -208,6 +209,7 @@ public class AddController implements Initializable {
                 Alert alertWarning = new Alert(Alert.AlertType.WARNING);
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("الرجاء ملأ جميع الخانات و اختيار المنتج لحساب سعر الانتاج");
+                alertWarning.initOwner(this.btnInsert.getScene().getWindow());
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
@@ -297,6 +299,7 @@ public class AddController implements Initializable {
                 alertWarning.setHeaderText("تحذير ");
                 alertWarning.setContentText("خطأ غير معروف");
                 alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+                alertWarning.initOwner(this.btnInsert.getScene().getWindow());
                 Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
@@ -306,6 +309,7 @@ public class AddController implements Initializable {
             alertWarning.setHeaderText("تحذير ");
             alertWarning.setContentText("الرجاء ملأ جميع الحقول");
             alertWarning.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+            alertWarning.initOwner(this.btnInsert.getScene().getWindow());
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();

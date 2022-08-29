@@ -154,7 +154,7 @@ public class ComponentStoreRawMaterialOperation extends BDD<ComponentStore> {
     public ArrayList<ComponentStore> getAllByMaterialOrderByDate(int idMaterial) {
         connectDatabase();
         ArrayList<ComponentStore> list = new ArrayList<>();
-        String query = "SELECT * FROM تخزين_المواد_الخام WHERE معرف_المادة_الخام = ?  AND (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين DESC;";
+        String query = "SELECT * FROM تخزين_المواد_الخام WHERE معرف_المادة_الخام = ?  AND (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين ASC;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idMaterial);

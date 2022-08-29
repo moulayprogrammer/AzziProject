@@ -154,7 +154,7 @@ public class ComponentStoreMedicationOperation extends BDD<ComponentStore> {
     public ArrayList<ComponentStore> getAllByMedicationOrderByDate(int idMedication) {
         connectDatabase();
         ArrayList<ComponentStore> list = new ArrayList<>();
-        String query = "SELECT * FROM تخزين_الادوية WHERE معرف_الدواء = ?  AND (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين DESC;";
+        String query = "SELECT * FROM تخزين_الادوية WHERE معرف_الدواء = ?  AND (كمية_مخزنة - كمية_مستهلكة) > 0  ORDER BY تاريخ_التخزين ASC;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idMedication);
