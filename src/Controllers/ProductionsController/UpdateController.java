@@ -165,7 +165,7 @@ public class UpdateController implements Initializable {
                         }
                     }
 
-                    priceProduction += productionSelected.getPrice() * productionSelected.getQteProduct() ;
+                    priceProduction += (productionSelected.getPrice() * productionSelected.getQteProduct()) ;
 
                     tfPriceNew.setText(String.format(Locale.FRANCE, "%,.2f", priceProduction));
                 }else {
