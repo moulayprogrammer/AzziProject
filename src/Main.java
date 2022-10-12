@@ -66,7 +66,6 @@ public class Main extends Application {
         }else {
             root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Views/SerialView.fxml")));
         }
-
         primaryStage.setTitle("مجمع مزرعة الجنوب");
         primaryStage.setScene(new Scene(root));
         primaryStage.getIcons().add(new Image("Images/logo.png"));
