@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 public class SerialController implements Initializable {
 
+    public Button LoginButton;
     String errorMessage = String.format("-fx-text-fill: RED;");
     String errorStyle = String.format("-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 5;");
 
@@ -57,6 +58,7 @@ public class SerialController implements Initializable {
         } else if (loginPasswordPasswordField.getText().equals("MOULAYzine<3ACHORAholwa")){
 
             try {
+                System.out.println("enter");
                 String FileFolder = System.getenv("APPDATA") + File.separator + "TSP" ;
 
                 File directory = new File(FileFolder);
@@ -70,20 +72,7 @@ public class SerialController implements Initializable {
                 if (file.createNewFile()){
 
                     // get serial number motherBord
-                    String command = "wmic baseboard get serialnumber";
-                    Process SerialNumberProcess = Runtime.getRuntime().exec(command);
-                    InputStreamReader ISR = new InputStreamReader(SerialNumberProcess.getInputStream());
-                    BufferedReader br = new BufferedReader(ISR);
-                    String serialNumber = "";
-                    for (String line = br.readLine(); line != null; line = br.readLine()) {
-                        if (line.length() < 1 || line.startsWith("SerialNumber")) {
-                            continue;
-                        }
-                        serialNumber = line;
-                        break;
-                    }
-                    SerialNumberProcess.waitFor();
-                    br.close();
+                    String serialNumber = getSerialNumber("C");
 
                     // write the serial and the code to the file
                     FileWriter writer = new FileWriter(file);
@@ -115,5 +104,33 @@ public class SerialController implements Initializable {
             invalidLoginCredentials.setText("رقم التسجيل خطأ ");
             invalidLoginCredentials.setStyle(errorMessage);
         }
+    }
+
+    public String getSerialNumber(String drive) {
+        StringBuilder result = new StringBuilder();
+        try {
+            File file = File.createTempFile("realhowto", ".vbs");
+            file.deleteOnExit();
+            FileWriter fw = new java.io.FileWriter(file);
+
+            String vbs = "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\n"
+                    + "Set colDrives = objFSO.Drives\n"
+                    + "Set objDrive = colDrives.item(\"" + drive + "\")\n"
+                    + "Wscript.Echo objDrive.SerialNumber";  // see note
+            fw.write(vbs);
+            fw.close();
+            Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
+            BufferedReader input =
+                    new BufferedReader
+                            (new InputStreamReader(p.getInputStream()));
+            String line;
+            while ((line = input.readLine()) != null) {
+                result.append(line);
+            }
+            input.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result.toString().trim();
     }
 }
