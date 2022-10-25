@@ -210,8 +210,8 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void ActionPayDebtClient(){
-        int index = table.getSelectionModel().getSelectedIndex();
+    private void ActionPayDebtClient() {
+        /*int index = table.getSelectionModel().getSelectedIndex();
         List<StringProperty> data  = table.getSelectionModel().getSelectedItem();
         if (data != null) {
             try {
@@ -291,22 +291,7 @@ public class MainController implements Initializable {
             Button okButton = (Button) alertWarning.getDialogPane().lookupButton(ButtonType.OK);
             okButton.setText("موافق");
             alertWarning.showAndWait();
-        }
-    }
-
-    private void PayDebtInvoice(int invoiceId , double price) {
-        try {
-            Invoice invoice1 = new Invoice();
-            invoice1.setPaying(price);
-
-            Invoice invoice2 =  new Invoice();
-            invoice2.setId(invoiceId);
-
-            invoiceOperation.updatePaying(invoice1,invoice2);
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        }*/
     }
 
     @FXML
@@ -364,7 +349,7 @@ public class MainController implements Initializable {
                         double pr = componentInvoice.getPrice() * componentInvoice.getQte();
                         sumR.updateAndGet(v -> v + pr);
                     });
-                    pay.updateAndGet(v -> v + invoice.getPaying());
+//                    pay.updateAndGet(v -> v + invoice.getPaying());
                     trans.updateAndGet(v -> v + sumR.get());
                 });
                 debt = trans.get() - pay.get();

@@ -282,7 +282,7 @@ public class UpdateController implements Initializable {
                         double pr = componentInvoice.getPrice() * componentInvoice.getQte();
                         sumR.updateAndGet(v -> v + pr);
                     });
-                    pay.updateAndGet(v -> v + invoice.getPaying());
+//                    pay.updateAndGet(v -> v + invoice.getPaying());
                     trans.updateAndGet(v -> v + sumR.get());
                 }
             });
@@ -368,7 +368,7 @@ public class UpdateController implements Initializable {
 
     @FXML
     private void ActionPayDebtClient(){
-        TextInputDialog dialog = new TextInputDialog();
+        /*TextInputDialog dialog = new TextInputDialog();
 
         dialog.setTitle("التسديد");
         dialog.initOwner(this.tfRecherche.getScene().getWindow());
@@ -385,48 +385,11 @@ public class UpdateController implements Initializable {
                 payDebtClient(pr);
                 setClientTransaction(selectedClient);
             }
-        });
-    }
-
-    private void payDebtClient(double pr){
-        ArrayList<Invoice> invoices = operation.getAllByClient(selectedClient);
-        double pri = pr;
-        for (Invoice invoice : invoices) {
-            ArrayList<ComponentInvoice> componentInvoices = componentInvoiceOperation.getAllByInvoice(invoice.getId());
-            AtomicReference<Double> sumR = new AtomicReference<>(0.0);
-            componentInvoices.forEach(componentInvoice -> {
-                double pre = componentInvoice.getPrice() * componentInvoice.getQte();
-                sumR.updateAndGet(v -> v + pre);
-            });
-            double debt = sumR.get() - invoice.getPaying();
-            if (debt > 0) {
-                if (pr <= debt) {
-                    double newPaying = pr + invoice.getPaying();
-                    pr = 0;
-                    PayDebtInvoice(invoice.getId(), newPaying);
-                    break;
-                } else {
-                    double newPaying = debt + invoice.getPaying();
-                    pr = pr - debt;
-                    PayDebtInvoice(invoice.getId(), newPaying);
-                }
-            }
-        }
-
-        if (pr > 0 ){
-            Alert alertInformation = new Alert(Alert.AlertType.INFORMATION);
-            alertInformation.setHeaderText("المبلغ المتبقي ");
-            alertInformation.setContentText("المبلغ المتبقي من التسديد هو   " + String.format(Locale.FRANCE, "%,.2f", (pr)));
-            alertInformation.initOwner(this.tfRecherche.getScene().getWindow());
-            alertInformation.getDialogPane().setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-            Button okButton = (Button) alertInformation.getDialogPane().lookupButton(ButtonType.OK);
-            okButton.setText("موافق");
-            alertInformation.showAndWait();
-        }
+        });*/
     }
 
     private void PayDebtInvoice(int invoiceId , double price) {
-        try {
+        /*try {
             Invoice invoice1 = new Invoice();
             invoice1.setPaying(price);
 
@@ -437,7 +400,7 @@ public class UpdateController implements Initializable {
 
         }catch (Exception e){
             e.printStackTrace();
-        }
+        }*/
     }
     @FXML
     private void tableProductClick(MouseEvent mouseEvent) {
@@ -655,14 +618,14 @@ public class UpdateController implements Initializable {
                     invoice.setIdClient(selectedClient);
                     invoice.setDate(date);
 
-                    if (pay <= totalFacture) {
+                   /* if (pay <= totalFacture) {
                         invoice.setPaying(pay);
                     }else {
                         invoice.setPaying(totalFacture);
                         double restPay = pay - totalFacture;
                         payDebtClient(restPay);
                     }
-
+*/
                     boolean update = update(invoice);
                     if (update ) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(this.selectInvoice.getId(), false);
@@ -741,13 +704,13 @@ public class UpdateController implements Initializable {
                     invoice.setDate(date);
 
 
-                    if (pay <= totalFacture) {
+                   /* if (pay <= totalFacture) {
                         invoice.setPaying(pay);
                     }else {
                         invoice.setPaying(totalFacture);
                         double restPay = pay - totalFacture;
                         payDebtClient(restPay);
-                    }
+                    }*/
 
                     boolean update = update(invoice);
                     if (update) {

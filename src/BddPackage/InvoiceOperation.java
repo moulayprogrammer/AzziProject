@@ -20,13 +20,12 @@ public class InvoiceOperation extends BDD<Invoice> {
     public int insertId(Invoice invoice) {
         connectDatabase();
         int ins = 0;
-        String query = "INSERT INTO فاتورة_بيع (رقم_الفاتورة, معرف_الزبون, تاريخ_البيع, الدفع) VALUES (?,?,?,?);";
+        String query = "INSERT INTO فاتورة_بيع (رقم_الفاتورة, معرف_الزبون, تاريخ_البيع) VALUES (?,?,?);";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,invoice.getNumber());
             preparedStmt.setInt(2,invoice.getIdClient());
             preparedStmt.setDate(3, Date.valueOf(invoice.getDate()));
-            preparedStmt.setDouble(4,invoice.getPaying());
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = preparedStmt.getGeneratedKeys().getInt(1);
 
@@ -41,30 +40,12 @@ public class InvoiceOperation extends BDD<Invoice> {
     public boolean update(Invoice o1, Invoice o2) { //
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE فاتورة_بيع SET معرف_الزبون = ?, تاريخ_البيع = ?, الدفع = ? WHERE المعرف = ?;";
+        String query = "UPDATE فاتورة_بيع SET معرف_الزبون = ?, تاريخ_البيع = ? WHERE المعرف = ?;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,o1.getIdClient());
             preparedStmt.setDate(2,Date.valueOf(o1.getDate()));
-            preparedStmt.setDouble(3,o1.getPaying());
-            preparedStmt.setInt(4,o2.getId());
-            int update = preparedStmt.executeUpdate();
-            if(update != -1) upd = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        closeDatabase();
-        return upd;
-    }
-
-    public boolean updatePaying(Invoice o1, Invoice o2) {
-        connectDatabase();
-        boolean upd = false;
-        String query = "UPDATE فاتورة_بيع SET الدفع = ? WHERE المعرف = ?;";
-        try {
-            PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setDouble(1,o1.getPaying());
-            preparedStmt.setInt(2,o2.getId());
+            preparedStmt.setInt(3,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -112,7 +93,7 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setNumber(resultSet.getInt("رقم_الفاتورة"));
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
-                invoice.setPaying(resultSet.getDouble("الدفع"));
+
                 if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
                 else invoice.setConfirmation("غير مأكد");
 
@@ -140,7 +121,6 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setNumber(resultSet.getInt("رقم_الفاتورة"));
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
-                invoice.setPaying(resultSet.getDouble("الدفع"));
                 if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
                 else invoice.setConfirmation("غير مأكد");
 
@@ -187,7 +167,7 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setNumber(resultSet.getInt("رقم_الفاتورة"));
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
-                invoice.setPaying(resultSet.getDouble("الدفع"));
+
                 if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
                 else invoice.setConfirmation("غير مأكد");
 
@@ -217,7 +197,7 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setNumber(resultSet.getInt("رقم_الفاتورة"));
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
-                invoice.setPaying(resultSet.getDouble("الدفع"));
+
                 if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
                 else invoice.setConfirmation("غير مأكد");
 
@@ -247,7 +227,7 @@ public class InvoiceOperation extends BDD<Invoice> {
                 invoice.setNumber(resultSet.getInt("رقم_الفاتورة"));
                 invoice.setIdClient(resultSet.getInt("معرف_الزبون"));
                 invoice.setDate(resultSet.getDate("تاريخ_البيع").toLocalDate());
-                invoice.setPaying(resultSet.getDouble("الدفع"));
+
                 if (resultSet.getInt("التاكيد") == 0) invoice.setConfirmation("مأكد");
                 else invoice.setConfirmation("غير مأكد");
 

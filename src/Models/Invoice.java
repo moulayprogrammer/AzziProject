@@ -8,34 +8,9 @@ public class Invoice {
     private int number;
     private int idClient;
     private LocalDate date;
-    private double paying;
     private String confirmation;
 
     public Invoice() {
-    }
-
-    public Invoice(int id, int idClient, LocalDate date, double paying) {
-        this.id = id;
-        this.idClient = idClient;
-        this.date = date;
-        this.paying = paying;
-    }
-
-    public Invoice(int id, int number, int idClient, LocalDate date, double paying) {
-        this.id = id;
-        this.number = number;
-        this.idClient = idClient;
-        this.date = date;
-        this.paying = paying;
-    }
-
-    public Invoice(int id, int number, int idClient, LocalDate date, double paying, String confirmation) {
-        this.id = id;
-        this.number = number;
-        this.idClient = idClient;
-        this.date = date;
-        this.paying = paying;
-        this.confirmation = confirmation;
     }
 
     public int getId() {
@@ -68,14 +43,6 @@ public class Invoice {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public double getPaying() {
-        return paying;
-    }
-
-    public void setPaying(double paying) {
-        this.paying = paying;
     }
 
     public String getConfirmation() {

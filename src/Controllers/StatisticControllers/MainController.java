@@ -164,7 +164,7 @@ public class MainController implements Initializable {
                         sumR += (componentInvoice.getPrice() * componentInvoice.getQte());
                     }
                     this.sumSales += sumR;
-                    this.sumPaySales += invoice.getPaying();
+//                    this.sumPaySales += invoice.getPaying();
                 }
             }
 

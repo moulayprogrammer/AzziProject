@@ -22,7 +22,6 @@ public class PayingController implements Initializable {
     CheckBox cbFastPrint,cbDebtPrint;
 
     private double pay, debt, tot, rest;
-    private boolean fastPrint, debtPrint;
 
     ArrayList<Double> doubles = new ArrayList<>();
     ArrayList<Boolean> booleans = new ArrayList<>();
@@ -62,8 +61,8 @@ public class PayingController implements Initializable {
         if (!stPay.isEmpty()) {
             double pay = Double.parseDouble(stPay);
             if ((debt + tot) >= pay) {
-                fastPrint = cbFastPrint.isSelected();
-                debtPrint = cbDebtPrint.isSelected();
+                boolean fastPrint = cbFastPrint.isSelected();
+                boolean debtPrint = cbDebtPrint.isSelected();
                 doubles.set(0, Double.parseDouble(stPay));
                 booleans.set(0, fastPrint);
                 booleans.set(1, debtPrint);
@@ -80,8 +79,6 @@ public class PayingController implements Initializable {
                 okButton.setText("موافق");
                 alertWarning.showAndWait();
             }
-
-
         }
     }
 
