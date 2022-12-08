@@ -22,7 +22,7 @@ import java.util.function.Predicate;
 
 public class PaymentClientController implements Initializable {
 
-    @FXML
+    /*@FXML
     TextField tfRecherche;
     @FXML
     TableView<Payments> table;
@@ -38,25 +38,26 @@ public class PaymentClientController implements Initializable {
 
     private final ObservableList<Payments> dataTable = FXCollections.observableArrayList();
     private final PaymentsClientOperation operation = new PaymentsClientOperation();
-    private Client client;
+    private Client client;*/
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        clId.setCellValueFactory(new PropertyValueFactory<>("id"));
+       /* clId.setCellValueFactory(new PropertyValueFactory<>("id"));
         clDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         clPay.setCellValueFactory(new PropertyValueFactory<>("pay"));
-        clRest.setCellValueFactory(new PropertyValueFactory<>("rest"));
+        clRest.setCellValueFactory(new PropertyValueFactory<>("rest"));*/
 
 
     }
 
     public void Init(Client client){
-        this.client = client;
+       /* this.client = client;
 
         lbClient.setText(client.getName() + client.getReference());
-        refresh();
+        refresh();*/
     }
+    /*
     @FXML
     private void ActionAnnuler(){
         ((Stage)tfRecherche.getScene().getWindow()).close();
@@ -102,5 +103,5 @@ public class PaymentClientController implements Initializable {
         sortedList.comparatorProperty().bind(table.comparatorProperty());
         table.setItems(sortedList);
 
-    }
+    }*/
 }

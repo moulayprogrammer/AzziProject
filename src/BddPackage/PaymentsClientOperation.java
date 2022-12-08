@@ -3,10 +3,7 @@ package BddPackage;
 import Models.Client;
 import Models.Payments;
 
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class PaymentsClientOperation extends BDD<Payments> {
@@ -15,14 +12,15 @@ public class PaymentsClientOperation extends BDD<Payments> {
     public boolean insert(Payments o) {
         connectDatabase();
         boolean ins = false;
-        String query = "INSERT INTO مدفوعات_الزبائن ( معرف_الزبون, التاريخ, الدفع, المتبقي) VALUES (?,?,?,?)";
+        String query = "INSERT INTO PAYMENTS (ID_CLIENT, ID_INVOICE, DATE, RAISON, PAY) VALUES (?,?,?,?,?)";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
 
             preparedStmt.setInt(1,o.getIdPayer());
-            preparedStmt.setDate(2, Date.valueOf(o.getDate()));
-            preparedStmt.setDouble(3,o.getPay());
-            preparedStmt.setDouble(4,o.getRest());
+            preparedStmt.setInt(2,o.getIdInvoice());
+            preparedStmt.setTimestamp(3, Timestamp.valueOf(o.getDate()));
+            preparedStmt.setString(4,o.getRaison());
+            preparedStmt.setDouble(5,o.getPay());
 
             int insert = preparedStmt.executeUpdate();
             if(insert != -1) ins = true;
@@ -37,14 +35,16 @@ public class PaymentsClientOperation extends BDD<Payments> {
     public boolean update(Payments o1, Payments o2) {
         connectDatabase();
         boolean upd = false;
-        String query = "UPDATE مدفوعات_الزبائن SET التاريخ = ?, الدفع = ?, المتبقي = ?  WHERE المعرف = ?;";
+        String query = "UPDATE PAYMENTS SET ID_CLIENT = ?, ID_INVOICE = ?, DATE = ?, RAISON = ?, PAY = ? WHERE ID = ?; ";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
-            preparedStmt.setDate(1, Date.valueOf(o1.getDate()));
-            preparedStmt.setDouble(2,o1.getPay());
-            preparedStmt.setDouble(3,o1.getRest());
+            preparedStmt.setInt(1,o1.getIdPayer());
+            preparedStmt.setInt(2,o1.getIdInvoice());
+            preparedStmt.setTimestamp(3, Timestamp.valueOf(o1.getDate()));
+            preparedStmt.setString(4,o1.getRaison());
+            preparedStmt.setDouble(5,o1.getPay());
 
-            preparedStmt.setInt(4,o2.getId());
+            preparedStmt.setInt(6,o2.getId());
             int update = preparedStmt.executeUpdate();
             if(update != -1) upd = true;
         } catch (SQLException e) {
@@ -68,18 +68,19 @@ public class PaymentsClientOperation extends BDD<Payments> {
     public ArrayList<Payments> getAll() {
         connectDatabase();
         ArrayList<Payments> list = new ArrayList<>();
-        String query = "SELECT * FROM  مدفوعات_الزبائن ;";
+        String query = "SELECT ID, ID_CLIENT, ID_INVOICE, DATE, RAISON, PAY FROM PAYMENTS;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             ResultSet resultSet = preparedStmt.executeQuery();
             while (resultSet.next()){
 
                 Payments payments = new Payments();
-                payments.setId(resultSet.getInt("المعرف"));
-                payments.setIdPayer(resultSet.getInt("معرف_الزبون"));
-                payments.setDate(resultSet.getDate("التاريخ").toLocalDate());
-                payments.setPay(resultSet.getDouble("الدفع"));
-                payments.setRest(resultSet.getDouble("المتبقي"));
+                payments.setId(resultSet.getInt("ID"));
+                payments.setIdPayer(resultSet.getInt("ID_CLIENT"));
+                payments.setIdInvoice(resultSet.getInt("ID_INVOICE"));
+                payments.setDate(resultSet.getTimestamp("DATE").toLocalDateTime());
+                payments.setRaison(resultSet.getString("RAISON"));
+                payments.setPay(resultSet.getDouble("PAY"));
 
                 list.add(payments);
             }
@@ -93,7 +94,7 @@ public class PaymentsClientOperation extends BDD<Payments> {
     public ArrayList<Payments> getAllByClient(int idClient) {
         connectDatabase();
         ArrayList<Payments> list = new ArrayList<>();
-        String query = "SELECT * FROM  مدفوعات_الزبائن  where معرف_الزبون = ? ;";
+        String query = "SELECT ID, ID_CLIENT, ID_INVOICE, DATE, RAISON, PAY FROM PAYMENTS WHERE ID_CLIENT = ? ;";
         try {
             PreparedStatement preparedStmt = conn.prepareStatement(query);
             preparedStmt.setInt(1,idClient);
@@ -101,11 +102,12 @@ public class PaymentsClientOperation extends BDD<Payments> {
             while (resultSet.next()){
 
                 Payments payments = new Payments();
-                payments.setId(resultSet.getInt("المعرف"));
-                payments.setIdPayer(resultSet.getInt("معرف_الزبون"));
-                payments.setDate(resultSet.getDate("التاريخ").toLocalDate());
-                payments.setPay(resultSet.getDouble("الدفع"));
-                payments.setRest(resultSet.getDouble("المتبقي"));
+                payments.setId(resultSet.getInt("ID"));
+                payments.setIdPayer(resultSet.getInt("ID_CLIENT"));
+                payments.setIdInvoice(resultSet.getInt("ID_INVOICE"));
+                payments.setDate(resultSet.getTimestamp("DATE").toLocalDateTime());
+                payments.setRaison(resultSet.getString("RAISON"));
+                payments.setPay(resultSet.getDouble("PAY"));
 
                 list.add(payments);
             }

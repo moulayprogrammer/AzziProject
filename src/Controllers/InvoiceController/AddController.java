@@ -556,6 +556,9 @@ public class AddController implements Initializable {
                     int ins = insert(invoice);
                     if (ins != -1) {
                         ArrayList<ComponentInvoice>  componentInvoices = insertComponent(ins, true);
+
+                        Payments payments = new Payments();
+
                         Print print = new Print(invoice,componentInvoices,pay,this.debt,booleans.get(0),booleans.get(1));
                         print.CreatePdfFacture();
                         print.CreatePdfBon();

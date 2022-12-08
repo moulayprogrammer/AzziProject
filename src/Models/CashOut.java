@@ -1,35 +1,34 @@
 package Models;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Payments {
+public class CashOut {
 
     private int id;
-    private int idPayer;
+    private int idClient;
     private int idInvoice;
     private LocalDateTime date;
-    private double pay;
+    private double out;
     private String raison;
 
-    public Payments() {
+    public CashOut() {
     }
 
-    public Payments(int idPayer, int idInvoice, LocalDateTime date, double pay, String raison) {
-        this.idPayer = idPayer;
+    public CashOut(int id, int idClient, int idInvoice, LocalDateTime date, double out, String raison) {
+        this.id = id;
+        this.idClient = idClient;
         this.idInvoice = idInvoice;
         this.date = date;
-        this.pay = pay;
+        this.out = out;
         this.raison = raison;
     }
 
-    public Payments(double pay) {
-        this.pay = pay;
-    }
-
-    public Payments(int id, double pay) {
-        this.id = id;
-        this.pay = pay;
+    public CashOut(int idClient, int idInvoice, LocalDateTime date, double out, String raison) {
+        this.idClient = idClient;
+        this.idInvoice = idInvoice;
+        this.date = date;
+        this.out = out;
+        this.raison = raison;
     }
 
     public int getId() {
@@ -40,12 +39,12 @@ public class Payments {
         this.id = id;
     }
 
-    public int getIdPayer() {
-        return idPayer;
+    public int getIdClient() {
+        return idClient;
     }
 
-    public void setIdPayer(int idPayer) {
-        this.idPayer = idPayer;
+    public void setIdClient(int idClient) {
+        this.idClient = idClient;
     }
 
     public int getIdInvoice() {
@@ -64,12 +63,12 @@ public class Payments {
         this.date = date;
     }
 
-    public double getPay() {
-        return pay;
+    public double getOut() {
+        return out;
     }
 
-    public void setPay(double pay) {
-        this.pay = pay;
+    public void setOut(double out) {
+        this.out = out;
     }
 
     public String getRaison() {
