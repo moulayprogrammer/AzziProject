@@ -18,63 +18,63 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
-    String errorMessage = String.format("-fx-text-fill: RED;");
-    String errorStyle = String.format("-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 5;");
+        String errorMessage = String.format("-fx-text-fill: RED;");
+        String errorStyle = String.format("-fx-border-color: RED; -fx-border-width: 2; -fx-border-radius: 5;");
 
-    // Import the application's controls
-    @FXML
-    private Label invalidLoginCredentials;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private TextField loginUsernameTextField;
-    @FXML
-    private TextField loginPasswordPasswordField;
+        // Import the application's controls
+        @FXML
+        private Label invalidLoginCredentials;
+        @FXML
+        private Button cancelButton;
+        @FXML
+        private TextField loginUsernameTextField;
+        @FXML
+        private TextField loginPasswordPasswordField;
 
-    private final UsersOperation operation = new UsersOperation();
+        private final UsersOperation operation = new UsersOperation();
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+        @Override
+        public void initialize(URL location, ResourceBundle resources) {
 
-    }
-
-    // Creation of methods which are activated on events in the forms
-    @FXML
-    protected void onCancelButtonClick() {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
-    }
-
-    @FXML
-    protected void onLoginButtonClick() {
-        if (loginUsernameTextField.getText().isEmpty() || loginPasswordPasswordField.getText().isEmpty()) {
-            invalidLoginCredentials.setText("الرجاء ملأ جميع الخانات");
-            invalidLoginCredentials.setStyle(errorMessage);
-
-            if (loginUsernameTextField.getText().isEmpty()) {
-                loginUsernameTextField.setStyle(errorStyle);
-            } else if (loginPasswordPasswordField.getText().isEmpty()) {
-                loginPasswordPasswordField.setStyle(errorStyle);
-            }
-        } else if (operation.isExist(new Users(loginUsernameTextField.getText().trim(),loginPasswordPasswordField.getText().trim()))){
-
-            onCancelButtonClick();
-            try {
-
-                Stage primaryStage = new Stage();
-                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/MainView.fxml")));
-                primaryStage.setTitle("مجمع مزرعة الجنوب");
-                primaryStage.setScene(new Scene(root));
-                primaryStage.getIcons().add(new Image("Images/logo.png"));
-
-                primaryStage.setMaximized(true);
-                primaryStage.show();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }else {
-            invalidLoginCredentials.setText("الرجاء التاكد من اسم المستخدم و كلمة السر ");
-            invalidLoginCredentials.setStyle(errorMessage);
         }
-    }
+
+        // Creation of methods which are activated on events in the forms
+        @FXML
+        protected void onCancelButtonClick() {
+            Stage stage = (Stage) cancelButton.getScene().getWindow();
+            stage.close();
+        }
+
+        @FXML
+        protected void onLoginButtonClick() {
+            if (loginUsernameTextField.getText().isEmpty() || loginPasswordPasswordField.getText().isEmpty()) {
+                invalidLoginCredentials.setText("الرجاء ملأ جميع الخانات");
+                invalidLoginCredentials.setStyle(errorMessage);
+
+                if (loginUsernameTextField.getText().isEmpty()) {
+                    loginUsernameTextField.setStyle(errorStyle);
+                } else if (loginPasswordPasswordField.getText().isEmpty()) {
+                    loginPasswordPasswordField.setStyle(errorStyle);
+                }
+            } else if (operation.isExist(new Users(loginUsernameTextField.getText().trim(),loginPasswordPasswordField.getText().trim()))){
+
+                onCancelButtonClick();
+                try {
+
+                    Stage primaryStage = new Stage();
+                    Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/MainView.fxml")));
+                    primaryStage.setTitle("مجمع مزرعة الجنوب");
+                    primaryStage.setScene(new Scene(root));
+                    primaryStage.getIcons().add(new Image("Images/logo.png"));
+
+                    primaryStage.setMaximized(true);
+                    primaryStage.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }else {
+                invalidLoginCredentials.setText("الرجاء التاكد من اسم المستخدم و كلمة السر ");
+                invalidLoginCredentials.setStyle(errorMessage);
+            }
+        }
 }

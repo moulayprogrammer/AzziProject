@@ -69,33 +69,34 @@ public class SerialController implements Initializable {
 
                 File file = new File(directory.getAbsolutePath() + File.separator + "data.ml");
 
-                if (file.createNewFile()){
+                if (!file.exists()){
+                    if ( file.createNewFile()) {
 
-                    // get serial number motherBord
-                    String serialNumber = getSerialNumber("C");
+                        // get serial number motherBord
+                        String serialNumber = getSerialNumber("C");
 
-                    // write the serial and the code to the file
-                    FileWriter writer = new FileWriter(file);
-                    String code = "moulay + achoura = lalla soltana <3 " + serialNumber;
-                    writer.write( String.valueOf(code.hashCode()));
-                    writer.close();
+                        // write the serial and the code to the file
+                        FileWriter writer = new FileWriter(file);
+                        String code = "moulay + achoura = lalla soltana <3 " + serialNumber;
+                        writer.write(String.valueOf(code.hashCode()));
+                        writer.close();
 
 
-                    try {
-                        ((Stage)this.cancelButton.getScene().getWindow()).close();
+                        try {
+                            ((Stage) this.cancelButton.getScene().getWindow()).close();
 
-                        Stage primaryStage = new Stage();
-                        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/UsersViews/AddView.fxml")));
-                        primaryStage.setTitle("مجمع مزرعة الجنوب");
-                        primaryStage.setScene(new Scene(root));
-                        primaryStage.getIcons().add(new Image("Images/logo.png"));
-                        primaryStage.setResizable(false);
-                        primaryStage.show();
+                            Stage primaryStage = new Stage();
+                            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Views/UsersViews/AddView.fxml")));
+                            primaryStage.setTitle("مجمع مزرعة الجنوب");
+                            primaryStage.setScene(new Scene(root));
+                            primaryStage.getIcons().add(new Image("Images/logo.png"));
+                            primaryStage.setResizable(false);
+                            primaryStage.show();
 
-                    }catch (Exception e){
-                        e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-
                 }
             }catch (Exception e){
                 e.printStackTrace();

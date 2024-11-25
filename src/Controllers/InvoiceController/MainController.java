@@ -72,8 +72,8 @@ public class MainController implements Initializable {
         clDate.setCellValueFactory(data -> data.getValue().get(2));
         clAmount.setCellValueFactory(data -> data.getValue().get(3));
         clPaying.setCellValueFactory(data -> data.getValue().get(4));
-        clDebt.setCellValueFactory(data -> data.getValue().get(5));
-        clConfirmation.setCellValueFactory(data -> data.getValue().get(6));
+/*        clDebt.setCellValueFactory(data -> data.getValue().get(5));
+        clConfirmation.setCellValueFactory(data -> data.getValue().get(6));*/
 
         refresh();
         refreshComboClient();
